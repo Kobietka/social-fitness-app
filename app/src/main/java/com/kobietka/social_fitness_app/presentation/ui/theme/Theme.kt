@@ -1,4 +1,4 @@
-package com.kobietka.social_fitness_app.ui.theme
+package com.kobietka.social_fitness_app.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

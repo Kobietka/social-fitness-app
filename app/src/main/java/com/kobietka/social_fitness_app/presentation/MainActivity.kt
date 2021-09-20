@@ -1,4 +1,4 @@
-package com.kobietka.social_fitness_app
+package com.kobietka.social_fitness_app.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,24 +7,20 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import com.kobietka.social_fitness_app.ui.theme.SocialfitnessappTheme
+import com.kobietka.social_fitness_app.presentation.register.RegisterScreen
+import com.kobietka.social_fitness_app.presentation.theme.SocialfitnessappTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             SocialfitnessappTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
-                }
+                RegisterScreen()
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
 
