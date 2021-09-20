@@ -1,19 +1,28 @@
 package com.kobietka.social_fitness_app.presentation.register
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kobietka.social_fitness_app.domain.state.PasswordTextFieldState
 import com.kobietka.social_fitness_app.domain.state.StandardTextFieldState
+import com.kobietka.social_fitness_app.domain.usecase.auth.RegisterUserUseCase
+import com.kobietka.social_fitness_app.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel
 @Inject constructor(
-
+    private val registerUserUseCase: RegisterUserUseCase
 ) : ViewModel() {
+
+    private val _screenState = mutableStateOf(RegisterScreenState())
+    val screenState: State<RegisterScreenState> = _screenState
 
     private val _nickname = mutableStateOf(StandardTextFieldState(label = "Nickname"))
     val nickname: State<StandardTextFieldState> = _nickname
@@ -33,7 +42,25 @@ class RegisterViewModel
         _password.value = password.value.copy(error = "")
         _repeatPassword.value = repeatPassword.value.copy(error = "")
         when(validate()){
-            is ValidationResult.Success -> { }
+            is ValidationResult.Success -> {
+                registerUserUseCase(
+                    nickname = nickname.value.text,
+                    email = email.value.text,
+                    password = password.value.text
+                ).onEach { result ->
+                    when(result){
+                        is Resource.Loading -> { _screenState.value = screenState.value.copy(isLoading = true) }
+                        is Resource.Success -> {
+                            _screenState.value = screenState.value.copy(isLoading = false)
+                            Log.e("Success", "registration was successful")
+                        }
+                        is Resource.Error -> {
+                            Log.e("Error", result.message ?: "")
+                            _screenState.value = screenState.value.copy(isLoading = false)
+                        }
+                    }
+                }.launchIn(viewModelScope)
+            }
             is ValidationResult.EmailNotValid -> {
                 _email.value = email.value.copy(error = "This email address is not valid")
             }

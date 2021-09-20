@@ -2,6 +2,7 @@ package com.kobietka.social_fitness_app.presentation.register
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +19,7 @@ import com.kobietka.social_fitness_app.presentation.components.StandardTextField
 fun RegisterScreen(
     registerViewModel: RegisterViewModel = hiltViewModel()
 ) {
+    val state = registerViewModel.screenState.value
     val nicknameState = registerViewModel.nickname.value
     val emailState = registerViewModel.email.value
     val passwordState = registerViewModel.password.value
@@ -76,9 +78,11 @@ fun RegisterScreen(
                 .fillMaxWidth()
                 .padding(top = 13.dp)
                 .height(50.dp),
-            onClick = registerViewModel::onRegisterClick
+            onClick = registerViewModel::onRegisterClick,
+            enabled = !state.isLoading
         ) {
-            Text(text = "Register")
+            if(!state.isLoading) Text(text = "Register")
+            else CircularProgressIndicator()
         }
         Text(
             modifier = Modifier.padding(top = 30.dp),
