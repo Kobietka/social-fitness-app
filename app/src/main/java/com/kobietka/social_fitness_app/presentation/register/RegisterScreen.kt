@@ -2,9 +2,8 @@ package com.kobietka.social_fitness_app.presentation.register
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -77,8 +76,8 @@ fun RegisterScreen(
                 .fillMaxWidth()
                 .padding(top = 13.dp)
                 .height(50.dp),
-            onClick = registerViewModel::onRegisterClick)
-        {
+            onClick = registerViewModel::onRegisterClick
+        ) {
             Text(text = "Register")
         }
         Text(
