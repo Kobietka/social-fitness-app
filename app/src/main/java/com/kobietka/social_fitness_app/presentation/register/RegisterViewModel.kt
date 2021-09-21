@@ -1,6 +1,5 @@
 package com.kobietka.social_fitness_app.presentation.register
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -49,13 +48,14 @@ class RegisterViewModel
                     password = password.value.text
                 ).onEach { result ->
                     when(result){
-                        is Resource.Loading -> { _screenState.value = screenState.value.copy(isLoading = true) }
+                        is Resource.Loading -> {
+                            _screenState.value = screenState.value.copy(isLoading = true)
+                        }
                         is Resource.Success -> {
                             _screenState.value = screenState.value.copy(isLoading = false)
-                            Log.e("Success", "registration was successful")
+                            _screenState.value = screenState.value.copy(isRegisterSuccessful = true)
                         }
                         is Resource.Error -> {
-                            Log.e("Error", result.message ?: "")
                             _screenState.value = screenState.value.copy(isLoading = false)
                         }
                     }

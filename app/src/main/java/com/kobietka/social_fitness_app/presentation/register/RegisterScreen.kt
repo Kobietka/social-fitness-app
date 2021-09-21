@@ -1,23 +1,31 @@
 package com.kobietka.social_fitness_app.presentation.register
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.kobietka.social_fitness_app.presentation.Screen
 import com.kobietka.social_fitness_app.presentation.components.PasswordTextField
 import com.kobietka.social_fitness_app.presentation.components.StandardTextField
 
 @Composable
 fun RegisterScreen(
-    registerViewModel: RegisterViewModel = hiltViewModel()
+    registerViewModel: RegisterViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val state = registerViewModel.screenState.value
     val nicknameState = registerViewModel.nickname.value
@@ -25,7 +33,35 @@ fun RegisterScreen(
     val passwordState = registerViewModel.password.value
     val repeatPasswordState = registerViewModel.repeatPassword.value
 
-    Column(
+    if(state.isRegisterSuccessful){
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Done,
+                contentDescription = "done",
+                tint = Color.Green,
+                modifier = Modifier.size(80.dp)
+            )
+            Text(
+                modifier = Modifier.padding(top = 20.dp),
+                text = "Registration successful",
+                fontWeight = FontWeight.Bold,
+                fontSize = 25.sp
+            )
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp, top = 40.dp)
+                    .height(50.dp),
+                onClick = { navController.navigate(Screen.Login.route) }
+            ) {
+                Text(text = "Log in")
+            }
+        }
+    } else Column(
         modifier = Modifier
             .padding(20.dp)
             .fillMaxSize(),
@@ -85,7 +121,9 @@ fun RegisterScreen(
             else CircularProgressIndicator()
         }
         Text(
-            modifier = Modifier.padding(top = 30.dp),
+            modifier = Modifier
+                .padding(top = 30.dp)
+                .clickable { navController.navigate(Screen.Login.route) },
             text = "Already have an account?",
             color = Color.Gray
         )
