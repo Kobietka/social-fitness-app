@@ -18,15 +18,25 @@ class FakeAuthRepositoryImpl : AuthRepository {
             email = registerUserRequest.email
         )
         delay(2000)
-        when(Random.nextInt() % 3){
-            0 -> return Result.Success(data = registerUserResponse)
-            1 -> return Result.Failure(message = "Something went wrong. Try again later.")
-            2 -> return Result.Failure(message = "Cannot connect. Check your internet connection.")
+        when(Random.nextInt() % 10){
+            1, 2, 3, 4, 5, 6 -> return Result.Success(data = registerUserResponse)
+            7, 8 -> return Result.Failure(message = "Something went wrong. Try again later.")
+            9, 0 -> return Result.Failure(message = "Cannot connect. Check your internet connection.")
         }
         return Result.Failure(message = "????")
     }
 
     override suspend fun loginUser(loginUserRequest: LoginUserRequest): Result<LoginUserResponse> {
-        TODO("Not yet implemented")
+        val loginUserResponse = LoginUserResponse(
+            token = "token_value",
+            refreshToken = "refresh_token_value"
+        )
+        delay(2000)
+        when(Random.nextInt() % 10){
+            1, 2, 3, 4, 5, 6 -> return Result.Success(data = loginUserResponse)
+            7, 8 -> return Result.Failure(message = "Something went wrong. Try again later.")
+            9, 0 -> return Result.Failure(message = "Cannot connect. Check your internet connection.")
+        }
+        return Result.Failure(message = "????")
     }
 }
