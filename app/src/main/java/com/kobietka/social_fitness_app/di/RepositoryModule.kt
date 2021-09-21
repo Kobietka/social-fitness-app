@@ -1,5 +1,8 @@
 package com.kobietka.social_fitness_app.di
 
+import com.kobietka.social_fitness_app.data.dao.UserCredentialsDao
+import com.kobietka.social_fitness_app.data.repository.UserCredentialsRepositoryImpl
+import com.kobietka.social_fitness_app.domain.repository.local.UserCredentialsRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.AuthRepository
 import com.kobietka.social_fitness_app.domain.service.AuthService
 import com.kobietka.social_fitness_app.network.repository.fake.FakeAuthRepositoryImpl
@@ -19,6 +22,14 @@ class RepositoryModule {
     fun provideAuthRepository(authService: AuthService): AuthRepository {
         // return AuthRepositoryImpl(authService = authService)
         return FakeAuthRepositoryImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserCredentialsRepository(
+        userCredentialsDao: UserCredentialsDao
+    ): UserCredentialsRepository {
+        return UserCredentialsRepositoryImpl(userCredentialsDao = userCredentialsDao)
     }
 
 }
