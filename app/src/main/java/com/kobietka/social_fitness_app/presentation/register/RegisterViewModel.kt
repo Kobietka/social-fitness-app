@@ -44,9 +44,9 @@ class RegisterViewModel
         when(validate()){
             is ValidationResult.Success -> {
                 registerUserUseCase(
-                    nickname = nickname.value.text,
-                    email = email.value.text,
-                    password = password.value.text
+                    nickname = nickname.value.text.trim(),
+                    email = email.value.text.trim(),
+                    password = password.value.text.trim()
                 ).onEach { result ->
                     when(result){
                         is Resource.Loading -> {

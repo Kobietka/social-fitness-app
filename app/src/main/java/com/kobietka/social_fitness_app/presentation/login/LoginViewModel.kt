@@ -34,8 +34,8 @@ class LoginViewModel
     fun onLoginClick(onLoginSuccess: () -> Unit){
         _screenState.value = _screenState.value.copy(error = "")
         loginUserUseCase(
-            email = email.value.text,
-            password = password.value.text
+            email = email.value.text.trim(),
+            password = password.value.text.trim()
         ).onEach { resource ->
             when(resource){
                 is Resource.Success -> {
