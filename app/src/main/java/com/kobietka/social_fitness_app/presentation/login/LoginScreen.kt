@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -47,6 +48,15 @@ fun LoginScreen(
             fontWeight = FontWeight.Bold,
             fontSize = 25.sp
         )
+        if(state.error.isNotBlank()){
+            Text(
+                modifier = Modifier.padding(10.dp),
+                text = state.error,
+                color = MaterialTheme.colors.error,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            )
+        }
         StandardTextField(
             text = emailState.text,
             error = emailState.error,
