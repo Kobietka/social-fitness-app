@@ -40,6 +40,7 @@ class RegisterViewModel
         _email.value = email.value.copy(error = "")
         _password.value = password.value.copy(error = "")
         _repeatPassword.value = repeatPassword.value.copy(error = "")
+        _screenState.value = _screenState.value.copy(error = "")
         when(validate()){
             is ValidationResult.Success -> {
                 registerUserUseCase(
@@ -57,6 +58,9 @@ class RegisterViewModel
                         }
                         is Resource.Error -> {
                             _screenState.value = screenState.value.copy(isLoading = false)
+                            result.message?.let { errorMessage ->
+                                _screenState.value = screenState.value.copy(error = errorMessage)
+                            }
                         }
                     }
                 }.launchIn(viewModelScope)

@@ -2,10 +2,7 @@ package com.kobietka.social_fitness_app.presentation.register
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.*
@@ -81,6 +78,15 @@ fun RegisterScreen(
             fontWeight = FontWeight.Bold,
             fontSize = 25.sp
         )
+        if(state.error.isNotBlank()){
+            Text(
+                modifier = Modifier.padding(10.dp),
+                text = state.error,
+                color = MaterialTheme.colors.error,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            )
+        }
         StandardTextField(
             text = nicknameState.text,
             error = nicknameState.error,
