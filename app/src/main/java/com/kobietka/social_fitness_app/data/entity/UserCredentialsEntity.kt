@@ -4,9 +4,9 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "userCredentials")
+@Entity(tableName = "user")
 data class UserCredentialsEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int? = null,
+    @PrimaryKey val id: String = "",
     @ColumnInfo val token: String,
-    @ColumnInfo val refreshToken: String
+    @ColumnInfo val nickname: String
 )
