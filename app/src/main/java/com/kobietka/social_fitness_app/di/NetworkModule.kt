@@ -19,7 +19,7 @@ class NetworkModule {
     @Singleton
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://localhost")
+            .baseUrl("https://filkur-fitness-app.herokuapp.com")
             .addConverterFactory(GsonConverterFactory.create(Gson()))
             .build()
     }
