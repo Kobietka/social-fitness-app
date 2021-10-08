@@ -6,7 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.kobietka.social_fitness_app.presentation.edit_user.EditUserScreen
 import com.kobietka.social_fitness_app.presentation.login.LoginScreen
+import com.kobietka.social_fitness_app.presentation.main_screen.MainScreen
 import com.kobietka.social_fitness_app.presentation.register.RegisterScreen
 import com.kobietka.social_fitness_app.presentation.theme.SocialfitnessappTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,7 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             SocialfitnessappTheme {
-                NavHost(navController = navController, startDestination = Screen.Login.route){
+                NavHost(navController = navController, startDestination = Screen.EditUser.route){
                     composable(route = Screen.Login.route){
                         LoginScreen(navController = navController)
                     }
@@ -28,12 +30,31 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(route = Screen.MainScreen.route){
+                        MainScreen(navController = navController)
+                    }
 
+                    composable(route = Screen.EditUser.route){
+                        EditUserScreen(navController = navController)
                     }
                 }
             }
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
