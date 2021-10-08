@@ -19,4 +19,7 @@ interface UserCredentialsDao {
     @Query("select * from user")
     fun getAllUsers(): Flow<List<UserCredentialsEntity>>
 
+    @Query("select * from user")
+    suspend fun getUsers(): List<UserCredentialsEntity>
+
 }
