@@ -3,6 +3,7 @@ package com.kobietka.social_fitness_app.data.repository
 import com.kobietka.social_fitness_app.data.dao.UserCredentialsDao
 import com.kobietka.social_fitness_app.data.entity.UserCredentialsEntity
 import com.kobietka.social_fitness_app.domain.repository.local.UserCredentialsRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
@@ -14,5 +15,9 @@ class UserCredentialsRepositoryImpl
 
     override suspend fun deleteAllCredentials() {
         userCredentialsDao.deleteAllCredentials()
+    }
+
+    override fun getAllUsers(): Flow<List<UserCredentialsEntity>> {
+        return userCredentialsDao.getAllUsers()
     }
 }
