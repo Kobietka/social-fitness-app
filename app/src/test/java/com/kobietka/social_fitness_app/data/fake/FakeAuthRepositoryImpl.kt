@@ -1,10 +1,9 @@
-package com.kobietka.social_fitness_app.network.repository.fake
+package com.kobietka.social_fitness_app.data.fake
 
 import com.kobietka.social_fitness_app.domain.repository.remote.AuthRepository
 import com.kobietka.social_fitness_app.network.request.LoginUserRequest
 import com.kobietka.social_fitness_app.network.request.RegisterUserRequest
 import com.kobietka.social_fitness_app.network.response.LoginUserResponse
-import com.kobietka.social_fitness_app.network.response.RegisterUserResponse
 import com.kobietka.social_fitness_app.util.Result
 import kotlinx.coroutines.delay
 import kotlin.random.Random
