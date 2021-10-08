@@ -20,4 +20,8 @@ class UserCredentialsRepositoryImpl
     override fun getAllUsers(): Flow<List<UserCredentialsEntity>> {
         return userCredentialsDao.getAllUsers()
     }
+
+    override suspend fun getUserToken(): String {
+        return userCredentialsDao.getUsers().first().token
+    }
 }

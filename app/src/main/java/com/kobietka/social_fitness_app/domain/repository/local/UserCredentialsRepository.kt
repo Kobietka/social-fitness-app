@@ -8,4 +8,5 @@ interface UserCredentialsRepository {
     suspend fun insert(userCredentialsEntity: UserCredentialsEntity)
     suspend fun deleteAllCredentials()
     fun getAllUsers(): Flow<List<UserCredentialsEntity>>
+    suspend fun getUserToken(): String
 }
