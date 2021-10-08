@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import com.kobietka.social_fitness_app.data.entity.UserCredentialsEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserCredentialsDao {
@@ -14,5 +15,8 @@ interface UserCredentialsDao {
 
     @Query("delete from user")
     suspend fun deleteAllCredentials()
+
+    @Query("select * from user")
+    fun getAllUsers(): Flow<List<UserCredentialsEntity>>
 
 }
