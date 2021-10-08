@@ -7,12 +7,17 @@ import javax.inject.Inject
 
 class InsertUserCredentialsUseCase
 @Inject constructor(private val userCredentialsRepository: UserCredentialsRepository){
-    suspend operator fun invoke(token: String, refreshToken: String){
+    suspend operator fun invoke(
+        token: String,
+        id: String,
+        nickname: String
+    ){
         userCredentialsRepository.deleteAllCredentials().also {
             userCredentialsRepository.insert(
                 UserCredentialsEntity(
                     token = token,
-                    refreshToken = refreshToken
+                    id = id,
+                    nickname = nickname
                 )
             )
         }
