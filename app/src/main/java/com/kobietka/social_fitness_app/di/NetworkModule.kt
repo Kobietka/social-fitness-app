@@ -1,14 +1,13 @@
 package com.kobietka.social_fitness_app.di
 
 import com.google.gson.Gson
-import com.kobietka.social_fitness_app.data.dao.UserCredentialsDao
+import com.kobietka.social_fitness_app.domain.repository.local.UserCredentialsRepository
 import com.kobietka.social_fitness_app.domain.service.AuthService
 import com.kobietka.social_fitness_app.domain.service.UpdateUserService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -26,6 +25,7 @@ class NetworkModule {
     @Named("retrofit")
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
+            .client(OkHttpClient())
             .baseUrl("https://filkur-fitness-app.herokuapp.com")
             .addConverterFactory(GsonConverterFactory.create(Gson()))
             .build()
@@ -37,6 +37,7 @@ class NetworkModule {
     fun provideAuthRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://filkur-fitness-app.herokuapp.com")
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(Gson()))
             .build()
     }
@@ -70,9 +71,10 @@ class NetworkModule {
 
     @Provides
     @Named("token")
-    fun provideUserToken(userCredentialsDao: UserCredentialsDao): String = runBlocking {
-        val loggedUser = userCredentialsDao.getAllUsers().toList().first()
-        return@runBlocking loggedUser.first().nickname
+    fun provideUserToken(
+        userCredentialsRepository: UserCredentialsRepository
+    ): String = runBlocking {
+        return@runBlocking userCredentialsRepository.getUserToken()
     }
 
 }
