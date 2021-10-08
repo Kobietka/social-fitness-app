@@ -5,7 +5,7 @@ import com.kobietka.social_fitness_app.data.repository.UserCredentialsRepository
 import com.kobietka.social_fitness_app.domain.repository.local.UserCredentialsRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.AuthRepository
 import com.kobietka.social_fitness_app.domain.service.AuthService
-import com.kobietka.social_fitness_app.network.repository.fake.FakeAuthRepositoryImpl
+import com.kobietka.social_fitness_app.network.repository.AuthRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,8 +20,7 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun provideAuthRepository(authService: AuthService): AuthRepository {
-        // return AuthRepositoryImpl(authService = authService)
-        return FakeAuthRepositoryImpl()
+        return AuthRepositoryImpl(authService = authService)
     }
 
     @Provides
