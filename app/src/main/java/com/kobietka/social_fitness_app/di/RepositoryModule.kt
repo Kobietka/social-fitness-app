@@ -4,8 +4,11 @@ import com.kobietka.social_fitness_app.data.dao.UserCredentialsDao
 import com.kobietka.social_fitness_app.data.repository.UserCredentialsRepositoryImpl
 import com.kobietka.social_fitness_app.domain.repository.local.UserCredentialsRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.AuthRepository
+import com.kobietka.social_fitness_app.domain.repository.remote.UpdateUserRemoteRepository
 import com.kobietka.social_fitness_app.domain.service.AuthService
+import com.kobietka.social_fitness_app.domain.service.UpdateUserService
 import com.kobietka.social_fitness_app.network.repository.AuthRepositoryImpl
+import com.kobietka.social_fitness_app.network.repository.UpdateUserRemoteRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,6 +32,14 @@ class RepositoryModule {
         userCredentialsDao: UserCredentialsDao
     ): UserCredentialsRepository {
         return UserCredentialsRepositoryImpl(userCredentialsDao = userCredentialsDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateUserRemoteRepository(
+        updateUserService: UpdateUserService
+    ): UpdateUserRemoteRepository {
+        return UpdateUserRemoteRepositoryImpl(updateUserService = updateUserService)
     }
 
 }
