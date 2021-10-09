@@ -9,12 +9,14 @@ import com.kobietka.social_fitness_app.domain.model.User
 data class UserCredentialsEntity(
     @PrimaryKey val id: String = "",
     @ColumnInfo val token: String,
-    @ColumnInfo val nickname: String
+    @ColumnInfo val nickname: String,
+    @ColumnInfo val email: String
 )
 
 fun UserCredentialsEntity.toUser(): User {
     return User(
         id = this.id,
-        nickname = this.nickname
+        nickname = this.nickname,
+        email = this.email
     )
 }
