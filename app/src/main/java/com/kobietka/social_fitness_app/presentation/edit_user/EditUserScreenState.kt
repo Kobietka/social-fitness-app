@@ -8,5 +8,5 @@ data class EditUserScreenState(
     val isPasswordLoading: Boolean = false,
     val dataError: String = "",
     val passwordError: String = "",
-    val user: User = User(id = "", nickname = "")
+    val user: User = User(id = "", nickname = "", email = "")
 )
