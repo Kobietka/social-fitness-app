@@ -32,9 +32,10 @@ class LoginViewModel
     val password: State<PasswordTextFieldState> = _password
 
     fun onLoginClick(onLoginSuccess: () -> Unit){
+        val email = email.value.text.trim()
         _screenState.value = _screenState.value.copy(error = "")
         loginUserUseCase(
-            email = email.value.text.trim(),
+            email = email,
             password = password.value.text.trim()
         ).onEach { resource ->
             when(resource){
@@ -44,7 +45,8 @@ class LoginViewModel
                         insertUserCredentialsUseCase(
                             token = it.token,
                             id = it.id,
-                            nickname = it.nickname
+                            nickname = it.nickname,
+                            email = email
                         )
                         onLoginSuccess()
                     }
@@ -58,6 +60,7 @@ class LoginViewModel
                         _screenState.value = _screenState.value.copy(error = message)
                     }
                 }
+                else -> { }
             }
         }.launchIn(viewModelScope)
     }

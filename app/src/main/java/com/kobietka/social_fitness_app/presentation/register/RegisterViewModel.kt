@@ -114,9 +114,9 @@ class RegisterViewModel
         _repeatPassword.value = _repeatPassword.value.copy(isVisible = !repeatPassword.value.isVisible)
     }
 
-    private fun isValidEmail(email: String) = Pattern.compile( "[^@ \\t\\r\\n]+@[^@ \\t\\r\\n]+\\.[^@ \\t\\r\\n]+", Pattern.CASE_INSENSITIVE).matcher(email).find()
-
 }
+
+fun isValidEmail(email: String) = Pattern.compile( "[^@ \\t\\r\\n]+@[^@ \\t\\r\\n]+\\.[^@ \\t\\r\\n]+", Pattern.CASE_INSENSITIVE).matcher(email).find()
 
 sealed class ValidationResult {
     object Success : ValidationResult()
