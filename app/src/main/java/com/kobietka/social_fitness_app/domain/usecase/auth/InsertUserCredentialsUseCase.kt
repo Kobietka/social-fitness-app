@@ -10,14 +10,16 @@ class InsertUserCredentialsUseCase
     suspend operator fun invoke(
         token: String,
         id: String,
-        nickname: String
+        nickname: String,
+        email: String
     ){
         userCredentialsRepository.deleteAllCredentials().also {
             userCredentialsRepository.insert(
                 UserCredentialsEntity(
                     token = token,
                     id = id,
-                    nickname = nickname
+                    nickname = nickname,
+                    email = email
                 )
             )
         }
