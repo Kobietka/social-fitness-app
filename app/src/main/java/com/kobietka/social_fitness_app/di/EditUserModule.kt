@@ -1,8 +1,8 @@
 package com.kobietka.social_fitness_app.di
 
+import com.kobietka.social_fitness_app.domain.repository.local.UserCredentialsRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.UpdateUserRemoteRepository
-import com.kobietka.social_fitness_app.domain.usecase.edit_user.UpdateUserPasswordUseCase
-import com.kobietka.social_fitness_app.domain.usecase.edit_user.ValidateUpdatePasswordUseCase
+import com.kobietka.social_fitness_app.domain.usecase.edit_user.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,4 +27,43 @@ class EditUserModule {
         return ValidateUpdatePasswordUseCase()
     }
 
+    @Provides
+    fun provideValidateUpdateUserDataUseCase(): ValidateUpdateUserDataUseCase {
+        return ValidateUpdateUserDataUseCase()
+    }
+
+    @Provides
+    fun provideUpdateUserDataUseCase(
+        updateUserRemoteRepository: UpdateUserRemoteRepository
+    ): UpdateUserDataUseCase {
+        return UpdateUserDataUseCase(updateUserRemoteRepository = updateUserRemoteRepository)
+    }
+
+    @Provides
+    fun provideInsertUpdatedUserDataUseCase(
+        userCredentialsRepository: UserCredentialsRepository
+    ): InsertUpdatedUserDataUseCase {
+        return InsertUpdatedUserDataUseCase(userCredentialsRepository = userCredentialsRepository)
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
