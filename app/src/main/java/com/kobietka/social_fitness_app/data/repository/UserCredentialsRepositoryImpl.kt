@@ -24,4 +24,12 @@ class UserCredentialsRepositoryImpl
     override suspend fun getUserToken(): String {
         return userCredentialsDao.getUsers().first().token
     }
+
+    override suspend fun updateUserData(id: String, nickname: String, email: String) {
+        userCredentialsDao.updateUserData(
+            id = id,
+            nickname = nickname,
+            email = email
+        )
+    }
 }

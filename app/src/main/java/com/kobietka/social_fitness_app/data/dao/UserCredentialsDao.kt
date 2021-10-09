@@ -22,4 +22,11 @@ interface UserCredentialsDao {
     @Query("select * from user")
     suspend fun getUsers(): List<UserCredentialsEntity>
 
+    @Query("update user set nickname = :nickname, email = :email where id = :id")
+    suspend fun updateUserData(
+        id: String,
+        nickname: String,
+        email: String
+    )
+
 }
