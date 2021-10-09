@@ -4,12 +4,14 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.Update
 import com.kobietka.social_fitness_app.domain.model.UpdatePasswordValidationResult
+import com.kobietka.social_fitness_app.domain.model.UpdateUserDataValidationResult
 import com.kobietka.social_fitness_app.domain.state.PasswordTextFieldState
 import com.kobietka.social_fitness_app.domain.state.StandardTextFieldState
+import com.kobietka.social_fitness_app.domain.usecase.auth.InsertUserCredentialsUseCase
 import com.kobietka.social_fitness_app.domain.usecase.auth.LogoutUserUseCase
-import com.kobietka.social_fitness_app.domain.usecase.edit_user.UpdateUserPasswordUseCase
-import com.kobietka.social_fitness_app.domain.usecase.edit_user.ValidateUpdatePasswordUseCase
+import com.kobietka.social_fitness_app.domain.usecase.edit_user.*
 import com.kobietka.social_fitness_app.domain.usecase.main.GetUsersUseCase
 import com.kobietka.social_fitness_app.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,13 +20,17 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
 import java.lang.Exception
 import javax.inject.Inject
+import kotlin.math.log
 
 @HiltViewModel
 class EditUserViewModel
 @Inject constructor(
     getUsers: GetUsersUseCase,
     private val validateUpdatePassword: ValidateUpdatePasswordUseCase,
+    private val validateUpdateUserData: ValidateUpdateUserDataUseCase,
     private val updateUserPassword: UpdateUserPasswordUseCase,
+    private val updateUserData: UpdateUserDataUseCase,
+    private val insertUpdatedUserData: InsertUpdatedUserDataUseCase,
     private val logoutUser: LogoutUserUseCase
 ) : ViewModel() {
 
@@ -33,6 +39,9 @@ class EditUserViewModel
 
     private val _nickname = mutableStateOf(StandardTextFieldState(label = "Nickname"))
     val nickname: State<StandardTextFieldState> = _nickname
+
+    private val _email = mutableStateOf(StandardTextFieldState(label = "Email"))
+    val email: State<StandardTextFieldState> = _email
 
     private val _dataPassword = mutableStateOf(PasswordTextFieldState(label = "Password"))
     val dataPassword: State<PasswordTextFieldState> = _dataPassword
@@ -49,12 +58,71 @@ class EditUserViewModel
                 val loggedUser = users.first()
                 _screenState.value = _screenState.value.copy(user = loggedUser)
                 _nickname.value = _nickname.value.copy(text = loggedUser.nickname)
+                _email.value = _email.value.copy(text = loggedUser.email)
             } catch (exception: Exception){ }
         }.launchIn(viewModelScope)
     }
 
     fun onUpdateDataClick(){
+        val nickname = _nickname.value.text.trim()
+        val email = _email.value.text.trim()
+        val password = _dataPassword.value.text.trim()
 
+        _nickname.value = _nickname.value.copy(error = "")
+        _email.value = _email.value.copy(error = "")
+        _dataPassword.value = _dataPassword.value.copy(error = "")
+
+        val validationResult = validateUpdateUserData(
+            nickname = nickname,
+            email = email,
+            password = password
+        )
+
+        when(validationResult){
+            is UpdateUserDataValidationResult.Success -> {
+                updateUserData(
+                    userId = _screenState.value.user.id,
+                    nickname = nickname,
+                    email = email,
+                    password = password
+                ).onEach { resource ->
+                    when(resource){
+                        is Resource.Success -> {
+                            _screenState.value = _screenState.value.copy(isDataLoading = false)
+                            resource.data?.let { response ->
+                                insertUpdatedUserData(
+                                    id = response.id,
+                                    nickname = response.nickname,
+                                    email = response.email
+                                )
+                            }
+                        }
+                        is Resource.Loading -> {
+                            _screenState.value = _screenState.value.copy(isDataLoading = true)
+                        }
+                        is Resource.Error -> {
+                            _screenState.value = _screenState.value.copy(isDataLoading = false)
+                            resource.message?.let { message ->
+                                _screenState.value = _screenState.value.copy(dataError = message)
+                            }
+                        }
+                        is Resource.Unauthorized -> {
+                            _screenState.value = _screenState.value.copy(isDataLoading = false)
+                            logoutUser()
+                        }
+                    }
+                }.launchIn(viewModelScope)
+            }
+            is UpdateUserDataValidationResult.NicknameTooShort -> {
+                _nickname.value = _nickname.value.copy(error = "Nickname minimum length is 4 characters")
+            }
+            is UpdateUserDataValidationResult.NotAValidEmail -> {
+                _email.value = _email.value.copy(error = "Not a valid email")
+            }
+            is UpdateUserDataValidationResult.PasswordBlank -> {
+                _dataPassword.value = _dataPassword.value.copy(error = "Password cannot be blank")
+            }
+        }
     }
 
     fun onUpdatePasswordClick(onSuccess: () -> Unit){
@@ -91,6 +159,7 @@ class EditUserViewModel
                                 _screenState.value = _screenState.value.copy(passwordError = error)
                             }
                         }
+                        else -> {  }
                     }
                 }.launchIn(viewModelScope)
             }
@@ -107,6 +176,10 @@ class EditUserViewModel
         runBlocking {
             logoutUser()
         }
+    }
+
+    fun onEmailChange(value: String){
+        _email.value = _email.value.copy(text = value)
     }
 
     fun onNewPasswordChange(value: String){

@@ -24,6 +24,7 @@ fun EditUserScreen(
 ) {
     val state = editUserViewModel.screenState.value
     val nickname = editUserViewModel.nickname.value
+    val email = editUserViewModel.email.value
     val dataPassword = editUserViewModel.dataPassword.value
     val oldPassword = editUserViewModel.oldPassword.value
     val newPassword = editUserViewModel.newPassword.value
@@ -69,6 +70,12 @@ fun EditUserScreen(
             error = nickname.error,
             label = nickname.label,
             onValueChange = editUserViewModel::onNicknameChange
+        )
+        StandardTextField(
+            text = email.text,
+            error = email.error,
+            label = email.label,
+            onValueChange = editUserViewModel::onEmailChange
         )
         PasswordTextField(
             text = dataPassword.text,
