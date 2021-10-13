@@ -3,6 +3,7 @@ package com.kobietka.social_fitness_app.di
 import com.google.gson.Gson
 import com.kobietka.social_fitness_app.domain.repository.local.UserCredentialsRepository
 import com.kobietka.social_fitness_app.domain.service.AuthService
+import com.kobietka.social_fitness_app.domain.service.GroupService
 import com.kobietka.social_fitness_app.domain.service.UpdateUserService
 import dagger.Module
 import dagger.Provides
@@ -67,6 +68,12 @@ class NetworkModule {
     @Singleton
     fun provideUpdateUserService(@Named("retrofitAuth") retrofit: Retrofit): UpdateUserService {
         return retrofit.create(UpdateUserService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupService(@Named("retrofitAuth") retrofit: Retrofit): GroupService {
+        return retrofit.create(GroupService::class.java)
     }
 
     @Provides

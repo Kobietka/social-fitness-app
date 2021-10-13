@@ -7,7 +7,7 @@ import com.kobietka.social_fitness_app.network.request.LoginUserRequest
 import com.kobietka.social_fitness_app.network.request.RegisterUserRequest
 import com.kobietka.social_fitness_app.network.response.ErrorResponse
 import com.kobietka.social_fitness_app.network.response.LoginUserResponse
-import com.kobietka.social_fitness_app.network.response.RegisterUserErrorResponse
+import com.kobietka.social_fitness_app.network.response.InvalidFieldErrorResponse
 import com.kobietka.social_fitness_app.util.Result
 import retrofit2.HttpException
 import java.io.IOException
@@ -26,7 +26,7 @@ class AuthRepositoryImpl
             val responseString = exception.response()?.errorBody()?.string()
             return when(exception.code()){
                 422 -> {
-                    val errorResponse = Gson().fromJson(responseString, RegisterUserErrorResponse::class.java)
+                    val errorResponse = Gson().fromJson(responseString, InvalidFieldErrorResponse::class.java)
                     val message = errorResponse.violations.foldRight(initial = ""){ violation, acc ->
                         acc + violation.message + "\n"
                     }

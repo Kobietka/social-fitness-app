@@ -1,6 +1,9 @@
 package com.kobietka.social_fitness_app.di
 
 import com.kobietka.social_fitness_app.domain.repository.local.UserCredentialsRepository
+import com.kobietka.social_fitness_app.domain.repository.remote.GroupRemoteRepository
+import com.kobietka.social_fitness_app.domain.usecase.group.CreateGroupUseCase
+import com.kobietka.social_fitness_app.domain.usecase.group.ValidateCreateGroup
 import com.kobietka.social_fitness_app.domain.usecase.main.GetUsersUseCase
 import dagger.Module
 import dagger.Provides
@@ -17,6 +20,18 @@ class MainModule {
         userCredentialsRepository: UserCredentialsRepository
     ): GetUsersUseCase {
         return GetUsersUseCase(userCredentialsRepository = userCredentialsRepository)
+    }
+
+    @Provides
+    fun provideValidateCreateGroup(): ValidateCreateGroup {
+        return ValidateCreateGroup()
+    }
+
+    @Provides
+    fun provideCreateGroupUseCase(
+        groupRemoteRepository: GroupRemoteRepository
+    ): CreateGroupUseCase {
+        return CreateGroupUseCase(groupRemoteRepository = groupRemoteRepository)
     }
 
 }
