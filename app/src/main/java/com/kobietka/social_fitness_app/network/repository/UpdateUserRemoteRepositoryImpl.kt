@@ -5,7 +5,7 @@ import com.kobietka.social_fitness_app.domain.repository.remote.UpdateUserRemote
 import com.kobietka.social_fitness_app.domain.service.UpdateUserService
 import com.kobietka.social_fitness_app.network.request.UpdateUserDataRequest
 import com.kobietka.social_fitness_app.network.request.UpdateUserPasswordRequest
-import com.kobietka.social_fitness_app.network.response.RegisterUserErrorResponse
+import com.kobietka.social_fitness_app.network.response.InvalidFieldErrorResponse
 import com.kobietka.social_fitness_app.network.response.UpdateUserDataResponse
 import com.kobietka.social_fitness_app.util.Result
 import retrofit2.HttpException
@@ -34,7 +34,7 @@ class UpdateUserRemoteRepositoryImpl(
                     Result.Unauthorized()
                 }
                 422 -> {
-                    val errorResponse = Gson().fromJson(responseString, RegisterUserErrorResponse::class.java)
+                    val errorResponse = Gson().fromJson(responseString, InvalidFieldErrorResponse::class.java)
                     val message = errorResponse.violations.foldRight(initial = ""){ violation, acc ->
                         acc + violation.message + "\n"
                     }
@@ -66,7 +66,7 @@ class UpdateUserRemoteRepositoryImpl(
                     Result.Unauthorized()
                 }
                 422 -> {
-                    val errorResponse = Gson().fromJson(responseString, RegisterUserErrorResponse::class.java)
+                    val errorResponse = Gson().fromJson(responseString, InvalidFieldErrorResponse::class.java)
                     val message = errorResponse.violations.foldRight(initial = ""){ violation, acc ->
                         acc + violation.message + "\n"
                     }
