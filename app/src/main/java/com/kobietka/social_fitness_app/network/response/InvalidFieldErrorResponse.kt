@@ -1,6 +1,6 @@
 package com.kobietka.social_fitness_app.network.response
 
 
-data class RegisterUserErrorResponse(
+data class InvalidFieldErrorResponse(
     val violations: List<Violation>
 )
