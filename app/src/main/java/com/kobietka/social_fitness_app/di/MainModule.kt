@@ -5,6 +5,7 @@ import com.kobietka.social_fitness_app.domain.repository.local.GroupRepository
 import com.kobietka.social_fitness_app.domain.repository.local.UserCredentialsRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.GroupRemoteRepository
 import com.kobietka.social_fitness_app.domain.usecase.group.CreateGroupUseCase
+import com.kobietka.social_fitness_app.domain.usecase.group.GetGroupsUseCase
 import com.kobietka.social_fitness_app.domain.usecase.group.InsertGroupDataUseCase
 import com.kobietka.social_fitness_app.domain.usecase.group.ValidateCreateGroup
 import com.kobietka.social_fitness_app.domain.usecase.main.GetUsersUseCase
@@ -35,6 +36,13 @@ class MainModule {
         groupRemoteRepository: GroupRemoteRepository
     ): CreateGroupUseCase {
         return CreateGroupUseCase(groupRemoteRepository = groupRemoteRepository)
+    }
+
+    @Provides
+    fun provideGetGroupsUseCase(
+        groupRepository: GroupRepository
+    ): GetGroupsUseCase {
+        return GetGroupsUseCase(groupRepository = groupRepository)
     }
 
     @Provides
