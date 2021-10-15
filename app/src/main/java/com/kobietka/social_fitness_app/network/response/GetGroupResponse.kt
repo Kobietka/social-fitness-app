@@ -8,6 +8,6 @@ data class GetGroupResponse(
     val name: String,
     val description: String,
     val owner: User,
-    val invitation: Invitation,
+    val invitation: Invitation?,
     val members: List<MemberDto>
 )
