@@ -1,6 +1,7 @@
 package com.kobietka.social_fitness_app.presentation.main_screen
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -17,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.kobietka.social_fitness_app.presentation.Screen
 import com.kobietka.social_fitness_app.presentation.components.StandardTextField
+import com.kobietka.social_fitness_app.presentation.main_screen.components.GroupItem
 
 
 @Composable
@@ -74,57 +76,64 @@ fun MainScreen(
             }
         }
     ) {
-        if(state.isCreatingGroup) Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            IconButton(
-                modifier = Modifier
-                    .align(Alignment.End),
-                onClick = mainViewModel::onCancelClick
-            ) {
-                Icon(
-                    modifier = Modifier.size(30.dp),
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "close creating group"
-                )
+        LazyColumn {
+            item {
+                if(state.isCreatingGroup) Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    IconButton(
+                        modifier = Modifier
+                            .align(Alignment.End),
+                        onClick = mainViewModel::onCancelClick
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(30.dp),
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "close creating group"
+                        )
+                    }
+                    Text(
+                        modifier = Modifier.padding(20.dp),
+                        text = "Create group",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                    if(state.error.isNotBlank()) Text(
+                        modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
+                        text = state.error,
+                        color = MaterialTheme.colors.error,
+                        fontWeight = FontWeight.Bold
+                    )
+                    StandardTextField(
+                        text = groupName.text,
+                        error = groupName.error,
+                        label = groupName.label,
+                        onValueChange = mainViewModel::onGroupNameChange
+                    )
+                    StandardTextField(
+                        text = groupDescription.text,
+                        error = groupDescription.error,
+                        label = groupDescription.label,
+                        onValueChange = mainViewModel::onGroupDescriptionChange
+                    )
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 13.dp)
+                            .height(50.dp),
+                        onClick = mainViewModel::onCreateGroupClick,
+                        enabled = !state.isLoading
+                    ) {
+                        if(!state.isLoading) Text("Create group")
+                        else CircularProgressIndicator()
+                    }
+                }
             }
-            Text(
-                modifier = Modifier.padding(20.dp),
-                text = "Create group",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Medium
-            )
-            if(state.error.isNotBlank()) Text(
-                modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
-                text = state.error,
-                color = MaterialTheme.colors.error,
-                fontWeight = FontWeight.Bold
-            )
-            StandardTextField(
-                text = groupName.text,
-                error = groupName.error,
-                label = groupName.label,
-                onValueChange = mainViewModel::onGroupNameChange
-            )
-            StandardTextField(
-                text = groupDescription.text,
-                error = groupDescription.error,
-                label = groupDescription.label,
-                onValueChange = mainViewModel::onGroupDescriptionChange
-            )
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 13.dp)
-                    .height(50.dp),
-                onClick = mainViewModel::onCreateGroupClick,
-                enabled = !state.isLoading
-            ) {
-                if(!state.isLoading) Text("Create group")
-                else CircularProgressIndicator()
+            items(state.groups.size){
+                GroupItem(group = state.groups[it])
             }
         }
     }

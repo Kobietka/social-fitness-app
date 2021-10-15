@@ -8,6 +8,7 @@ import com.kobietka.social_fitness_app.domain.model.CreateGroupValidationResult
 import com.kobietka.social_fitness_app.domain.state.StandardTextFieldState
 import com.kobietka.social_fitness_app.domain.usecase.auth.LogoutUserUseCase
 import com.kobietka.social_fitness_app.domain.usecase.group.CreateGroupUseCase
+import com.kobietka.social_fitness_app.domain.usecase.group.GetGroupsUseCase
 import com.kobietka.social_fitness_app.domain.usecase.group.InsertGroupDataUseCase
 import com.kobietka.social_fitness_app.domain.usecase.group.ValidateCreateGroup
 import com.kobietka.social_fitness_app.domain.usecase.main.GetUsersUseCase
@@ -26,7 +27,8 @@ class MainViewModel
     private val logoutUser: LogoutUserUseCase,
     private val validateCreateGroup: ValidateCreateGroup,
     private val createGroup: CreateGroupUseCase,
-    private val insertGroupData: InsertGroupDataUseCase
+    private val insertGroupData: InsertGroupDataUseCase,
+    getGroups: GetGroupsUseCase
 ) : ViewModel() {
 
     init {
@@ -34,6 +36,9 @@ class MainViewModel
             try {
                 _screenState.value = _screenState.value.copy(user = users.first())
             } catch (exception: Exception) { }
+        }.launchIn(viewModelScope)
+        getGroups().onEach { groups ->
+            _screenState.value = _screenState.value.copy(groups = groups)
         }.launchIn(viewModelScope)
     }
     
