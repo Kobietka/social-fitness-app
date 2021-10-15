@@ -8,6 +8,7 @@ import com.kobietka.social_fitness_app.domain.model.CreateGroupValidationResult
 import com.kobietka.social_fitness_app.domain.state.StandardTextFieldState
 import com.kobietka.social_fitness_app.domain.usecase.auth.LogoutUserUseCase
 import com.kobietka.social_fitness_app.domain.usecase.group.CreateGroupUseCase
+import com.kobietka.social_fitness_app.domain.usecase.group.InsertGroupDataUseCase
 import com.kobietka.social_fitness_app.domain.usecase.group.ValidateCreateGroup
 import com.kobietka.social_fitness_app.domain.usecase.main.GetUsersUseCase
 import com.kobietka.social_fitness_app.util.Resource
@@ -24,7 +25,8 @@ class MainViewModel
     getUsers: GetUsersUseCase,
     private val logoutUser: LogoutUserUseCase,
     private val validateCreateGroup: ValidateCreateGroup,
-    private val createGroup: CreateGroupUseCase
+    private val createGroup: CreateGroupUseCase,
+    private val insertGroupData: InsertGroupDataUseCase
 ) : ViewModel() {
 
     init {
@@ -72,7 +74,20 @@ class MainViewModel
                 ).onEach { resource ->
                     when(resource){
                         is Resource.Success -> {
-                            _screenState.value = _screenState.value.copy(isLoading = false)
+                            _screenState.value = _screenState.value.copy(
+                                isLoading = false,
+                                isCreatingGroup = false
+                            )
+                            resource.data?.let { response ->
+                                insertGroupData(
+                                    groupId = response.id,
+                                    groupName = response.name,
+                                    groupDescription = response.description,
+                                    groupOwner = response.owner,
+                                    invitation = response.invitation,
+                                    groupMembers = response.members
+                                )
+                            }
                         }
                         is Resource.Loading -> {
                             _screenState.value = _screenState.value.copy(isLoading = true)
