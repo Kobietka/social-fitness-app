@@ -35,4 +35,40 @@ class GroupRemoteRepositoryImpl(private val groupService: GroupService) : GroupR
             }
         }
     }
+
+    override suspend fun getGroups(): Result<List<GetGroupResponse>> {
+        return try {
+            val response = groupService.getGroups()
+            Result.Success(data = response)
+        } catch (exception: IOException){
+            Result.Failure(message = "Cannot connect. Check your internet connection.")
+        } catch (exception: HttpException){
+            return when(exception.code()){
+                401 -> Result.Unauthorized()
+                else -> {
+                    Result.Failure(message = "Something went wrong. Try again later.")
+                }
+            }
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
