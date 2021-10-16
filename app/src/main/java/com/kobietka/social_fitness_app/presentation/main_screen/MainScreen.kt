@@ -1,5 +1,10 @@
 package com.kobietka.social_fitness_app.presentation.main_screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
@@ -21,6 +26,7 @@ import com.kobietka.social_fitness_app.presentation.components.StandardTextField
 import com.kobietka.social_fitness_app.presentation.main_screen.components.GroupItem
 
 
+@ExperimentalAnimationApi
 @Composable
 fun MainScreen(
     mainViewModel: MainViewModel = hiltViewModel(),
@@ -77,6 +83,27 @@ fun MainScreen(
         }
     ) {
         LazyColumn {
+            item {
+                AnimatedVisibility(
+                    visible = state.isUpdatingGroups,
+                    exit = slideOutVertically(),
+                    enter = slideInVertically()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colors.primary),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
+                            text = state.updatingGroupsMessage,
+                            color = Color.White
+                        )
+                    }
+                }
+            }
             item {
                 if(state.isCreatingGroup) Column(
                     modifier = Modifier
