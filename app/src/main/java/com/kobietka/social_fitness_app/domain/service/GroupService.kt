@@ -13,6 +13,9 @@ interface GroupService {
     @GET("/api/group")
     suspend fun getGroups(): List<GetGroupResponse>
 
+    @GET("/api/group/{id}")
+    suspend fun getGroup(groupId: String): GetGroupResponse
+
     @DELETE("/api/group/{id}")
     suspend fun deleteGroup(@Path("id") groupId: String)
 
