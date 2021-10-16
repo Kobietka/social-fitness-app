@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.flow
 
 
 class DeleteRemoteGroupUseCase(private val groupRemoteRepository: GroupRemoteRepository) {
-    suspend operator fun invoke(groupId: String): Flow<Resource<Boolean>> = flow {
+    operator fun invoke(groupId: String): Flow<Resource<Boolean>> = flow {
         emit(Resource.Loading<Boolean>())
 
         when(val result = groupRemoteRepository.deleteGroup(groupId = groupId)){
