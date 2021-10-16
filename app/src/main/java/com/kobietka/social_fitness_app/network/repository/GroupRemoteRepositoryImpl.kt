@@ -51,6 +51,23 @@ class GroupRemoteRepositoryImpl(private val groupService: GroupService) : GroupR
             }
         }
     }
+
+    override suspend fun deleteGroup(groupId: String): Result<Boolean> {
+        return try {
+            groupService.deleteGroup(groupId = groupId)
+            Result.Success(data = true)
+        } catch (exception: IOException){
+            Result.Failure(message = "Cannot connect. Check your internet connection.")
+        } catch (exception: HttpException){
+            return when(exception.code()){
+                401 -> Result.Unauthorized()
+                404 -> Result.Failure(message = "Group not found")
+                else -> {
+                    Result.Failure(message = "Something went wrong. Try again later.")
+                }
+            }
+        }
+    }
 }
 
 
