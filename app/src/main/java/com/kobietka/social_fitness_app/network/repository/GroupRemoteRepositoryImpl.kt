@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.kobietka.social_fitness_app.domain.repository.remote.GroupRemoteRepository
 import com.kobietka.social_fitness_app.domain.service.GroupService
 import com.kobietka.social_fitness_app.network.request.CreateGroupRequest
+import com.kobietka.social_fitness_app.network.request.EditGroupRequest
 import com.kobietka.social_fitness_app.network.response.GetGroupResponse
 import com.kobietka.social_fitness_app.network.response.InvalidFieldErrorResponse
 import com.kobietka.social_fitness_app.util.Result
@@ -79,6 +80,38 @@ class GroupRemoteRepositoryImpl(private val groupService: GroupService) : GroupR
             return when(exception.code()){
                 401 -> Result.Unauthorized()
                 404 -> Result.Failure(message = "Group not found")
+                else -> {
+                    Result.Failure(message = "Something went wrong. Try again later.")
+                }
+            }
+        }
+    }
+
+    override suspend fun editGroup(
+        groupId: String,
+        editGroupRequest: EditGroupRequest
+    ): Result<GetGroupResponse> {
+        return try {
+            val response = groupService.editGroup(
+                groupId = groupId,
+                editGroupRequest = editGroupRequest
+            )
+            Result.Success(data = response)
+        } catch (exception: IOException){
+            Result.Failure(message = "Cannot connect. Check your internet connection.")
+        } catch (exception: HttpException){
+            return when(exception.code()){
+                401 -> Result.Unauthorized()
+                404 -> Result.Failure(message = "Group not found")
+                400 -> Result.Failure(message = "Invalid input")
+                422 -> {
+                    val responseString = exception.response()?.errorBody()?.string()
+                    val errorResponse = Gson().fromJson(responseString, InvalidFieldErrorResponse::class.java)
+                    val message = errorResponse.violations.foldRight(initial = ""){ violation, acc ->
+                        acc + violation.message + "\n"
+                    }
+                    Result.Failure(message = message)
+                }
                 else -> {
                     Result.Failure(message = "Something went wrong. Try again later.")
                 }
