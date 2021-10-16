@@ -8,5 +8,7 @@ data class MainScreenState(
     val groups: List<Group> = emptyList(),
     val isCreatingGroup: Boolean = false,
     val isLoading: Boolean = false,
-    val error: String = ""
+    val error: String = "",
+    val isUpdatingGroups: Boolean = false,
+    val updatingGroupsMessage: String = ""
 )
