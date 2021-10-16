@@ -2,9 +2,7 @@ package com.kobietka.social_fitness_app.domain.service
 
 import com.kobietka.social_fitness_app.network.request.CreateGroupRequest
 import com.kobietka.social_fitness_app.network.response.GetGroupResponse
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.*
 
 
 interface GroupService {
@@ -14,5 +12,8 @@ interface GroupService {
 
     @GET("/api/group")
     suspend fun getGroups(): List<GetGroupResponse>
+
+    @DELETE("/api/group/{id}")
+    suspend fun deleteGroup(@Path("id") groupId: String)
 
 }
