@@ -7,4 +7,5 @@ import com.kobietka.social_fitness_app.util.Result
 
 interface InvitationRemoteRepository {
     suspend fun createInvitation(createInvitationRequest: CreateInvitationRequest): Result<InvitationResponse>
+    suspend fun deleteInvitation(id: String): Result<Boolean>
 }

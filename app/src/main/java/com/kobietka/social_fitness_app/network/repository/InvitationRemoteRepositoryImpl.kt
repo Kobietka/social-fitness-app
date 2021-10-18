@@ -39,4 +39,41 @@ class InvitationRemoteRepositoryImpl(
             }
         }
     }
+
+    override suspend fun deleteInvitation(id: String): Result<Boolean> {
+        return try {
+            invitationService.deleteInvitation(id = id)
+            Result.Success(data = true)
+        } catch (exception: IOException){
+            Result.Failure(message = "Cannot connect. Check your internet connection.")
+        } catch (exception: HttpException){
+            return when(exception.code()){
+                401 -> Result.Unauthorized()
+                404 -> Result.Failure(message = "Not found")
+                else -> {
+                    Result.Failure(message = "Something went wrong. Try again later.")
+                }
+            }
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
