@@ -1,7 +1,6 @@
 package com.kobietka.social_fitness_app.domain.service
 
 import com.kobietka.social_fitness_app.network.request.CreateInvitationRequest
-import com.kobietka.social_fitness_app.network.request.EditInvitationRequest
 import com.kobietka.social_fitness_app.network.response.InvitationResponse
 import retrofit2.http.*
 
@@ -13,11 +12,5 @@ interface InvitationService {
 
     @DELETE("/api/invitation/{id}")
     suspend fun deleteInvitation(@Path("id") id: String)
-
-    @PATCH("/api/invitation/{id}")
-    suspend fun editInvitation(
-        @Path("id") id: String,
-        @Body editInvitationRequest: EditInvitationRequest
-    ): InvitationResponse
 
 }
