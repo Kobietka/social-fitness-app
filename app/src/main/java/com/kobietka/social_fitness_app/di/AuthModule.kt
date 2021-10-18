@@ -1,5 +1,6 @@
 package com.kobietka.social_fitness_app.di
 
+import com.kobietka.social_fitness_app.domain.repository.local.GroupRepository
 import com.kobietka.social_fitness_app.domain.repository.local.UserCredentialsRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.AuthRepository
 import com.kobietka.social_fitness_app.domain.usecase.auth.InsertUserCredentialsUseCase
@@ -35,10 +36,12 @@ class AuthModule {
 
     @Provides
     fun provideLogoutUserUseCase(
-        userCredentialsRepository: UserCredentialsRepository
+        userCredentialsRepository: UserCredentialsRepository,
+        groupRepository: GroupRepository
     ): LogoutUserUseCase {
         return LogoutUserUseCase(
-            userCredentialsRepository = userCredentialsRepository
+            userCredentialsRepository = userCredentialsRepository,
+            groupRepository = groupRepository
         )
     }
 
