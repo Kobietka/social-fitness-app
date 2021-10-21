@@ -13,15 +13,13 @@ class InsertUserCredentialsUseCase
         nickname: String,
         email: String
     ){
-        userCredentialsRepository.deleteAllCredentials().also {
-            userCredentialsRepository.insert(
-                UserCredentialsEntity(
-                    token = token,
-                    id = id,
-                    nickname = nickname,
-                    email = email
-                )
+        userCredentialsRepository.insert(
+            UserCredentialsEntity(
+                token = token,
+                id = id,
+                nickname = nickname,
+                email = email
             )
-        }
+        )
     }
 }
