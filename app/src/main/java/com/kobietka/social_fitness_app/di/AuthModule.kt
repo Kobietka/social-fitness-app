@@ -3,10 +3,7 @@ package com.kobietka.social_fitness_app.di
 import com.kobietka.social_fitness_app.domain.repository.local.GroupRepository
 import com.kobietka.social_fitness_app.domain.repository.local.UserCredentialsRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.AuthRepository
-import com.kobietka.social_fitness_app.domain.usecase.auth.InsertUserCredentialsUseCase
-import com.kobietka.social_fitness_app.domain.usecase.auth.LoginUserUseCase
-import com.kobietka.social_fitness_app.domain.usecase.auth.LogoutUserUseCase
-import com.kobietka.social_fitness_app.domain.usecase.auth.RegisterUserUseCase
+import com.kobietka.social_fitness_app.domain.usecase.auth.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,6 +29,11 @@ class AuthModule {
         userCredentialsRepository: UserCredentialsRepository
     ): InsertUserCredentialsUseCase {
         return InsertUserCredentialsUseCase(userCredentialsRepository = userCredentialsRepository)
+    }
+
+    @Provides
+    fun provideValidateUserRegisterData(): ValidateUserRegisterDataUseCase {
+        return ValidateUserRegisterDataUseCase()
     }
 
     @Provides
