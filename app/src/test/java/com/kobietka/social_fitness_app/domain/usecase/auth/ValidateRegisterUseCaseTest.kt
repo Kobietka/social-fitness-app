@@ -1,15 +1,15 @@
 package com.kobietka.social_fitness_app.domain.usecase.auth
 
 import com.google.common.truth.Truth
-import com.kobietka.social_fitness_app.domain.model.RegisterDataValidationResult
+import com.kobietka.social_fitness_app.domain.model.RegisterValidationResult
 import org.junit.Test
 
 
-class ValidateUserRegisterDataUseCaseTest {
+class ValidateRegisterUseCaseTest {
 
     @Test
     fun validationSuccess(){
-        val validateRegisterUserData = ValidateUserRegisterDataUseCase()
+        val validateRegisterUserData = ValidateRegisterUseCase()
         val validationResult = validateRegisterUserData(
             nickname = "nickname",
             email = "example@example.com",
@@ -18,12 +18,12 @@ class ValidateUserRegisterDataUseCaseTest {
         )
 
         Truth.assertThat(validationResult)
-            .isInstanceOf(RegisterDataValidationResult.Success::class.java)
+            .isInstanceOf(RegisterValidationResult.Success::class.java)
     }
 
     @Test
     fun validationEmailNotValid(){
-        val validateRegisterUserData = ValidateUserRegisterDataUseCase()
+        val validateRegisterUserData = ValidateRegisterUseCase()
         val validationResult = validateRegisterUserData(
             nickname = "nickname",
             email = "example",
@@ -32,12 +32,12 @@ class ValidateUserRegisterDataUseCaseTest {
         )
 
         Truth.assertThat(validationResult)
-            .isInstanceOf(RegisterDataValidationResult.EmailNotValid::class.java)
+            .isInstanceOf(RegisterValidationResult.EmailNotValid::class.java)
     }
 
     @Test
     fun validationPasswordTooShort(){
-        val validateRegisterUserData = ValidateUserRegisterDataUseCase()
+        val validateRegisterUserData = ValidateRegisterUseCase()
         val validationResult = validateRegisterUserData(
             nickname = "nickname",
             email = "example@example.com",
@@ -46,12 +46,12 @@ class ValidateUserRegisterDataUseCaseTest {
         )
 
         Truth.assertThat(validationResult)
-            .isInstanceOf(RegisterDataValidationResult.PasswordTooShort::class.java)
+            .isInstanceOf(RegisterValidationResult.PasswordTooShort::class.java)
     }
 
     @Test
     fun validationNicknameTooShort(){
-        val validateRegisterUserData = ValidateUserRegisterDataUseCase()
+        val validateRegisterUserData = ValidateRegisterUseCase()
         val validationResult = validateRegisterUserData(
             nickname = "ni",
             email = "example@example.com",
@@ -60,12 +60,12 @@ class ValidateUserRegisterDataUseCaseTest {
         )
 
         Truth.assertThat(validationResult)
-            .isInstanceOf(RegisterDataValidationResult.NicknameTooShort::class.java)
+            .isInstanceOf(RegisterValidationResult.NicknameTooShort::class.java)
     }
 
     @Test
     fun validationPasswordsDoNotMatch(){
-        val validateRegisterUserData = ValidateUserRegisterDataUseCase()
+        val validateRegisterUserData = ValidateRegisterUseCase()
         val validationResult = validateRegisterUserData(
             nickname = "nickname",
             email = "example@example.com",
@@ -74,7 +74,7 @@ class ValidateUserRegisterDataUseCaseTest {
         )
 
         Truth.assertThat(validationResult)
-            .isInstanceOf(RegisterDataValidationResult.PasswordsAreNotTheSame::class.java)
+            .isInstanceOf(RegisterValidationResult.PasswordsAreNotTheSame::class.java)
     }
 
 }

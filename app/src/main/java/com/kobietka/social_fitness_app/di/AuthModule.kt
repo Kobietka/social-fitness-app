@@ -32,8 +32,8 @@ class AuthModule {
     }
 
     @Provides
-    fun provideValidateUserRegisterData(): ValidateUserRegisterDataUseCase {
-        return ValidateUserRegisterDataUseCase()
+    fun provideValidateUserRegisterData(): ValidateRegisterUseCase {
+        return ValidateRegisterUseCase()
     }
 
     @Provides

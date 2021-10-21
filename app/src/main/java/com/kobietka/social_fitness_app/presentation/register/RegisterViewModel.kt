@@ -4,11 +4,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kobietka.social_fitness_app.domain.model.RegisterDataValidationResult
+import com.kobietka.social_fitness_app.domain.model.RegisterValidationResult
 import com.kobietka.social_fitness_app.domain.state.PasswordTextFieldState
 import com.kobietka.social_fitness_app.domain.state.StandardTextFieldState
 import com.kobietka.social_fitness_app.domain.usecase.auth.RegisterUserUseCase
-import com.kobietka.social_fitness_app.domain.usecase.auth.ValidateUserRegisterDataUseCase
+import com.kobietka.social_fitness_app.domain.usecase.auth.ValidateRegisterUseCase
 import com.kobietka.social_fitness_app.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class RegisterViewModel
 @Inject constructor(
     private val registerUserUseCase: RegisterUserUseCase,
-    private val validateUserRegisterData: ValidateUserRegisterDataUseCase
+    private val validateRegister: ValidateRegisterUseCase
 ) : ViewModel() {
 
     private val _screenState = mutableStateOf(RegisterScreenState())
@@ -50,7 +50,7 @@ class RegisterViewModel
         val password = _password.value.text.trim()
         val repeatPassword = _repeatPassword.value.text.trim()
 
-        val validationResult = validateUserRegisterData(
+        val validationResult = validateRegister(
             nickname = nickname,
             email = email,
             password = password,
@@ -58,7 +58,7 @@ class RegisterViewModel
         )
 
         when(validationResult){
-            is RegisterDataValidationResult.Success -> {
+            is RegisterValidationResult.Success -> {
                 registerUserUseCase(
                     nickname = nickname,
                     email = email,
@@ -81,16 +81,16 @@ class RegisterViewModel
                     }
                 }.launchIn(viewModelScope)
             }
-            is RegisterDataValidationResult.EmailNotValid -> {
+            is RegisterValidationResult.EmailNotValid -> {
                 _email.value = _email.value.copy(error = "This email address is not valid")
             }
-            is RegisterDataValidationResult.NicknameTooShort -> {
+            is RegisterValidationResult.NicknameTooShort -> {
                 _nickname.value = _nickname.value.copy(error = "Minimum nickname length is 4 characters")
             }
-            is RegisterDataValidationResult.PasswordTooShort -> {
+            is RegisterValidationResult.PasswordTooShort -> {
                 _password.value = _password.value.copy(error = "Minimum password length is 8 characters")
             }
-            is RegisterDataValidationResult.PasswordsAreNotTheSame -> {
+            is RegisterValidationResult.PasswordsAreNotTheSame -> {
                 _password.value = _password.value.copy(error = "Passwords are not the same")
                 _repeatPassword.value = _repeatPassword.value.copy(error = "Passwords are not the same")
             }
