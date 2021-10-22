@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.AlignmentLine
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -18,6 +19,7 @@ import androidx.navigation.NavController
 import com.kobietka.social_fitness_app.presentation.Screen
 import com.kobietka.social_fitness_app.presentation.components.PasswordTextField
 import com.kobietka.social_fitness_app.presentation.components.StandardTextField
+import com.kobietka.social_fitness_app.util.TestTag
 
 @Composable
 fun RegisterScreen(
@@ -119,7 +121,8 @@ fun RegisterScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 13.dp)
-                .height(50.dp),
+                .height(50.dp)
+                .testTag(TestTag.REGISTER_BUTTON),
             onClick = registerViewModel::onRegisterClick,
             enabled = !state.isLoading
         ) {

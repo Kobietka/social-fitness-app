@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 
 
@@ -21,7 +22,9 @@ fun StandardTextField(
 ) {
     Column(modifier = Modifier.fillMaxWidth().padding(top = 3.dp, bottom = 3.dp)) {
         OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("$label Field"),
             value = text,
             label = { Text(text = label) },
             onValueChange = onValueChange,
@@ -30,7 +33,9 @@ fun StandardTextField(
         )
         if(error.isNotBlank()){
             Text(
-                modifier = Modifier.align(Alignment.End),
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .testTag("$label Error"),
                 text = error,
                 color = MaterialTheme.colors.error
             )
