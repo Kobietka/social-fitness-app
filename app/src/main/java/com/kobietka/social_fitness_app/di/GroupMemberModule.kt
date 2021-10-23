@@ -2,6 +2,7 @@ package com.kobietka.social_fitness_app.di
 
 import com.kobietka.social_fitness_app.domain.repository.remote.GroupMemberRemoteRepository
 import com.kobietka.social_fitness_app.domain.usecase.groupmember.JoinGroupUseCase
+import com.kobietka.social_fitness_app.domain.usecase.groupmember.LeaveGroupUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,4 +22,32 @@ class GroupMemberModule {
         )
     }
 
+    @Provides
+    fun provideLeaveGroupUseCase(
+        groupMemberRemoteRepository: GroupMemberRemoteRepository
+    ): LeaveGroupUseCase {
+        return LeaveGroupUseCase(
+            groupMemberRemoteRepository = groupMemberRemoteRepository
+        )
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
