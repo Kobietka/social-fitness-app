@@ -71,6 +71,14 @@ class RepositoryModule {
 
     @Provides
     @Singleton
+    fun providePostRemoteRepository(
+        postService: PostService
+    ): PostRemoteRepository {
+        return PostRemoteRepositoryImpl(postService = postService)
+    }
+
+    @Provides
+    @Singleton
     fun provideGroupMemberRemoteRepository(
         groupMemberService: GroupMemberService
     ): GroupMemberRemoteRepository {
