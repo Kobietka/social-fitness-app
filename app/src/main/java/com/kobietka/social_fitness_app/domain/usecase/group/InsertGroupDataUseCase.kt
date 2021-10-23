@@ -30,19 +30,12 @@ class InsertGroupDataUseCase(
                 invitationCode = invitation?.code
             )
         )
-        groupMemberRepository.insert(
-            GroupMemberEntity(
-                userId = groupOwner.id,
-                groupId = groupId,
-                nickname = groupOwner.nickname,
-                joinDate = ""
-            )
-        )
         groupMembers?.let { members ->
             members.forEach { member ->
                 groupMemberRepository.insert(
                     GroupMemberEntity(
-                        userId = member.id,
+                        id = member.id,
+                        userId = member.user.id,
                         groupId = groupId,
                         nickname = member.user.nickname,
                         joinDate = member.assignedAt

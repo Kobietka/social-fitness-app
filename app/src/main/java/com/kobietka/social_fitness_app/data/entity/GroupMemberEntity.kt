@@ -4,11 +4,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
+import androidx.room.PrimaryKey
 
 
 @Entity(
     tableName = "groupMember",
-    primaryKeys = ["userId", "groupId"],
     foreignKeys = [
         ForeignKey(
             entity = GroupEntity::class,
@@ -20,6 +20,7 @@ import androidx.room.ForeignKey.CASCADE
     ]
 )
 data class GroupMemberEntity(
+    @PrimaryKey val id: String,
     @ColumnInfo val userId: String,
     @ColumnInfo val groupId: String,
     @ColumnInfo val nickname: String,
