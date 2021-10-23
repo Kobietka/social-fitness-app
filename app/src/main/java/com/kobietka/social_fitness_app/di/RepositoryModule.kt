@@ -9,18 +9,9 @@ import com.kobietka.social_fitness_app.data.repository.UserCredentialsRepository
 import com.kobietka.social_fitness_app.domain.repository.local.GroupMemberRepository
 import com.kobietka.social_fitness_app.domain.repository.local.GroupRepository
 import com.kobietka.social_fitness_app.domain.repository.local.UserCredentialsRepository
-import com.kobietka.social_fitness_app.domain.repository.remote.AuthRepository
-import com.kobietka.social_fitness_app.domain.repository.remote.GroupRemoteRepository
-import com.kobietka.social_fitness_app.domain.repository.remote.InvitationRemoteRepository
-import com.kobietka.social_fitness_app.domain.repository.remote.UpdateUserRemoteRepository
-import com.kobietka.social_fitness_app.domain.service.AuthService
-import com.kobietka.social_fitness_app.domain.service.GroupService
-import com.kobietka.social_fitness_app.domain.service.InvitationService
-import com.kobietka.social_fitness_app.domain.service.UpdateUserService
-import com.kobietka.social_fitness_app.network.repository.AuthRepositoryImpl
-import com.kobietka.social_fitness_app.network.repository.GroupRemoteRepositoryImpl
-import com.kobietka.social_fitness_app.network.repository.InvitationRemoteRepositoryImpl
-import com.kobietka.social_fitness_app.network.repository.UpdateUserRemoteRepositoryImpl
+import com.kobietka.social_fitness_app.domain.repository.remote.*
+import com.kobietka.social_fitness_app.domain.service.*
+import com.kobietka.social_fitness_app.network.repository.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -76,6 +67,14 @@ class RepositoryModule {
         groupService: GroupService
     ): GroupRemoteRepository {
         return GroupRemoteRepositoryImpl(groupService = groupService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupMemberRemoteRepository(
+        groupMemberService: GroupMemberService
+    ): GroupMemberRemoteRepository {
+        return GroupMemberRemoteRepositoryImpl(groupMemberService = groupMemberService)
     }
 
     @Provides
