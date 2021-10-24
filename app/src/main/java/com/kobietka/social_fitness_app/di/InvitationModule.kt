@@ -1,5 +1,6 @@
 package com.kobietka.social_fitness_app.di
 
+import com.kobietka.social_fitness_app.domain.repository.local.InvitationRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.InvitationRemoteRepository
 import com.kobietka.social_fitness_app.domain.usecase.invitation.CreateInvitationUseCase
 import com.kobietka.social_fitness_app.domain.usecase.invitation.DeleteInvitationUseCase
@@ -15,16 +16,24 @@ class InvitationModule {
 
     @Provides
     fun provideCreateInvitationUseCase(
-        invitationRemoteRepository: InvitationRemoteRepository
+        invitationRemoteRepository: InvitationRemoteRepository,
+        invitationRepository: InvitationRepository
     ): CreateInvitationUseCase {
-        return CreateInvitationUseCase(invitationRepository = invitationRemoteRepository)
+        return CreateInvitationUseCase(
+            invitationRemoteRepository = invitationRemoteRepository,
+            invitationRepository = invitationRepository
+        )
     }
 
     @Provides
     fun provideDeleteInvitationUseCase(
-        invitationRemoteRepository: InvitationRemoteRepository
+        invitationRemoteRepository: InvitationRemoteRepository,
+        invitationRepository: InvitationRepository
     ): DeleteInvitationUseCase {
-        return DeleteInvitationUseCase(invitationRepository = invitationRemoteRepository)
+        return DeleteInvitationUseCase(
+            invitationRepository = invitationRepository,
+            invitationRemoteRepository = invitationRemoteRepository
+        )
     }
 
 }

@@ -1,37 +1,43 @@
 package com.kobietka.social_fitness_app.domain.usecase.invitation
 
+import com.kobietka.social_fitness_app.data.entity.InvitationEntity
+import com.kobietka.social_fitness_app.domain.repository.local.InvitationRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.InvitationRemoteRepository
 import com.kobietka.social_fitness_app.network.request.CreateInvitationRequest
-import com.kobietka.social_fitness_app.network.response.InvitationResponse
-import com.kobietka.social_fitness_app.util.Resource
-import com.kobietka.social_fitness_app.util.Result
+import com.kobietka.social_fitness_app.util.NetworkResult
+import com.kobietka.social_fitness_app.util.Progress
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class CreateInvitationUseCase(private val invitationRepository: InvitationRemoteRepository){
+
+class CreateInvitationUseCase(
+    private val invitationRemoteRepository: InvitationRemoteRepository,
+    private val invitationRepository: InvitationRepository
+){
     operator fun invoke(
         groupId: String
-    ): Flow<Resource<InvitationResponse>> = flow {
-        emit(Resource.Loading<InvitationResponse>())
-        val result = invitationRepository.createInvitation(
+    ): Flow<Progress> = flow {
+        emit(Progress.Loading)
+        val result = invitationRemoteRepository.createInvitation(
             createInvitationRequest = CreateInvitationRequest(
                 groupId = groupId
             )
         )
         when(result){
-            is Result.Success -> {
-                result.data?.let { response ->
-                    emit(Resource.Success<InvitationResponse>(data = response))
+            is NetworkResult.Success -> {
+                result.data.let { invitationResponse ->
+                    invitationRepository.insert(
+                        InvitationEntity(
+                            id = invitationResponse.id,
+                            groupId = groupId,
+                            code = invitationResponse.code
+                        )
+                    )
+                    emit(Progress.Finished)
                 }
             }
-            is Result.Failure -> {
-                result.message?.let { message ->
-                    emit(Resource.Error<InvitationResponse>(message = message))
-                }
-            }
-            is Result.Unauthorized -> {
-                emit(Resource.Unauthorized<InvitationResponse>())
-            }
+            is NetworkResult.Failure -> emit(Progress.Error(message = result.message))
+            is NetworkResult.Unauthorized -> emit(Progress.Unauthorized)
         }
     }
 }

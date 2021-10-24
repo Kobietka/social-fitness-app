@@ -6,7 +6,7 @@ import com.kobietka.social_fitness_app.domain.service.InvitationService
 import com.kobietka.social_fitness_app.network.request.CreateInvitationRequest
 import com.kobietka.social_fitness_app.network.response.InvalidFieldErrorResponse
 import com.kobietka.social_fitness_app.network.response.InvitationResponse
-import com.kobietka.social_fitness_app.util.Result
+import com.kobietka.social_fitness_app.util.NetworkResult
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -16,43 +16,39 @@ class InvitationRemoteRepositoryImpl(
 ) : InvitationRemoteRepository {
     override suspend fun createInvitation(
         createInvitationRequest: CreateInvitationRequest
-    ): Result<InvitationResponse> {
+    ): NetworkResult<InvitationResponse> {
         return try {
             val response = invitationService.createInvitation(createInvitationRequest = createInvitationRequest)
-            Result.Success(data = response)
+            NetworkResult.Success(data = response)
         } catch (exception: IOException){
-            Result.Failure(message = "Cannot connect. Check your internet connection.")
+            NetworkResult.Failure(message = "Cannot connect. Check your internet connection.")
         } catch (exception: HttpException){
             return when(exception.code()){
-                401 -> Result.Unauthorized()
+                401 -> NetworkResult.Unauthorized()
                 422 -> {
                     val responseString = exception.response()?.errorBody()?.string()
                     val errorResponse = Gson().fromJson(responseString, InvalidFieldErrorResponse::class.java)
                     val message = errorResponse.violations.foldRight(initial = ""){ violation, acc ->
                         acc + violation.message + "\n"
                     }
-                    Result.Failure(message = message)
+                    NetworkResult.Failure(message = message)
                 }
-                else -> {
-                    Result.Failure(message = "Something went wrong. Try again later.")
-                }
+                else -> NetworkResult.Failure(message = "Something went wrong. Try again later.")
             }
         }
     }
 
-    override suspend fun deleteInvitation(id: String): Result<Boolean> {
+    override suspend fun deleteInvitation(id: String): NetworkResult<Boolean> {
         return try {
             invitationService.deleteInvitation(id = id)
-            Result.Success(data = true)
+            NetworkResult.Success(data = true)
         } catch (exception: IOException){
-            Result.Failure(message = "Cannot connect. Check your internet connection.")
+            NetworkResult.Failure(message = "Cannot connect. Check your internet connection.")
         } catch (exception: HttpException){
             return when(exception.code()){
-                401 -> Result.Unauthorized()
-                404 -> Result.Failure(message = "Not found")
-                else -> {
-                    Result.Failure(message = "Something went wrong. Try again later.")
-                }
+                401 -> NetworkResult.Unauthorized()
+                404 -> NetworkResult.Failure(message = "Not found")
+                else -> NetworkResult.Failure(message = "Something went wrong. Try again later.")
             }
         }
     }
