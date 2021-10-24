@@ -3,10 +3,7 @@ package com.kobietka.social_fitness_app.di
 import android.content.Context
 import androidx.room.Room
 import com.kobietka.social_fitness_app.data.AppDatabase
-import com.kobietka.social_fitness_app.data.dao.GroupDao
-import com.kobietka.social_fitness_app.data.dao.GroupMemberDao
-import com.kobietka.social_fitness_app.data.dao.PostDao
-import com.kobietka.social_fitness_app.data.dao.UserCredentialsDao
+import com.kobietka.social_fitness_app.data.dao.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,6 +42,12 @@ class DatabaseModule {
     @Singleton
     fun providePostDao(appDatabase: AppDatabase): PostDao {
         return appDatabase.postDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideInvitationDao(appDatabase: AppDatabase): InvitationDao {
+        return appDatabase.invitationDao()
     }
 
     @Provides
