@@ -43,13 +43,6 @@ class EditUserModule {
         )
     }
 
-    @Provides
-    fun provideInsertUpdatedUserDataUseCase(
-        userCredentialsRepository: UserCredentialsRepository
-    ): InsertUpdatedUserDataUseCase {
-        return InsertUpdatedUserDataUseCase(userCredentialsRepository = userCredentialsRepository)
-    }
-
 }
 
 

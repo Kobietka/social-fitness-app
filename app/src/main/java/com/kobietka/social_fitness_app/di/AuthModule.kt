@@ -31,13 +31,6 @@ class AuthModule {
     }
 
     @Provides
-    fun provideInsertUserCredentialsUseCase(
-        userCredentialsRepository: UserCredentialsRepository
-    ): InsertUserCredentialsUseCase {
-        return InsertUserCredentialsUseCase(userCredentialsRepository = userCredentialsRepository)
-    }
-
-    @Provides
     fun provideValidateUserRegisterData(): ValidateRegisterUseCase {
         return ValidateRegisterUseCase()
     }
