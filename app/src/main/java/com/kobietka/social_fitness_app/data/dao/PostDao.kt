@@ -20,6 +20,12 @@ interface PostDao {
     @Query("delete from post")
     suspend fun deleteAllPosts()
 
+    @Query("delete from post where id = :postId")
+    suspend fun deletePostById(postId: String)
+
+    @Query("select * from post where id = :postId")
+    fun getPostById(postId: String): Flow<PostEntity>
+
     @Query("delete from post where groupId = :groupId")
     suspend fun deletePostsFromGroup(groupId: String)
 

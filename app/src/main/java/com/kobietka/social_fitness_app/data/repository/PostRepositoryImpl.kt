@@ -26,4 +26,12 @@ class PostRepositoryImpl(private val postDao: PostDao) : PostRepository {
     override suspend fun updatePostContent(postId: String, content: String) {
         postDao.updatePostContent(postId = postId, content = content)
     }
+
+    override suspend fun deletePostById(postId: String) {
+        postDao.deletePostById(postId = postId)
+    }
+
+    override fun getPostById(postId: String): Flow<PostEntity> {
+        return postDao.getPostById(postId = postId)
+    }
 }
