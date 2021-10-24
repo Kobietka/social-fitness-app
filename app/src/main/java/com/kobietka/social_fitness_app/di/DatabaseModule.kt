@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.kobietka.social_fitness_app.data.AppDatabase
 import com.kobietka.social_fitness_app.data.dao.GroupDao
 import com.kobietka.social_fitness_app.data.dao.GroupMemberDao
+import com.kobietka.social_fitness_app.data.dao.PostDao
 import com.kobietka.social_fitness_app.data.dao.UserCredentialsDao
 import dagger.Module
 import dagger.Provides
@@ -38,6 +39,12 @@ class DatabaseModule {
     @Singleton
     fun provideGroupDao(appDatabase: AppDatabase): GroupDao {
         return appDatabase.groupDao()
+    }
+
+    @Provides
+    @Singleton
+    fun providePostDao(appDatabase: AppDatabase): PostDao {
+        return appDatabase.postDao()
     }
 
     @Provides
