@@ -9,4 +9,5 @@ interface PostRepository {
     fun getPostsForGroup(groupId: String): Flow<List<PostEntity>>
     suspend fun deleteAllPosts()
     suspend fun deletePostsFromGroup(groupId: String)
+    suspend fun updatePostContent(postId: String, content: String)
 }

@@ -22,6 +22,9 @@ interface PostDao {
     @Query("delete from post where groupId = :groupId")
     suspend fun deletePostsFromGroup(groupId: String)
 
+    @Query("update post set content = :content where id = :postId")
+    suspend fun updatePostContent(postId: String, content: String)
+
 }
 
 

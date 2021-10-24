@@ -22,4 +22,8 @@ class PostRepositoryImpl(private val postDao: PostDao) : PostRepository {
     override suspend fun deletePostsFromGroup(groupId: String) {
         postDao.deletePostsFromGroup(groupId = groupId)
     }
+
+    override suspend fun updatePostContent(postId: String, content: String) {
+        postDao.updatePostContent(postId = postId, content = content)
+    }
 }
