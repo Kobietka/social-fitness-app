@@ -4,6 +4,7 @@ import com.kobietka.social_fitness_app.domain.repository.local.PostRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.PostRemoteRepository
 import com.kobietka.social_fitness_app.domain.usecase.post.CreatePostUseCase
 import com.kobietka.social_fitness_app.domain.usecase.post.EditPostUseCase
+import com.kobietka.social_fitness_app.domain.usecase.post.GetRemotePostUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,6 +27,17 @@ class PostModule {
     }
 
     @Provides
+    fun provideGetRemotePostUseCase(
+        postRemoteRepository: PostRemoteRepository,
+        postRepository: PostRepository
+    ): GetRemotePostUseCase {
+        return GetRemotePostUseCase(
+            postRepository = postRepository,
+            postRemoteRepository = postRemoteRepository
+        )
+    }
+
+    @Provides
     fun provideEditPostUseCase(
         postRemoteRepository: PostRemoteRepository,
         postRepository: PostRepository
@@ -37,3 +49,22 @@ class PostModule {
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
