@@ -1,30 +1,57 @@
 package com.kobietka.social_fitness_app.domain.usecase.group
 
+import com.kobietka.social_fitness_app.data.entity.GroupEntity
+import com.kobietka.social_fitness_app.data.entity.PostEntity
+import com.kobietka.social_fitness_app.domain.repository.local.GroupRepository
+import com.kobietka.social_fitness_app.domain.repository.local.PostRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.GroupRemoteRepository
-import com.kobietka.social_fitness_app.network.response.GetGroupResponse
-import com.kobietka.social_fitness_app.util.Resource
-import com.kobietka.social_fitness_app.util.Result
+import com.kobietka.social_fitness_app.util.NetworkResult
+import com.kobietka.social_fitness_app.util.Progress
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 
-class GetRemoteGroupUseCase(private val groupRemoteRepository: GroupRemoteRepository) {
-    operator fun invoke(groupId: String): Flow<Resource<GetGroupResponse>> = flow {
-        emit(Resource.Loading<GetGroupResponse>())
+class GetRemoteGroupUseCase(
+    private val groupRemoteRepository: GroupRemoteRepository,
+    private val groupRepository: GroupRepository,
+    private val postRepository: PostRepository
+) {
+    operator fun invoke(groupId: String): Flow<Progress> = flow {
+        emit(Progress.Loading)
 
         when(val result = groupRemoteRepository.getGroup(groupId = groupId)){
-            is Result.Success -> {
-                result.data?.let { response ->
-                    emit(Resource.Success<GetGroupResponse>(data = response))
+            is NetworkResult.Success -> {
+                result.data.let { groupResponse ->
+                    groupRepository.insert(
+                        GroupEntity(
+                            id = groupResponse.id,
+                            name = groupResponse.name,
+                            description = groupResponse.description,
+                            ownerId = groupResponse.owner.id,
+                            invitationCode = groupResponse.invitation?.code
+                        )
+                    )
+                    groupResponse.posts?.let { posts ->
+                        posts.forEach { postDto ->
+                            postRepository.insert(
+                                PostEntity(
+                                    id = postDto.id,
+                                    content = postDto.content,
+                                    createdAt = postDto.createdAt,
+                                    userId = postDto.user.id,
+                                    groupId = groupId
+                                )
+                            )
+                        }
+                    }
+                    emit(Progress.Finished)
                 }
             }
-            is Result.Failure -> {
-                result.message?.let { message ->
-                    emit(Resource.Error<GetGroupResponse>(message = message))
-                }
+            is NetworkResult.Failure -> {
+                emit(Progress.Error(message = result.message))
             }
-            is Result.Unauthorized -> {
-                emit(Resource.Unauthorized<GetGroupResponse>())
+            is NetworkResult.Unauthorized -> {
+                emit(Progress.Unauthorized)
             }
         }
     }

@@ -29,24 +29,10 @@ class MainModule {
     }
 
     @Provides
-    fun provideCreateGroupUseCase(
-        groupRemoteRepository: GroupRemoteRepository
-    ): CreateGroupUseCase {
-        return CreateGroupUseCase(groupRemoteRepository = groupRemoteRepository)
-    }
-
-    @Provides
     fun provideGetGroupsUseCase(
         groupRepository: GroupRepository
     ): GetGroupsUseCase {
         return GetGroupsUseCase(groupRepository = groupRepository)
-    }
-
-    @Provides
-    fun provideGetRemoteGroupsUseCase(
-        groupRemoteRepository: GroupRemoteRepository
-    ): GetRemoteGroupsUseCase {
-        return GetRemoteGroupsUseCase(groupRemoteRepository = groupRemoteRepository)
     }
 
     @Provides

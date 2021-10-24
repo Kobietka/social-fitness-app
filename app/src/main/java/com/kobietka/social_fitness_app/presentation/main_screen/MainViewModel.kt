@@ -9,7 +9,7 @@ import com.kobietka.social_fitness_app.domain.state.StandardTextFieldState
 import com.kobietka.social_fitness_app.domain.usecase.auth.LogoutUserUseCase
 import com.kobietka.social_fitness_app.domain.usecase.group.*
 import com.kobietka.social_fitness_app.domain.usecase.main.GetUsersUseCase
-import com.kobietka.social_fitness_app.util.Resource
+import com.kobietka.social_fitness_app.util.Progress
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
@@ -25,7 +25,6 @@ class MainViewModel
     private val logoutUser: LogoutUserUseCase,
     private val validateCreateGroup: ValidateCreateGroup,
     private val createGroup: CreateGroupUseCase,
-    private val insertGroupData: InsertGroupDataUseCase,
     getGroups: GetGroupsUseCase,
     getRemoteGroups: GetRemoteGroupsUseCase
 ) : ViewModel() {
@@ -50,44 +49,28 @@ class MainViewModel
             _screenState.value = _screenState.value.copy(groups = groups)
         }.launchIn(viewModelScope)
 
-        getRemoteGroups().onEach { resource ->
+        getRemoteGroups().onEach { progress ->
             delay(2000)
-            when(resource){
-                is Resource.Success -> {
-                    resource.data?.let { groupResponses ->
-                        delay(1000)
-                        _screenState.value = _screenState.value.copy(updatingGroupsMessage = "Saving groups")
-                        groupResponses.forEach { groupResponse ->
-                            insertGroupData(
-                                groupId = groupResponse.id,
-                                groupName = groupResponse.name,
-                                groupDescription = groupResponse.description,
-                                groupOwner = groupResponse.owner,
-                                invitation = groupResponse.invitation,
-                                groupMembers = groupResponse.members
-                            )
-                        }
-                        delay(1000)
-                        _screenState.value = _screenState.value.copy(updatingGroupsMessage = "Update successful")
-                        delay(2000)
-                        _screenState.value = _screenState.value.copy(isUpdatingGroups = false)
-                    }
+            when(progress){
+                is Progress.Finished -> {
+                    delay(1000)
+                    _screenState.value = _screenState.value.copy(updatingGroupsMessage = "Saving groups")
+                    delay(2000)
+                    _screenState.value = _screenState.value.copy(isUpdatingGroups = false)
                 }
-                is Resource.Loading -> {
+                is Progress.Loading -> {
                     _screenState.value = _screenState.value.copy(
                         isUpdatingGroups = true,
                         updatingGroupsMessage = "Updating groups"
                     )
                 }
-                is Resource.Error -> {
+                is Progress.Error -> {
                     delay(1000)
-                    resource.message?.let { message ->
-                        _screenState.value = _screenState.value.copy(updatingGroupsMessage = message)
-                    }
+                    _screenState.value = _screenState.value.copy(updatingGroupsMessage = progress.message)
                     delay(2000)
                     _screenState.value = _screenState.value.copy(isUpdatingGroups = false)
                 }
-                is Resource.Unauthorized -> {
+                is Progress.Unauthorized -> {
                     delay(1000)
                     _screenState.value = _screenState.value.copy(isUpdatingGroups = false)
                     logoutUser()
@@ -121,34 +104,24 @@ class MainViewModel
                 createGroup(
                     name = name,
                     description = description
-                ).onEach { resource ->
-                    when(resource){
-                        is Resource.Success -> {
+                ).onEach { progress ->
+                    when(progress){
+                        is Progress.Finished -> {
                             _screenState.value = _screenState.value.copy(
                                 isLoading = false,
                                 isCreatingGroup = false
                             )
-                            resource.data?.let { response ->
-                                insertGroupData(
-                                    groupId = response.id,
-                                    groupName = response.name,
-                                    groupDescription = response.description,
-                                    groupOwner = response.owner,
-                                    invitation = response.invitation,
-                                    groupMembers = response.members
-                                )
-                            }
                         }
-                        is Resource.Loading -> {
+                        is Progress.Loading -> {
                             _screenState.value = _screenState.value.copy(isLoading = true)
                         }
-                        is Resource.Error -> {
-                            _screenState.value = _screenState.value.copy(isLoading = false)
-                            resource.message?.let { message ->
-                                _screenState.value = _screenState.value.copy(error = message)
-                            }
+                        is Progress.Error -> {
+                            _screenState.value = _screenState.value.copy(
+                                isLoading = false,
+                                error = progress.message
+                            )
                         }
-                        is Resource.Unauthorized -> {
+                        is Progress.Unauthorized -> {
                             _screenState.value = _screenState.value.copy(isLoading = false)
                             logoutUser()
                         }

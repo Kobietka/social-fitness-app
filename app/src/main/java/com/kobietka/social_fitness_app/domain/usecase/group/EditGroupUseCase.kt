@@ -1,31 +1,31 @@
 package com.kobietka.social_fitness_app.domain.usecase.group
 
 import com.kobietka.social_fitness_app.data.entity.GroupEntity
-import com.kobietka.social_fitness_app.data.entity.GroupMemberEntity
-import com.kobietka.social_fitness_app.domain.repository.local.GroupMemberRepository
 import com.kobietka.social_fitness_app.domain.repository.local.GroupRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.GroupRemoteRepository
-import com.kobietka.social_fitness_app.network.request.CreateGroupRequest
+import com.kobietka.social_fitness_app.network.request.EditGroupRequest
 import com.kobietka.social_fitness_app.util.NetworkResult
 import com.kobietka.social_fitness_app.util.Progress
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 
-class CreateGroupUseCase(
+class EditGroupUseCase(
     private val groupRemoteRepository: GroupRemoteRepository,
-    private val groupRepository: GroupRepository,
-    private val groupMemberRepository: GroupMemberRepository
-) {
+    private val groupRepository: GroupRepository
+){
     operator fun invoke(
-        name: String,
-        description: String
+        groupId: String,
+        groupName: String,
+        groupDescription: String
     ): Flow<Progress> = flow {
         emit(Progress.Loading)
-        val result = groupRemoteRepository.createGroup(
-            createGroupRequest = CreateGroupRequest(
-                name = name,
-                description = description
+        val result = groupRemoteRepository.editGroup(
+            groupId = groupId,
+            editGroupRequest = EditGroupRequest(
+                id = groupId,
+                name = groupName,
+                description = groupDescription
             )
         )
         when(result){
@@ -40,17 +40,6 @@ class CreateGroupUseCase(
                             invitationCode = groupResponse.invitation?.code
                         )
                     )
-                    groupResponse.groupMembers.forEach { memberDto ->
-                        groupMemberRepository.insert(
-                            GroupMemberEntity(
-                                id = memberDto.id,
-                                userId = memberDto.user.id,
-                                groupId = memberDto.groupId,
-                                nickname = memberDto.user.nickname,
-                                joinDate = memberDto.assignedAt
-                            )
-                        )
-                    }
                     emit(Progress.Finished)
                 }
             }
@@ -63,20 +52,3 @@ class CreateGroupUseCase(
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
