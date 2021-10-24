@@ -2,6 +2,7 @@ package com.kobietka.social_fitness_app.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import com.kobietka.social_fitness_app.data.entity.PostEntity
 import kotlinx.coroutines.flow.Flow
@@ -10,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PostDao {
 
-    @Insert
+    @Insert(onConflict = REPLACE)
     suspend fun insert(postEntity: PostEntity)
 
     @Query("select * from post where groupId = :groupId")
