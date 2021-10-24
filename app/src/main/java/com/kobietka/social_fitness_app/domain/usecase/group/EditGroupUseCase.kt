@@ -36,8 +36,7 @@ class EditGroupUseCase(
                             id = groupResponse.id,
                             name = groupResponse.name,
                             description = groupResponse.description,
-                            ownerId = groupResponse.owner.id,
-                            invitationCode = groupResponse.invitation?.code
+                            ownerId = groupResponse.owner.id
                         )
                     )
                     emit(Progress.Finished)

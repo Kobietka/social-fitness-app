@@ -35,19 +35,7 @@ class MainModule {
         return GetGroupsUseCase(groupRepository = groupRepository)
     }
 
-    @Provides
-    fun provideInsertGroupDataUseCase(
-        groupRepository: GroupRepository,
-        groupMemberRepository: GroupMemberRepository
-    ): InsertGroupDataUseCase {
-        return InsertGroupDataUseCase(
-            groupMemberRepository = groupMemberRepository,
-            groupRepository = groupRepository
-        )
-    }
-
 }
-
 
 
 

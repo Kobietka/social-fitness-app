@@ -11,16 +11,14 @@ data class GroupEntity(
     @PrimaryKey val id: String,
     @ColumnInfo val ownerId: String,
     @ColumnInfo val name: String,
-    @ColumnInfo val description: String,
-    @ColumnInfo val invitationCode: String? = null
+    @ColumnInfo val description: String
 ) {
     fun toGroup(): Group {
         return Group(
             id = id,
             ownerId = ownerId,
             name = name,
-            description = description,
-            invitationCode = invitationCode
+            description = description
         )
     }
 }

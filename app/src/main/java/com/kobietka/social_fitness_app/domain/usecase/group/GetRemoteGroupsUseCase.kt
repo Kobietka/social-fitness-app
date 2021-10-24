@@ -2,8 +2,10 @@ package com.kobietka.social_fitness_app.domain.usecase.group
 
 import com.kobietka.social_fitness_app.data.entity.GroupEntity
 import com.kobietka.social_fitness_app.data.entity.GroupMemberEntity
+import com.kobietka.social_fitness_app.data.entity.InvitationEntity
 import com.kobietka.social_fitness_app.domain.repository.local.GroupMemberRepository
 import com.kobietka.social_fitness_app.domain.repository.local.GroupRepository
+import com.kobietka.social_fitness_app.domain.repository.local.InvitationRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.GroupRemoteRepository
 import com.kobietka.social_fitness_app.util.NetworkResult
 import com.kobietka.social_fitness_app.util.Progress
@@ -14,7 +16,8 @@ import kotlinx.coroutines.flow.flow
 class GetRemoteGroupsUseCase(
     private val groupRemoteRepository: GroupRemoteRepository,
     private val groupRepository: GroupRepository,
-    private val groupMemberRepository: GroupMemberRepository
+    private val groupMemberRepository: GroupMemberRepository,
+    private val invitationRepository: InvitationRepository
 ) {
     operator fun invoke(): Flow<Progress> = flow {
         emit(Progress.Loading)
@@ -27,10 +30,18 @@ class GetRemoteGroupsUseCase(
                                 id = groupResponse.id,
                                 ownerId = groupResponse.owner.id,
                                 name = groupResponse.name,
-                                description = groupResponse.description,
-                                invitationCode = groupResponse.invitation?.code
+                                description = groupResponse.description
                             )
                         )
+                        groupResponse.invitation?.let { invitation ->
+                            invitationRepository.insert(
+                                InvitationEntity(
+                                    id = invitation.id,
+                                    groupId = groupResponse.id,
+                                    code = invitation.code
+                                )
+                            )
+                        }
                         groupResponse.groupMembers.forEach { memberDto ->
                             groupMemberRepository.insert(
                                 GroupMemberEntity(
