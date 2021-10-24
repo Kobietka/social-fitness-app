@@ -3,6 +3,7 @@ package com.kobietka.social_fitness_app.di
 import com.kobietka.social_fitness_app.domain.repository.local.PostRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.PostRemoteRepository
 import com.kobietka.social_fitness_app.domain.usecase.post.CreatePostUseCase
+import com.kobietka.social_fitness_app.domain.usecase.post.DeletePostUseCase
 import com.kobietka.social_fitness_app.domain.usecase.post.EditPostUseCase
 import com.kobietka.social_fitness_app.domain.usecase.post.GetRemotePostUseCase
 import dagger.Module
@@ -23,6 +24,17 @@ class PostModule {
         return CreatePostUseCase(
             postRemoteRepository = postRemoteRepository,
             postRepository = postRepository
+        )
+    }
+
+    @Provides
+    fun provideDeletePostUseCase(
+        postRemoteRepository: PostRemoteRepository,
+        postRepository: PostRepository
+    ): DeletePostUseCase {
+        return DeletePostUseCase(
+            postRepository = postRepository,
+            postRemoteRepository = postRemoteRepository
         )
     }
 
