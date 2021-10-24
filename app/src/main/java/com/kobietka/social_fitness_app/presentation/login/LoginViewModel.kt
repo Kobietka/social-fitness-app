@@ -6,9 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kobietka.social_fitness_app.domain.state.PasswordTextFieldState
 import com.kobietka.social_fitness_app.domain.state.StandardTextFieldState
-import com.kobietka.social_fitness_app.domain.usecase.auth.InsertUserCredentialsUseCase
 import com.kobietka.social_fitness_app.domain.usecase.auth.LoginUserUseCase
-import com.kobietka.social_fitness_app.util.Resource
+import com.kobietka.social_fitness_app.util.Progress
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -18,8 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel
 @Inject constructor(
-    private val loginUserUseCase: LoginUserUseCase,
-    private val insertUserCredentialsUseCase: InsertUserCredentialsUseCase
+    private val loginUserUseCase: LoginUserUseCase
 ) : ViewModel() {
 
     private val _screenState = mutableStateOf(LoginScreenState())
@@ -38,28 +36,20 @@ class LoginViewModel
             password = password.value.text.trim()
         ).onEach { resource ->
             when(resource){
-                is Resource.Success -> {
-                    resource.data?.let {
-                        _screenState.value = screenState.value.copy(isLoading = false)
-                        insertUserCredentialsUseCase(
-                            token = it.token,
-                            id = it.id,
-                            nickname = it.nickname,
-                            email = it.email
-                        )
-                        onLoginSuccess()
-                    }
+                is Progress.Finished -> {
+                    _screenState.value = screenState.value.copy(isLoading = false)
+                    onLoginSuccess()
                 }
-                is Resource.Loading -> {
+                is Progress.Loading -> {
                     _screenState.value = screenState.value.copy(isLoading = true)
                 }
-                is Resource.Error -> {
-                    _screenState.value = screenState.value.copy(isLoading = false)
-                    resource.message?.let { message ->
-                        _screenState.value = _screenState.value.copy(error = message)
-                    }
+                is Progress.Error -> {
+                    _screenState.value = screenState.value.copy(
+                        isLoading = false,
+                        error = resource.message
+                    )
                 }
-                else -> { }
+                is Progress.Unauthorized -> _screenState.value = screenState.value.copy(isLoading = false)
             }
         }.launchIn(viewModelScope)
     }

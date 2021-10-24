@@ -9,7 +9,7 @@ import com.kobietka.social_fitness_app.domain.state.PasswordTextFieldState
 import com.kobietka.social_fitness_app.domain.state.StandardTextFieldState
 import com.kobietka.social_fitness_app.domain.usecase.auth.RegisterUserUseCase
 import com.kobietka.social_fitness_app.domain.usecase.auth.ValidateRegisterUseCase
-import com.kobietka.social_fitness_app.util.Resource
+import com.kobietka.social_fitness_app.util.Progress
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -65,18 +65,21 @@ class RegisterViewModel
                     password = password
                 ).onEach { result ->
                     when(result){
-                        is Resource.Loading -> {
+                        is Progress.Loading -> {
                             _screenState.value = screenState.value.copy(isLoading = true)
                         }
-                        is Resource.Success -> {
+                        is Progress.Finished -> {
                             _screenState.value = screenState.value.copy(isLoading = false)
                             _screenState.value = screenState.value.copy(isRegisterSuccessful = true)
                         }
-                        is Resource.Error -> {
+                        is Progress.Error -> {
+                            _screenState.value = screenState.value.copy(
+                                isLoading = false,
+                                error = result.message
+                            )
+                        }
+                        is Progress.Unauthorized -> {
                             _screenState.value = screenState.value.copy(isLoading = false)
-                            result.message?.let { errorMessage ->
-                                _screenState.value = screenState.value.copy(error = errorMessage)
-                            }
                         }
                     }
                 }.launchIn(viewModelScope)

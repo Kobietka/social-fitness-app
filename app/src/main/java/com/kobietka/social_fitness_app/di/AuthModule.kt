@@ -20,8 +20,14 @@ class AuthModule {
     }
 
     @Provides
-    fun provideLoginUseCase(authRepository: AuthRepository): LoginUserUseCase {
-        return LoginUserUseCase(authRepository = authRepository)
+    fun provideLoginUseCase(
+        authRepository: AuthRepository,
+        userCredentialsRepository: UserCredentialsRepository
+    ): LoginUserUseCase {
+        return LoginUserUseCase(
+            authRepository = authRepository,
+            userCredentialsRepository = userCredentialsRepository
+        )
     }
 
     @Provides

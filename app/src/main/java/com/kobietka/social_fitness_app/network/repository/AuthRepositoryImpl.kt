@@ -8,6 +8,7 @@ import com.kobietka.social_fitness_app.network.request.RegisterUserRequest
 import com.kobietka.social_fitness_app.network.response.ErrorResponse
 import com.kobietka.social_fitness_app.network.response.LoginUserResponse
 import com.kobietka.social_fitness_app.network.response.InvalidFieldErrorResponse
+import com.kobietka.social_fitness_app.util.NetworkResult
 import com.kobietka.social_fitness_app.util.Result
 import retrofit2.HttpException
 import java.io.IOException
@@ -16,12 +17,12 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl
 @Inject constructor(private val authService: AuthService): AuthRepository {
-    override suspend fun registerUser(registerUserRequest: RegisterUserRequest): Result<Boolean> {
+    override suspend fun registerUser(registerUserRequest: RegisterUserRequest): NetworkResult<Boolean> {
         return try {
             authService.registerUser(registerUserRequest = registerUserRequest)
-            Result.Success(data = true)
+            NetworkResult.Success(data = true)
         } catch (exception: IOException){
-            Result.Failure(message = "Cannot connect. Check your internet connection.")
+            NetworkResult.Failure(message = "Cannot connect. Check your internet connection.")
         } catch (exception: HttpException){
             val responseString = exception.response()?.errorBody()?.string()
             return when(exception.code()){
@@ -30,27 +31,23 @@ class AuthRepositoryImpl
                     val message = errorResponse.violations.foldRight(initial = ""){ violation, acc ->
                         acc + violation.message + "\n"
                     }
-                    Result.Failure(
-                        message = message
-                    )
+                    NetworkResult.Failure(message = message)
                 }
-                else -> {
-                    Result.Failure(message = "Something went wrong. Try again later.")
-                }
+                else -> NetworkResult.Failure(message = "Something went wrong. Try again later.")
             }
         }
     }
 
-    override suspend fun loginUser(loginUserRequest: LoginUserRequest): Result<LoginUserResponse> {
+    override suspend fun loginUser(loginUserRequest: LoginUserRequest): NetworkResult<LoginUserResponse> {
         return try {
             val response = authService.loginUser(loginUserRequest = loginUserRequest)
-            Result.Success(data = response)
+            NetworkResult.Success(data = response)
         } catch (exception: IOException){
-            Result.Failure(message = "Cannot connect. Check your internet connection.")
+            NetworkResult.Failure(message = "Cannot connect. Check your internet connection.")
         } catch (exception: HttpException){
             val responseString = exception.response()?.errorBody()?.string()
             val errorResponse = Gson().fromJson(responseString, ErrorResponse::class.java)
-            Result.Failure(message = errorResponse.message)
+            NetworkResult.Failure(message = errorResponse.message)
         }
     }
 }
