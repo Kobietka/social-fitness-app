@@ -4,23 +4,20 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.Update
 import com.kobietka.social_fitness_app.domain.model.UpdatePasswordValidationResult
 import com.kobietka.social_fitness_app.domain.model.UpdateUserDataValidationResult
 import com.kobietka.social_fitness_app.domain.state.PasswordTextFieldState
 import com.kobietka.social_fitness_app.domain.state.StandardTextFieldState
-import com.kobietka.social_fitness_app.domain.usecase.auth.InsertUserCredentialsUseCase
 import com.kobietka.social_fitness_app.domain.usecase.auth.LogoutUserUseCase
 import com.kobietka.social_fitness_app.domain.usecase.edit_user.*
 import com.kobietka.social_fitness_app.domain.usecase.main.GetUsersUseCase
-import com.kobietka.social_fitness_app.util.Resource
+import com.kobietka.social_fitness_app.util.Progress
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
 import java.lang.Exception
 import javax.inject.Inject
-import kotlin.math.log
 
 @HiltViewModel
 class EditUserViewModel
@@ -30,7 +27,6 @@ class EditUserViewModel
     private val validateUpdateUserData: ValidateUpdateUserDataUseCase,
     private val updateUserPassword: UpdateUserPasswordUseCase,
     private val updateUserData: UpdateUserDataUseCase,
-    private val insertUpdatedUserData: InsertUpdatedUserDataUseCase,
     private val logoutUser: LogoutUserUseCase
 ) : ViewModel() {
 
@@ -85,28 +81,21 @@ class EditUserViewModel
                     nickname = nickname,
                     email = email,
                     password = password
-                ).onEach { resource ->
-                    when(resource){
-                        is Resource.Success -> {
+                ).onEach { progress ->
+                    when(progress){
+                        is Progress.Finished -> {
                             _screenState.value = _screenState.value.copy(isDataLoading = false)
-                            resource.data?.let { response ->
-                                insertUpdatedUserData(
-                                    id = response.id,
-                                    nickname = response.nickname,
-                                    email = response.email
-                                )
-                            }
                         }
-                        is Resource.Loading -> {
+                        is Progress.Loading -> {
                             _screenState.value = _screenState.value.copy(isDataLoading = true)
                         }
-                        is Resource.Error -> {
-                            _screenState.value = _screenState.value.copy(isDataLoading = false)
-                            resource.message?.let { message ->
-                                _screenState.value = _screenState.value.copy(dataError = message)
-                            }
+                        is Progress.Error -> {
+                            _screenState.value = _screenState.value.copy(
+                                isDataLoading = false,
+                                dataError = progress.message
+                            )
                         }
-                        is Resource.Unauthorized -> {
+                        is Progress.Unauthorized -> {
                             _screenState.value = _screenState.value.copy(isDataLoading = false)
                             logoutUser()
                         }
@@ -143,23 +132,26 @@ class EditUserViewModel
                     userId = _screenState.value.user.id,
                     newPassword = newPassword,
                     currentPassword = oldPassword
-                ).onEach { resource ->
-                    when(resource){
-                        is Resource.Loading -> {
+                ).onEach { progress ->
+                    when(progress){
+                        is Progress.Loading -> {
                             _screenState.value = _screenState.value.copy(isPasswordLoading = true)
                         }
-                        is Resource.Success -> {
+                        is Progress.Finished -> {
                             _screenState.value = _screenState.value.copy(isPasswordLoading = false)
                             logoutUser()
                             onSuccess()
                         }
-                        is Resource.Error -> {
-                            _screenState.value = _screenState.value.copy(isPasswordLoading = false)
-                            resource.message?.let { error ->
-                                _screenState.value = _screenState.value.copy(passwordError = error)
-                            }
+                        is Progress.Error -> {
+                            _screenState.value = _screenState.value.copy(
+                                isPasswordLoading = false,
+                                passwordError = progress.message
+                            )
                         }
-                        else -> {  }
+                        is Progress.Unauthorized -> {
+                            _screenState.value = _screenState.value.copy(isPasswordLoading = false)
+                            logoutUser()
+                        }
                     }
                 }.launchIn(viewModelScope)
             }

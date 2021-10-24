@@ -34,9 +34,13 @@ class EditUserModule {
 
     @Provides
     fun provideUpdateUserDataUseCase(
-        updateUserRemoteRepository: UpdateUserRemoteRepository
+        updateUserRemoteRepository: UpdateUserRemoteRepository,
+        userCredentialsRepository: UserCredentialsRepository
     ): UpdateUserDataUseCase {
-        return UpdateUserDataUseCase(updateUserRemoteRepository = updateUserRemoteRepository)
+        return UpdateUserDataUseCase(
+            updateUserRemoteRepository = updateUserRemoteRepository,
+            userCredentialsRepository = userCredentialsRepository
+        )
     }
 
     @Provides

@@ -2,8 +2,8 @@ package com.kobietka.social_fitness_app.domain.usecase.edit_user
 
 import com.kobietka.social_fitness_app.domain.repository.remote.UpdateUserRemoteRepository
 import com.kobietka.social_fitness_app.network.request.UpdateUserPasswordRequest
-import com.kobietka.social_fitness_app.util.Resource
-import com.kobietka.social_fitness_app.util.Result
+import com.kobietka.social_fitness_app.util.NetworkResult
+import com.kobietka.social_fitness_app.util.Progress
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -13,8 +13,8 @@ class UpdateUserPasswordUseCase(private val updateUserRemoteRepository: UpdateUs
         userId: String,
         currentPassword: String,
         newPassword: String
-    ): Flow<Resource<Boolean>> = flow {
-        emit(Resource.Loading<Boolean>())
+    ): Flow<Progress> = flow {
+        emit(Progress.Loading)
         val result = updateUserRemoteRepository.updateUserPassword(
             userId = userId,
             updateUserPasswordRequest = UpdateUserPasswordRequest(
@@ -24,16 +24,9 @@ class UpdateUserPasswordUseCase(private val updateUserRemoteRepository: UpdateUs
             )
         )
         when(result){
-            is Result.Success<Boolean> -> {
-                result.data?.let {
-                    emit(Resource.Success<Boolean>(data = it))
-                }
-            }
-            is Result.Failure<Boolean> -> {
-                result.message?.let { message ->
-                    emit(Resource.Error<Boolean>(message = message))
-                }
-            }
+            is NetworkResult.Success -> emit(Progress.Finished)
+            is NetworkResult.Failure -> emit(Progress.Error(message = result.message))
+            is NetworkResult.Unauthorized -> emit(Progress.Unauthorized)
         }
     }
 }

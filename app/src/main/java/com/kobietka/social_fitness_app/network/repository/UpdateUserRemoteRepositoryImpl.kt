@@ -7,7 +7,7 @@ import com.kobietka.social_fitness_app.network.request.UpdateUserDataRequest
 import com.kobietka.social_fitness_app.network.request.UpdateUserPasswordRequest
 import com.kobietka.social_fitness_app.network.response.InvalidFieldErrorResponse
 import com.kobietka.social_fitness_app.network.response.UpdateUserDataResponse
-import com.kobietka.social_fitness_app.util.Result
+import com.kobietka.social_fitness_app.util.NetworkResult
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -18,31 +18,27 @@ class UpdateUserRemoteRepositoryImpl(
     override suspend fun updateUserPassword(
         userId: String,
         updateUserPasswordRequest: UpdateUserPasswordRequest
-    ): Result<Boolean> {
+    ): NetworkResult<Boolean> {
         return try {
             updateUserService.updateUserPassword(
                 userId = userId,
                 updateUserPasswordRequest = updateUserPasswordRequest
             )
-            Result.Success(data = true)
+            NetworkResult.Success(data = true)
         } catch (exception: IOException){
-            Result.Failure(message = "Cannot connect. Check your internet connection.")
+            NetworkResult.Failure(message = "Cannot connect. Check your internet connection.")
         } catch (exception: HttpException){
             val responseString = exception.response()?.errorBody()?.string()
             return when(exception.code()){
-                401 -> {
-                    Result.Unauthorized()
-                }
+                401 -> NetworkResult.Unauthorized()
                 422 -> {
                     val errorResponse = Gson().fromJson(responseString, InvalidFieldErrorResponse::class.java)
                     val message = errorResponse.violations.foldRight(initial = ""){ violation, acc ->
                         acc + violation.message + "\n"
                     }
-                    Result.Failure(message = message)
+                    NetworkResult.Failure(message = message)
                 }
-                else -> {
-                    Result.Failure(message = "Something went wrong. Try again later.")
-                }
+                else -> NetworkResult.Failure(message = "Something went wrong. Try again later.")
             }
         }
     }
@@ -50,31 +46,27 @@ class UpdateUserRemoteRepositoryImpl(
     override suspend fun updateUserData(
         userId: String,
         updateUserDataRequest: UpdateUserDataRequest
-    ): Result<UpdateUserDataResponse> {
+    ): NetworkResult<UpdateUserDataResponse> {
         return try {
             val response = updateUserService.updateUserData(
                 userId = userId,
                 updateUserDataRequest = updateUserDataRequest
             )
-            Result.Success(data = response)
+            NetworkResult.Success(data = response)
         } catch (exception: IOException){
-            Result.Failure(message = "Cannot connect. Check your internet connection.")
+            NetworkResult.Failure(message = "Cannot connect. Check your internet connection.")
         } catch (exception: HttpException){
             val responseString = exception.response()?.errorBody()?.string()
             return when(exception.code()){
-                401 -> {
-                    Result.Unauthorized()
-                }
+                401 -> NetworkResult.Unauthorized()
                 422 -> {
                     val errorResponse = Gson().fromJson(responseString, InvalidFieldErrorResponse::class.java)
                     val message = errorResponse.violations.foldRight(initial = ""){ violation, acc ->
                         acc + violation.message + "\n"
                     }
-                    Result.Failure(message = message)
+                    NetworkResult.Failure(message = message)
                 }
-                else -> {
-                    Result.Failure(message = "Something went wrong. Try again later.")
-                }
+                else -> NetworkResult.Failure(message = "Something went wrong. Try again later.")
             }
         }
     }

@@ -1,22 +1,25 @@
 package com.kobietka.social_fitness_app.domain.usecase.edit_user
 
+import com.kobietka.social_fitness_app.domain.repository.local.UserCredentialsRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.UpdateUserRemoteRepository
 import com.kobietka.social_fitness_app.network.request.UpdateUserDataRequest
-import com.kobietka.social_fitness_app.network.response.UpdateUserDataResponse
-import com.kobietka.social_fitness_app.util.Resource
-import com.kobietka.social_fitness_app.util.Result
+import com.kobietka.social_fitness_app.util.NetworkResult
+import com.kobietka.social_fitness_app.util.Progress
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 
-class UpdateUserDataUseCase(private val updateUserRemoteRepository: UpdateUserRemoteRepository) {
+class UpdateUserDataUseCase(
+    private val updateUserRemoteRepository: UpdateUserRemoteRepository,
+    private val userCredentialsRepository: UserCredentialsRepository
+) {
     operator fun invoke(
         userId: String,
         nickname: String,
         email: String,
         password: String
-    ): Flow<Resource<UpdateUserDataResponse>> = flow {
-        emit(Resource.Loading<UpdateUserDataResponse>())
+    ): Flow<Progress> = flow {
+        emit(Progress.Loading)
         val result = updateUserRemoteRepository.updateUserData(
             userId = userId,
             updateUserDataRequest = UpdateUserDataRequest(
@@ -27,19 +30,18 @@ class UpdateUserDataUseCase(private val updateUserRemoteRepository: UpdateUserRe
             )
         )
         when(result){
-            is Result.Success -> {
-                result.data?.let { response ->
-                    emit(Resource.Success<UpdateUserDataResponse>(data = response))
+            is NetworkResult.Success -> {
+                result.data.let { response ->
+                    userCredentialsRepository.updateUserData(
+                        id = response.id,
+                        email = response.email,
+                        nickname = response.nickname
+                    )
+                    emit(Progress.Finished)
                 }
             }
-            is Result.Failure -> {
-                result.message?.let { message ->
-                    emit(Resource.Error<UpdateUserDataResponse>(message = message))
-                }
-            }
-            is Result.Unauthorized -> {
-                emit(Resource.Unauthorized<UpdateUserDataResponse>())
-            }
+            is NetworkResult.Failure -> emit(Progress.Error(message = result.message))
+            is NetworkResult.Unauthorized -> emit(Progress.Unauthorized)
         }
     }
 }
