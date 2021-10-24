@@ -34,8 +34,8 @@ class LoginViewModel
         loginUserUseCase(
             email = email.value.text.trim(),
             password = password.value.text.trim()
-        ).onEach { resource ->
-            when(resource){
+        ).onEach { progress ->
+            when(progress){
                 is Progress.Finished -> {
                     _screenState.value = screenState.value.copy(isLoading = false)
                     onLoginSuccess()
@@ -46,7 +46,7 @@ class LoginViewModel
                 is Progress.Error -> {
                     _screenState.value = screenState.value.copy(
                         isLoading = false,
-                        error = resource.message
+                        error = progress.message
                     )
                 }
                 is Progress.Unauthorized -> _screenState.value = screenState.value.copy(isLoading = false)

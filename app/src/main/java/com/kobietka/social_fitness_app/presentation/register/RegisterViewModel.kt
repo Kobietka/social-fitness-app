@@ -63,8 +63,8 @@ class RegisterViewModel
                     nickname = nickname,
                     email = email,
                     password = password
-                ).onEach { result ->
-                    when(result){
+                ).onEach { progress ->
+                    when(progress){
                         is Progress.Loading -> {
                             _screenState.value = screenState.value.copy(isLoading = true)
                         }
@@ -75,7 +75,7 @@ class RegisterViewModel
                         is Progress.Error -> {
                             _screenState.value = screenState.value.copy(
                                 isLoading = false,
-                                error = result.message
+                                error = progress.message
                             )
                         }
                         is Progress.Unauthorized -> {
