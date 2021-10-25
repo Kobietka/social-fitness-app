@@ -40,6 +40,12 @@ class DatabaseModule {
 
     @Provides
     @Singleton
+    fun provideCommentDao(appDatabase: AppDatabase): CommentDao {
+        return appDatabase.commentDao()
+    }
+
+    @Provides
+    @Singleton
     fun providePostDao(appDatabase: AppDatabase): PostDao {
         return appDatabase.postDao()
     }

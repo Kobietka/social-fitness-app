@@ -11,7 +11,8 @@ import com.kobietka.social_fitness_app.data.entity.*
         GroupEntity::class,
         GroupMemberEntity::class,
         PostEntity::class,
-        InvitationEntity::class
+        InvitationEntity::class,
+        CommentEntity::class
     ],
     version = 1
 )
@@ -21,4 +22,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun groupMemberDao(): GroupMemberDao
     abstract fun postDao(): PostDao
     abstract fun invitationDao(): InvitationDao
+    abstract fun commentDao(): CommentDao
 }
