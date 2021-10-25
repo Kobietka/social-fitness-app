@@ -7,6 +7,6 @@ data class PostDto(
     val id: String,
     val content: String,
     val user: User,
-    val comments: List<CommentDto>,
+    val comments: List<CommentDto>?,
     val createdAt: String
 )
