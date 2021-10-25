@@ -1,6 +1,8 @@
 package com.kobietka.social_fitness_app.di
 
+import com.kobietka.social_fitness_app.domain.repository.local.*
 import com.kobietka.social_fitness_app.domain.repository.remote.GroupMemberRemoteRepository
+import com.kobietka.social_fitness_app.domain.repository.remote.GroupRemoteRepository
 import com.kobietka.social_fitness_app.domain.usecase.groupmember.JoinGroupUseCase
 import com.kobietka.social_fitness_app.domain.usecase.groupmember.LeaveGroupUseCase
 import dagger.Module
@@ -15,19 +17,33 @@ class GroupMemberModule {
 
     @Provides
     fun provideJoinGroupUseCase(
-        groupMemberRemoteRepository: GroupMemberRemoteRepository
+        groupMemberRemoteRepository: GroupMemberRemoteRepository,
+        groupMemberRepository: GroupMemberRepository,
+        groupRemoteRepository: GroupRemoteRepository,
+        groupRepository: GroupRepository,
+        invitationRepository: InvitationRepository,
+        postRepository: PostRepository,
+        commentRepository: CommentRepository
     ): JoinGroupUseCase {
         return JoinGroupUseCase(
-            groupMemberRemoteRepository = groupMemberRemoteRepository
+            groupMemberRemoteRepository = groupMemberRemoteRepository,
+            groupMemberRepository = groupMemberRepository,
+            groupRemoteRepository = groupRemoteRepository,
+            groupRepository = groupRepository,
+            invitationRepository = invitationRepository,
+            postRepository = postRepository,
+            commentRepository = commentRepository
         )
     }
 
     @Provides
     fun provideLeaveGroupUseCase(
-        groupMemberRemoteRepository: GroupMemberRemoteRepository
+        groupMemberRemoteRepository: GroupMemberRemoteRepository,
+        groupRepository: GroupRepository
     ): LeaveGroupUseCase {
         return LeaveGroupUseCase(
-            groupMemberRemoteRepository = groupMemberRemoteRepository
+            groupMemberRemoteRepository = groupMemberRemoteRepository,
+            groupRepository = groupRepository
         )
     }
 

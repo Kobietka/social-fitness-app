@@ -1,31 +1,28 @@
 package com.kobietka.social_fitness_app.domain.usecase.groupmember
 
-
+import com.kobietka.social_fitness_app.domain.repository.local.GroupRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.GroupMemberRemoteRepository
-import com.kobietka.social_fitness_app.util.Resource
-import com.kobietka.social_fitness_app.util.Result
+import com.kobietka.social_fitness_app.util.NetworkResult
+import com.kobietka.social_fitness_app.util.Progress
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class LeaveGroupUseCase(private val groupMemberRemoteRepository: GroupMemberRemoteRepository){
+
+class LeaveGroupUseCase(
+    private val groupMemberRemoteRepository: GroupMemberRemoteRepository,
+    private val groupRepository: GroupRepository
+){
     operator fun invoke(
         id: String
-    ): Flow<Resource<Boolean>> = flow {
-        emit(Resource.Loading<Boolean>())
+    ): Flow<Progress> = flow {
+        emit(Progress.Loading)
         when(val result = groupMemberRemoteRepository.leaveGroup(id = id)){
-            is Result.Success -> {
-                result.data?.let { response ->
-                    emit(Resource.Success<Boolean>(data = response))
-                }
+            is NetworkResult.Success -> {
+                groupRepository.deleteGroupById(groupId = id)
+                emit(Progress.Finished)
             }
-            is Result.Failure -> {
-                result.message?.let { message ->
-                    emit(Resource.Error<Boolean>(message = message))
-                }
-            }
-            is Result.Unauthorized -> {
-                emit(Resource.Unauthorized<Boolean>())
-            }
+            is NetworkResult.Failure -> emit(Progress.Error(message = result.message))
+            is NetworkResult.Unauthorized -> emit(Progress.Unauthorized)
         }
     }
 }
