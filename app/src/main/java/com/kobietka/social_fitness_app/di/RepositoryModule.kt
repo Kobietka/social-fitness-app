@@ -57,6 +57,14 @@ class RepositoryModule {
 
     @Provides
     @Singleton
+    fun provideEventRemoteRepository(
+        eventService: EventService
+    ): EventRemoteRepository {
+        return EventRemoteRepositoryImpl(eventService = eventService)
+    }
+
+    @Provides
+    @Singleton
     fun provideGroupRepository(
         groupDao: GroupDao
     ): GroupRepository {
