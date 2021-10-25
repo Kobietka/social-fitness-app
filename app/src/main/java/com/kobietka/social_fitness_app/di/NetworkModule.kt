@@ -70,6 +70,12 @@ class NetworkModule {
 
     @Provides
     @Singleton
+    fun provideCommentService(@Named("retrofitAuth") retrofit: Retrofit): CommentService {
+        return retrofit.create(CommentService::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun providePostService(@Named("retrofitAuth") retrofit: Retrofit): PostService {
         return retrofit.create(PostService::class.java)
     }
