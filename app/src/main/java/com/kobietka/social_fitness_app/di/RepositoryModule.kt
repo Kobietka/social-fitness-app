@@ -41,6 +41,14 @@ class RepositoryModule {
 
     @Provides
     @Singleton
+    fun provideCommentRepository(
+        commentDao: CommentDao
+    ): CommentRepository {
+        return CommentRepositoryImpl(commentDao = commentDao)
+    }
+
+    @Provides
+    @Singleton
     fun provideGroupRepository(
         groupDao: GroupDao
     ): GroupRepository {
