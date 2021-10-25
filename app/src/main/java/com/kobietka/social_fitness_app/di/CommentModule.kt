@@ -3,6 +3,7 @@ package com.kobietka.social_fitness_app.di
 import com.kobietka.social_fitness_app.domain.repository.local.CommentRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.CommentRemoteRepository
 import com.kobietka.social_fitness_app.domain.usecase.comment.CreateCommentUseCase
+import com.kobietka.social_fitness_app.domain.usecase.comment.DeleteCommentUseCase
 import com.kobietka.social_fitness_app.domain.usecase.comment.EditCommentUseCase
 import dagger.Module
 import dagger.Provides
@@ -33,6 +34,17 @@ class CommentModule {
         return EditCommentUseCase(
             commentRemoteRepository = commentRemoteRepository,
             commentRepository = commentRepository
+        )
+    }
+
+    @Provides
+    fun provideDeleteCommentUseCase(
+        commentRemoteRepository: CommentRemoteRepository,
+        commentRepository: CommentRepository
+    ): DeleteCommentUseCase {
+        return DeleteCommentUseCase(
+            commentRepository = commentRepository,
+            commentRemoteRepository = commentRemoteRepository
         )
     }
 
