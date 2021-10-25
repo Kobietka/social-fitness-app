@@ -3,6 +3,7 @@ package com.kobietka.social_fitness_app.di
 import com.kobietka.social_fitness_app.domain.repository.local.EventRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.EventRemoteRepository
 import com.kobietka.social_fitness_app.domain.usecase.event.CreateEventUseCase
+import com.kobietka.social_fitness_app.domain.usecase.event.DeleteEventUseCase
 import com.kobietka.social_fitness_app.domain.usecase.event.EditEventUseCase
 import com.kobietka.social_fitness_app.domain.usecase.event.GetRemoteEventUseCase
 import dagger.Module
@@ -23,6 +24,17 @@ class EventModule {
         return CreateEventUseCase(
             eventRemoteRepository = eventRemoteRepository,
             eventRepository = eventRepository
+        )
+    }
+
+    @Provides
+    fun provideDeleteEventUseCase(
+        eventRemoteRepository: EventRemoteRepository,
+        eventRepository: EventRepository
+    ): DeleteEventUseCase {
+        return DeleteEventUseCase(
+            eventRepository = eventRepository,
+            eventRemoteRepository = eventRemoteRepository
         )
     }
 
