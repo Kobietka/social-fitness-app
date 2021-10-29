@@ -17,6 +17,10 @@ class GroupRepositoryImpl(
         return groupDao.getAllGroups()
     }
 
+    override suspend fun getGroupById(groupId: String): GroupEntity {
+        return groupDao.getGroupById(groupId = groupId)
+    }
+
     override suspend fun deleteAllGroups() {
         return groupDao.deleteAllGroups()
     }
