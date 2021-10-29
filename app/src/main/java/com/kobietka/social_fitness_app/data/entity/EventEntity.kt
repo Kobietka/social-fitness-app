@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
+import com.kobietka.social_fitness_app.domain.model.Event
+import com.kobietka.social_fitness_app.domain.model.EventType
 
 
 @Entity(
@@ -31,6 +33,40 @@ data class EventEntity(
     @ColumnInfo val endDate: String,
     @ColumnInfo val eventType: String
 )
+
+fun EventEntity.toEvent(): Event {
+    return Event(
+        id = this.id,
+        name = this.name,
+        description = this.description,
+        pointGoal = this.pointGoal,
+        pointPerMinute = this.pointPerMinute,
+        pointPerRep = this.pointPerRep,
+        startDate = this.startDate,
+        endDate = this.endDate,
+        eventType = when(this.eventType){
+            "TIME" -> EventType.TIME
+            "REP" -> EventType.REPETITION
+            "LESS_TIME" -> EventType.LESS_TIME
+            else -> EventType.UNKNOWN
+        }
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
