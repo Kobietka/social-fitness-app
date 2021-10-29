@@ -5,10 +5,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.navigation.NamedNavArgument
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.kobietka.social_fitness_app.presentation.edit_user.EditUserScreen
+import com.kobietka.social_fitness_app.presentation.group.GroupScreen
 import com.kobietka.social_fitness_app.presentation.loading.LoadingScreen
 import com.kobietka.social_fitness_app.presentation.login.LoginScreen
 import com.kobietka.social_fitness_app.presentation.main_screen.MainScreen
@@ -46,6 +50,13 @@ class MainActivity : ComponentActivity() {
 
                     composable(route = Screen.EditUser.route){
                         EditUserScreen(navController = navController)
+                    }
+
+                    composable(
+                        route = Screen.Group.route,
+                        arguments = listOf(navArgument(name = "groupId"){ type = NavType.StringType })
+                    ){
+                        GroupScreen(navController = navController)
                     }
                 }
             }
