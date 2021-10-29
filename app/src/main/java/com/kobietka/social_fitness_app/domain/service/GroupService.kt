@@ -15,7 +15,7 @@ interface GroupService {
     suspend fun getGroups(): List<GetGroupResponse>
 
     @GET("/api/group/{id}")
-    suspend fun getGroup(groupId: String): GetGroupResponse
+    suspend fun getGroup(@Path("id") groupId: String): GetGroupResponse
 
     @PATCH("/api/group/{id}")
     suspend fun editGroup(
