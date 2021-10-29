@@ -17,7 +17,7 @@ class GroupRepositoryImpl(
         return groupDao.getAllGroups()
     }
 
-    override suspend fun getGroupById(groupId: String): GroupEntity {
+    override fun getGroupById(groupId: String): Flow<GroupEntity> {
         return groupDao.getGroupById(groupId = groupId)
     }
 
