@@ -49,6 +49,14 @@ class RepositoryModule {
 
     @Provides
     @Singleton
+    fun provideActivityRepository(
+        activityDao: ActivityDao
+    ): ActivityRepository {
+        return ActivityRepositoryImpl(activityDao = activityDao)
+    }
+
+    @Provides
+    @Singleton
     fun provideActivityRemoteRepository(
         activityService: ActivityService
     ): ActivityRemoteRepository {
