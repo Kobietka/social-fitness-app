@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.kobietka.social_fitness_app.presentation.edit_group.EditGroupScreen
 import com.kobietka.social_fitness_app.presentation.edit_user.EditUserScreen
 import com.kobietka.social_fitness_app.presentation.group.GroupScreen
 import com.kobietka.social_fitness_app.presentation.loading.LoadingScreen
@@ -57,6 +58,13 @@ class MainActivity : ComponentActivity() {
                         arguments = listOf(navArgument(name = "groupId"){ type = NavType.StringType })
                     ){
                         GroupScreen(navController = navController)
+                    }
+
+                    composable(
+                        route = Screen.EditGroup.route,
+                        arguments = listOf(navArgument(name = "groupId"){ type = NavType.StringType })
+                    ){
+                        EditGroupScreen()
                     }
                 }
             }
