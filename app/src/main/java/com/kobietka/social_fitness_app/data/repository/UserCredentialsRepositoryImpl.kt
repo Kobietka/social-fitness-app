@@ -4,11 +4,11 @@ import com.kobietka.social_fitness_app.data.dao.UserCredentialsDao
 import com.kobietka.social_fitness_app.data.entity.UserCredentialsEntity
 import com.kobietka.social_fitness_app.domain.repository.local.UserCredentialsRepository
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
 
-class UserCredentialsRepositoryImpl
-@Inject constructor(private val userCredentialsDao: UserCredentialsDao): UserCredentialsRepository {
+class UserCredentialsRepositoryImpl(
+    private val userCredentialsDao: UserCredentialsDao
+): UserCredentialsRepository {
     override suspend fun insert(userCredentialsEntity: UserCredentialsEntity) {
         userCredentialsDao.insert(userCredentialsEntity = userCredentialsEntity)
     }
@@ -23,6 +23,10 @@ class UserCredentialsRepositoryImpl
 
     override suspend fun getUserToken(): String {
         return userCredentialsDao.getUsers().first().token
+    }
+
+    override suspend fun getUserId(): String {
+        return userCredentialsDao.getUsers().first().id
     }
 
     override suspend fun updateUserData(id: String, nickname: String, email: String) {
