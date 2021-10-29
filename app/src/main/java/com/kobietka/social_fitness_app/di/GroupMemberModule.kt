@@ -3,6 +3,7 @@ package com.kobietka.social_fitness_app.di
 import com.kobietka.social_fitness_app.domain.repository.local.*
 import com.kobietka.social_fitness_app.domain.repository.remote.GroupMemberRemoteRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.GroupRemoteRepository
+import com.kobietka.social_fitness_app.domain.usecase.group.GetGroupMembersUseCase
 import com.kobietka.social_fitness_app.domain.usecase.groupmember.JoinGroupUseCase
 import com.kobietka.social_fitness_app.domain.usecase.groupmember.LeaveGroupUseCase
 import dagger.Module
@@ -34,6 +35,13 @@ class GroupMemberModule {
             postRepository = postRepository,
             commentRepository = commentRepository
         )
+    }
+
+    @Provides
+    fun provideGetGroupMembersUseCase(
+        groupMemberRepository: GroupMemberRepository
+    ): GetGroupMembersUseCase {
+        return GetGroupMembersUseCase(groupMemberRepository = groupMemberRepository)
     }
 
     @Provides
