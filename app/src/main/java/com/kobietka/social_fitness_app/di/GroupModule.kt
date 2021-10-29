@@ -6,6 +6,8 @@ import com.kobietka.social_fitness_app.domain.repository.local.InvitationReposit
 import com.kobietka.social_fitness_app.domain.repository.local.PostRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.GroupRemoteRepository
 import com.kobietka.social_fitness_app.domain.usecase.group.*
+import com.kobietka.social_fitness_app.domain.usecase.post.GetPostsForGroupUseCase
+import com.kobietka.social_fitness_app.domain.usecase.post.MatchPostsWithMembersUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -39,6 +41,29 @@ class GroupModule {
             groupMemberRepository = groupMemberRepository,
             groupRepository = groupRepository,
             invitationRepository = invitationRepository
+        )
+    }
+
+    @Provides
+    fun provideGetGroupUseCase(
+        groupRepository: GroupRepository
+    ): GetGroupUseCase {
+        return GetGroupUseCase(groupRepository = groupRepository)
+    }
+
+    @Provides
+    fun provideGetPostsForGroupUseCase(
+        postRepository: PostRepository
+    ): GetPostsForGroupUseCase {
+        return GetPostsForGroupUseCase(postRepository = postRepository)
+    }
+
+    @Provides
+    fun provideMatchPostsWithMembersUseCase(
+        groupMemberRepository: GroupMemberRepository
+    ): MatchPostsWithMembersUseCase {
+        return MatchPostsWithMembersUseCase(
+            groupMemberRepository = groupMemberRepository
         )
     }
 
