@@ -4,7 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kobietka.social_fitness_app.domain.model.CreateGroupValidationResult
+import com.kobietka.social_fitness_app.domain.model.GroupValidationResult
 import com.kobietka.social_fitness_app.domain.state.StandardTextFieldState
 import com.kobietka.social_fitness_app.domain.usecase.auth.LogoutUserUseCase
 import com.kobietka.social_fitness_app.domain.usecase.group.*
@@ -23,7 +23,7 @@ class MainViewModel
 @Inject constructor(
     getUsers: GetUsersUseCase,
     private val logoutUser: LogoutUserUseCase,
-    private val validateCreateGroup: ValidateCreateGroup,
+    private val validateGroup: ValidateGroup,
     private val createGroup: CreateGroupUseCase,
     getGroups: GetGroupsUseCase,
     getRemoteGroups: GetRemoteGroupsUseCase
@@ -94,13 +94,13 @@ class MainViewModel
         val name = _groupName.value.text.trim()
         val description = _groupDescription.value.text.trim()
 
-        val validationResult = validateCreateGroup(
+        val validationResult = validateGroup(
             groupName = name,
             groupDescription = description
         )
 
         when(validationResult){
-            is CreateGroupValidationResult.Success -> {
+            is GroupValidationResult.Success -> {
                 createGroup(
                     name = name,
                     description = description
@@ -128,10 +128,10 @@ class MainViewModel
                     }
                 }.launchIn(viewModelScope)
             }
-            is CreateGroupValidationResult.GroupNameBlank -> {
+            is GroupValidationResult.GroupNameBlank -> {
                 _groupName.value = _groupName.value.copy(error = "Name cannot be blank")
             }
-            is CreateGroupValidationResult.GroupDescriptionBlank -> {
+            is GroupValidationResult.GroupDescriptionBlank -> {
                 _groupDescription.value = _groupDescription.value.copy(error = "Description cannot be blank")
             }
         }
