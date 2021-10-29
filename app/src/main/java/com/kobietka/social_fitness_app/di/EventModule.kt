@@ -2,10 +2,7 @@ package com.kobietka.social_fitness_app.di
 
 import com.kobietka.social_fitness_app.domain.repository.local.EventRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.EventRemoteRepository
-import com.kobietka.social_fitness_app.domain.usecase.event.CreateEventUseCase
-import com.kobietka.social_fitness_app.domain.usecase.event.DeleteEventUseCase
-import com.kobietka.social_fitness_app.domain.usecase.event.EditEventUseCase
-import com.kobietka.social_fitness_app.domain.usecase.event.GetRemoteEventUseCase
+import com.kobietka.social_fitness_app.domain.usecase.event.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,6 +22,13 @@ class EventModule {
             eventRemoteRepository = eventRemoteRepository,
             eventRepository = eventRepository
         )
+    }
+
+    @Provides
+    fun provideGetEventsForGroupUseCase(
+        eventRepository: EventRepository
+    ): GetEventsForGroupUseCase {
+        return GetEventsForGroupUseCase(eventRepository = eventRepository)
     }
 
     @Provides
