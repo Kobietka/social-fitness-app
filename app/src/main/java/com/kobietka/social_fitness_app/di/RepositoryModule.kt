@@ -49,6 +49,14 @@ class RepositoryModule {
 
     @Provides
     @Singleton
+    fun provideActivityRemoteRepository(
+        activityService: ActivityService
+    ): ActivityRemoteRepository {
+        return ActivityRemoteRepositoryImpl(activityService = activityService)
+    }
+
+    @Provides
+    @Singleton
     fun provideCommentRemoteRepository(
         commentService: CommentService
     ): CommentRemoteRepository {
