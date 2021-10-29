@@ -70,6 +70,12 @@ class NetworkModule {
 
     @Provides
     @Singleton
+    fun provideActivityService(@Named("retrofitAuth") retrofit: Retrofit): ActivityService {
+        return retrofit.create(ActivityService::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideEventService(@Named("retrofitAuth") retrofit: Retrofit): EventService {
         return retrofit.create(EventService::class.java)
     }
