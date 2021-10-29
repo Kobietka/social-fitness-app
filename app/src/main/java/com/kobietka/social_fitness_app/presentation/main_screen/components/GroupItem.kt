@@ -1,5 +1,6 @@
 package com.kobietka.social_fitness_app.presentation.main_screen.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,10 +15,16 @@ import com.kobietka.social_fitness_app.domain.model.Group
 
 
 @Composable
-fun GroupItem(group: Group) {
+fun GroupItem(
+    group: Group,
+    onGroupClick: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable {
+                onGroupClick(group.id)
+            }
             .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp)
     ) {
         Text(

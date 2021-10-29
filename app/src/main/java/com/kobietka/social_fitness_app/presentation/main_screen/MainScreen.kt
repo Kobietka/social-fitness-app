@@ -160,7 +160,12 @@ fun MainScreen(
                 }
             }
             items(state.groups.size){
-                GroupItem(group = state.groups[it])
+                GroupItem(
+                    group = state.groups[it],
+                    onGroupClick = { groupId ->
+                        navController.navigate("/group/$groupId")
+                    }
+                )
             }
         }
     }
