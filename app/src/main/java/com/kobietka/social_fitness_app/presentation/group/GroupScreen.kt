@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.kobietka.social_fitness_app.presentation.Screen
 
 
 @Composable
@@ -43,7 +42,7 @@ fun GroupScreen(
                     }
                     IconButton(
                         modifier = Modifier.padding(end = 20.dp),
-                        onClick = { /* navigate to edit group */ }
+                        onClick = { navController.navigate("/edit_group/${state.group.id}") }
                     ) {
                         Icon(
                             modifier = Modifier

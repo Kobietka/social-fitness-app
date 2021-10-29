@@ -36,9 +36,9 @@ class GroupViewModel
 
     init {
         handle.get<String>("groupId")?.let { groupId ->
-            viewModelScope.launch {
-                _state.value = _state.value.copy(group = getGroup(groupId = groupId))
-            }
+            getGroup(groupId = groupId).onEach { group ->
+                _state.value = _state.value.copy(group = group)
+            }.launchIn(viewModelScope)
             getRemoteGroup(groupId = groupId).onEach {
                 /* add update animation */
             }.launchIn(viewModelScope)
