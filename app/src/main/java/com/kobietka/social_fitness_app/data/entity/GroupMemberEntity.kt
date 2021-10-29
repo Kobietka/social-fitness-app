@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
+import com.kobietka.social_fitness_app.domain.model.GroupMember
 
 
 @Entity(
@@ -26,3 +27,10 @@ data class GroupMemberEntity(
     @ColumnInfo val nickname: String,
     @ColumnInfo val joinDate: String
 )
+
+fun GroupMemberEntity.toGroupMember(): GroupMember{
+    return GroupMember(
+        id = this.id,
+        nickname = this.nickname
+    )
+}
