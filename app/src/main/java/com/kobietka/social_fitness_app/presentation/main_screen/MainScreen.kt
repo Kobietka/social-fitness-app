@@ -82,28 +82,32 @@ fun MainScreen(
             }
         }
     ) {
-        LazyColumn {
-            item {
-                AnimatedVisibility(
-                    visible = state.isUpdatingGroups,
-                    exit = slideOutVertically(),
-                    enter = slideInVertically()
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colors.primary),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
-                            text = state.updatingGroupsMessage,
-                            color = Color.White
-                        )
-                    }
-                }
+        AnimatedVisibility(
+            visible = state.isUpdatingGroups,
+            exit = slideOutVertically(),
+            enter = slideInVertically()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.primary),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
+                    text = state.updatingGroupsMessage,
+                    color = Color.White
+                )
             }
+        }
+        if (state.isUpdatingGroups) Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CircularProgressIndicator()
+        } else LazyColumn {
             item {
                 if(state.isCreatingGroup) Column(
                     modifier = Modifier
