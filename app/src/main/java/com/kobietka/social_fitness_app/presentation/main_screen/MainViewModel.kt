@@ -55,12 +55,9 @@ class MainViewModel
         }.launchIn(viewModelScope)
 
         getRemoteGroups().onEach { progress ->
-            delay(1000)
             when(progress){
                 is Progress.Finished -> {
-                    delay(1000)
-                    _screenState.value = _screenState.value.copy(updatingGroupsMessage = "Saving groups")
-                    delay(1000)
+                    delay(1500)
                     _screenState.value = _screenState.value.copy(isUpdatingGroups = false)
                 }
                 is Progress.Loading -> {
@@ -72,7 +69,7 @@ class MainViewModel
                 is Progress.Error -> {
                     delay(1000)
                     _screenState.value = _screenState.value.copy(updatingGroupsMessage = progress.message)
-                    delay(2000)
+                    delay(1000)
                     _screenState.value = _screenState.value.copy(isUpdatingGroups = false)
                 }
                 is Progress.Unauthorized -> {
