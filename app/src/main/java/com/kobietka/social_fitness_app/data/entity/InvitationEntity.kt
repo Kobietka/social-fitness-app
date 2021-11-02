@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
+import com.kobietka.social_fitness_app.domain.model.Invitation
 
 
 @Entity(
@@ -24,3 +25,11 @@ data class InvitationEntity(
     @ColumnInfo val groupId: String,
     @ColumnInfo val code: String
 )
+
+fun InvitationEntity.toInvitation(): Invitation {
+    return Invitation(
+        id = this.id,
+        groupId = this.groupId,
+        code = this.code
+    )
+}
