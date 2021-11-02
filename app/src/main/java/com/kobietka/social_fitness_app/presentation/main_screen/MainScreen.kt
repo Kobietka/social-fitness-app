@@ -35,6 +35,7 @@ fun MainScreen(
     val state = mainViewModel.screenState.value
     val groupName = mainViewModel.groupName.value
     val groupDescription = mainViewModel.groupDescription.value
+    val code = mainViewModel.code.value
 
     Scaffold(
         floatingActionButton = {
@@ -159,6 +160,37 @@ fun MainScreen(
                         enabled = !state.isLoading
                     ) {
                         if(!state.isLoading) Text("Create group")
+                        else CircularProgressIndicator()
+                    }
+                    Text(
+                        modifier = Modifier.padding(20.dp),
+                        text = "Or join group",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                    if(state.joinGroupError.isNotBlank()){
+                        Text(
+                            modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
+                            text = state.joinGroupError,
+                            color = MaterialTheme.colors.error,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    StandardTextField(
+                        text = code.text,
+                        error = code.error,
+                        label = code.label,
+                        onValueChange = mainViewModel::onCodeChange
+                    )
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 13.dp)
+                            .height(50.dp),
+                        onClick = mainViewModel::onJoinGroupClick,
+                        enabled = !state.isJoiningGroup
+                    ) {
+                        if(!state.isJoiningGroup) Text("Join")
                         else CircularProgressIndicator()
                     }
                 }

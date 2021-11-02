@@ -8,6 +8,7 @@ import com.kobietka.social_fitness_app.domain.model.GroupValidationResult
 import com.kobietka.social_fitness_app.domain.state.StandardTextFieldState
 import com.kobietka.social_fitness_app.domain.usecase.auth.LogoutUserUseCase
 import com.kobietka.social_fitness_app.domain.usecase.group.*
+import com.kobietka.social_fitness_app.domain.usecase.groupmember.JoinGroupUseCase
 import com.kobietka.social_fitness_app.domain.usecase.main.GetUsersUseCase
 import com.kobietka.social_fitness_app.util.Progress
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +26,7 @@ class MainViewModel
     private val logoutUser: LogoutUserUseCase,
     private val validateGroup: ValidateGroup,
     private val createGroup: CreateGroupUseCase,
+    private val joinGroup: JoinGroupUseCase,
     getGroups: GetGroupsUseCase,
     getRemoteGroups: GetRemoteGroupsUseCase
 ) : ViewModel() {
@@ -37,6 +39,9 @@ class MainViewModel
 
     private val _groupDescription = mutableStateOf(StandardTextFieldState(label = "Group description"))
     val groupDescription: State<StandardTextFieldState> = _groupDescription
+
+    private val _code = mutableStateOf(StandardTextFieldState(label = "Invitation code"))
+    val code: State<StandardTextFieldState> = _code
 
     init {
         getUsers().onEach { users ->
@@ -85,6 +90,33 @@ class MainViewModel
 
     fun onGroupNameChange(value: String){
         _groupName.value = _groupName.value.copy(text = value)
+    }
+
+    fun onCodeChange(value: String){
+        _code.value = _code.value.copy(text = value)
+    }
+
+    fun onJoinGroupClick(){
+        val invitationCode = _code.value.text.trim()
+        if(invitationCode.isNotBlank()){
+            joinGroup(code = invitationCode).onEach { progress ->
+                when(progress){
+                    is Progress.Loading -> _screenState.value = _screenState.value.copy(isJoiningGroup = true)
+                    is Progress.Finished -> _screenState.value = _screenState.value.copy(
+                        isJoiningGroup = false,
+                        isCreatingGroup = false
+                    )
+                    is Progress.Error -> _screenState.value = _screenState.value.copy(
+                        isJoiningGroup = false,
+                        joinGroupError = progress.message
+                    )
+                    is Progress.Unauthorized -> {
+                        _screenState.value = _screenState.value.copy(isJoiningGroup = false)
+                        logoutUser()
+                    }
+                }
+            }.launchIn(viewModelScope)
+        } else _code.value = _code.value.copy(error = "This field cannot be blank")
     }
 
     fun onCreateGroupClick(){
