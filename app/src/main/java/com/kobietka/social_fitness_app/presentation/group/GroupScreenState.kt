@@ -5,7 +5,8 @@ import com.kobietka.social_fitness_app.domain.model.*
 
 data class GroupScreenState(
     val user: User = User(id = "", nickname = "", email = ""),
-    val isOwner: Boolean = false,
+    val isUpdating: Boolean = false,
+    val updateError: String = "",
     val group: Group = Group(id = "", name = "", description = "", ownerId = ""),
     val posts: List<Post> = emptyList(),
     val events: List<Event> = emptyList(),

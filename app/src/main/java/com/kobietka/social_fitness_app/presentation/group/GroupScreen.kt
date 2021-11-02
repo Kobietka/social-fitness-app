@@ -1,5 +1,10 @@
 package com.kobietka.social_fitness_app.presentation.group
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -15,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 
 
+@ExperimentalAnimationApi
 @Composable
 fun GroupScreen(
     groupViewModel: GroupViewModel = hiltViewModel(),
@@ -30,32 +36,74 @@ fun GroupScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Column(
+                    Text(
                         modifier = Modifier
-                            .padding(20.dp)
+                            .padding(20.dp),
+                        text = state.group.name,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                    Row(
+                        modifier = Modifier.padding(20.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = state.group.name,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp
-                        )
-                    }
-                    if(state.isOwner) IconButton(
-                        modifier = Modifier.padding(end = 20.dp),
-                        onClick = { navController.navigate("/edit_group/${state.group.id}") }
-                    ) {
-                        Icon(
-                            modifier = Modifier
-                                .size(30.dp),
-                            tint = Color.Black,
-                            imageVector = Icons.Outlined.Edit,
-                            contentDescription = "edit account"
-                        )
+                        if(state.isUpdating) CircularProgressIndicator(modifier = Modifier.size(30.dp))
+                        if(state.group.ownerId == state.user.id) IconButton(
+                            onClick = { navController.navigate("/edit_group/${state.group.id}") }
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .size(30.dp),
+                                tint = Color.Black,
+                                imageVector = Icons.Outlined.Edit,
+                                contentDescription = "edit account"
+                            )
+                        }
                     }
                 }
             }
         }
     ) {
-
+        AnimatedVisibility(
+            visible = state.updateError.isNotBlank(),
+            exit = slideOutVertically(),
+            enter = slideInVertically()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.primary),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
+                    text = state.updateError ?: "??",
+                    color = Color.White
+                )
+            }
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
