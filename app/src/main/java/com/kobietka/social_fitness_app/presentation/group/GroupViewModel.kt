@@ -10,19 +10,21 @@ import com.kobietka.social_fitness_app.domain.usecase.event.GetEventsForGroupUse
 import com.kobietka.social_fitness_app.domain.usecase.group.GetGroupMembersUseCase
 import com.kobietka.social_fitness_app.domain.usecase.group.GetGroupUseCase
 import com.kobietka.social_fitness_app.domain.usecase.group.GetRemoteGroupUseCase
+import com.kobietka.social_fitness_app.domain.usecase.main.GetUsersUseCase
 import com.kobietka.social_fitness_app.domain.usecase.post.GetPostsForGroupUseCase
 import com.kobietka.social_fitness_app.domain.usecase.post.MatchPostsWithMembersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.Exception
 
 
 @HiltViewModel
 class GroupViewModel
 @Inject constructor(
     handle: SavedStateHandle,
+    getUsers: GetUsersUseCase,
     private val getGroup: GetGroupUseCase,
     private val getPostsForGroup: GetPostsForGroupUseCase,
     private val matchPostsWithMembers: MatchPostsWithMembersUseCase,
@@ -35,9 +37,17 @@ class GroupViewModel
     val state: State<GroupScreenState> = _state
 
     init {
+        getUsers().onEach { users->
+            try {
+                _state.value = _state.value.copy(user = users.first())
+            } catch (exception: Exception){ }
+        }.launchIn(viewModelScope)
         handle.get<String>("groupId")?.let { groupId ->
             getGroup(groupId = groupId).onEach { group ->
-                _state.value = _state.value.copy(group = group)
+                _state.value = _state.value.copy(
+                    group = group,
+                    isOwner = _state.value.user.id == group.ownerId
+                )
             }.launchIn(viewModelScope)
             getRemoteGroup(groupId = groupId).onEach {
                 /* add update animation */

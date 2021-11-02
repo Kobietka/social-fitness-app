@@ -40,7 +40,7 @@ fun GroupScreen(
                             fontSize = 18.sp
                         )
                     }
-                    IconButton(
+                    if(state.isOwner) IconButton(
                         modifier = Modifier.padding(end = 20.dp),
                         onClick = { navController.navigate("/edit_group/${state.group.id}") }
                     ) {
