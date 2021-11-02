@@ -43,16 +43,22 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(@Named("token") token: String): OkHttpClient {
+    fun provideOkHttpClient(
+        userCredentialsRepository: UserCredentialsRepository
+    ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor { chain ->
-                val original = chain.request()
-                val newRequest = original.newBuilder()
-                    .addHeader("Authorization", "Bearer $token")
-                    .method(original.method(), original.body())
-                    .url(original.url())
-                    .build()
-                chain.proceed(newRequest)
+                runBlocking {
+                    val original = chain.request()
+                    val newRequest = original.newBuilder()
+                        .addHeader(
+                            "Authorization",
+                            "Bearer ${userCredentialsRepository.getUserToken()}"
+                        ).method(original.method(), original.body())
+                        .url(original.url())
+                        .build()
+                    chain.proceed(newRequest)
+                }
             }.build()
     }
 
@@ -108,14 +114,6 @@ class NetworkModule {
     @Singleton
     fun provideInvitationService(@Named("retrofitAuth") retrofit: Retrofit): InvitationService {
         return retrofit.create(InvitationService::class.java)
-    }
-
-    @Provides
-    @Named("token")
-    fun provideUserToken(
-        userCredentialsRepository: UserCredentialsRepository
-    ): String = runBlocking {
-        return@runBlocking userCredentialsRepository.getUserToken()
     }
 
 }
