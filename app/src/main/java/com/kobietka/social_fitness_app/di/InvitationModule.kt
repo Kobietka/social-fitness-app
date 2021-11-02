@@ -4,6 +4,7 @@ import com.kobietka.social_fitness_app.domain.repository.local.InvitationReposit
 import com.kobietka.social_fitness_app.domain.repository.remote.InvitationRemoteRepository
 import com.kobietka.social_fitness_app.domain.usecase.invitation.CreateInvitationUseCase
 import com.kobietka.social_fitness_app.domain.usecase.invitation.DeleteInvitationUseCase
+import com.kobietka.social_fitness_app.domain.usecase.invitation.GetInvitationUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,6 +27,14 @@ class InvitationModule {
     }
 
     @Provides
+    fun provideGetInvitationUseCase(
+        invitationRepository: InvitationRepository
+    ): GetInvitationUseCase {
+        return GetInvitationUseCase(invitationRepository = invitationRepository)
+    }
+
+
+    @Provides
     fun provideDeleteInvitationUseCase(
         invitationRemoteRepository: InvitationRemoteRepository,
         invitationRepository: InvitationRepository
@@ -37,3 +46,21 @@ class InvitationModule {
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
