@@ -1,6 +1,9 @@
 package com.kobietka.social_fitness_app.domain.usecase.post
 
+import android.util.Log
+import com.kobietka.social_fitness_app.data.entity.CommentEntity
 import com.kobietka.social_fitness_app.data.entity.PostEntity
+import com.kobietka.social_fitness_app.domain.repository.local.CommentRepository
 import com.kobietka.social_fitness_app.domain.repository.local.PostRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.PostRemoteRepository
 import com.kobietka.social_fitness_app.util.NetworkResult
@@ -11,7 +14,8 @@ import kotlinx.coroutines.flow.flow
 
 class GetRemotePostUseCase(
     private val postRemoteRepository: PostRemoteRepository,
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
+    private val commentRepository: CommentRepository
 ) {
     operator fun invoke(
         postId: String,
@@ -30,6 +34,20 @@ class GetRemotePostUseCase(
                             createdAt = postDto.createdAt
                         )
                     )
+                    postDto.comments?.let { commentDtos ->
+                        commentDtos.forEach { commentDto ->
+                            Log.e("comment", commentDto.content)
+                            commentRepository.insert(
+                                CommentEntity(
+                                    id = commentDto.id,
+                                    content = commentDto.content,
+                                    postId = postId,
+                                    userId = commentDto.createdBy.id,
+                                    createdAt = commentDto.createdAt
+                                )
+                            )
+                        }
+                    }
                     emit(Progress.Finished)
                 }
             }
