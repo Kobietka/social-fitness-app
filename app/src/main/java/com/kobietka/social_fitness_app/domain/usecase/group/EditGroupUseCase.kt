@@ -1,6 +1,5 @@
 package com.kobietka.social_fitness_app.domain.usecase.group
 
-import com.kobietka.social_fitness_app.data.entity.GroupEntity
 import com.kobietka.social_fitness_app.domain.repository.local.GroupRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.GroupRemoteRepository
 import com.kobietka.social_fitness_app.network.request.EditGroupRequest
@@ -31,13 +30,11 @@ class EditGroupUseCase(
         when(result){
             is NetworkResult.Success -> {
                 result.data.let { groupResponse ->
-                    groupRepository.insert(
-                        GroupEntity(
-                            id = groupResponse.id,
-                            name = groupResponse.name,
-                            description = groupResponse.description,
-                            ownerId = groupResponse.owner.id
-                        )
+                    groupRepository.updateGroup(
+                        id = groupResponse.id,
+                        name = groupResponse.name,
+                        description = groupResponse.description,
+                        ownerId = groupResponse.owner.id
                     )
                     emit(Progress.Finished)
                 }

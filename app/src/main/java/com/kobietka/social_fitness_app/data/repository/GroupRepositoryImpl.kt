@@ -28,4 +28,18 @@ class GroupRepositoryImpl(
     override suspend fun deleteGroupById(groupId: String) {
         groupDao.deleteGroupById(groupId = groupId)
     }
+
+    override suspend fun updateGroup(
+        id: String,
+        name: String,
+        description: String,
+        ownerId: String
+    ) {
+        groupDao.updateGroup(
+            id = id,
+            name = name,
+            description = description,
+            ownerId = ownerId
+        )
+    }
 }

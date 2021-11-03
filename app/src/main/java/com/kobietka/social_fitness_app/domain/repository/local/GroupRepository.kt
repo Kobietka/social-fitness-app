@@ -10,4 +10,10 @@ interface GroupRepository {
     fun getGroupById(groupId: String): Flow<GroupEntity>
     suspend fun deleteAllGroups()
     suspend fun deleteGroupById(groupId: String)
+    suspend fun updateGroup(
+        id: String,
+        name: String,
+        description: String,
+        ownerId: String
+    )
 }

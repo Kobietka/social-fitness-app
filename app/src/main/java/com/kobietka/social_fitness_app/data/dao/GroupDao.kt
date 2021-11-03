@@ -20,6 +20,14 @@ interface GroupDao {
     @Query("select * from `group` where id = :groupId")
     fun getGroupById(groupId: String): Flow<GroupEntity>
 
+    @Query("update `group` set name = :name, description = :description, ownerId = :ownerId where id = :id")
+    suspend fun updateGroup(
+        id: String,
+        name: String,
+        description: String,
+        ownerId: String
+    )
+
     @Query("delete from `group`")
     suspend fun deleteAllGroups()
 

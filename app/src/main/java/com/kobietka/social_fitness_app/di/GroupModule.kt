@@ -72,13 +72,15 @@ class GroupModule {
         groupRemoteRepository: GroupRemoteRepository,
         postRepository: PostRepository,
         groupRepository: GroupRepository,
-        invitationRepository: InvitationRepository
+        invitationRepository: InvitationRepository,
+        groupMemberRepository: GroupMemberRepository
     ): GetRemoteGroupUseCase {
         return GetRemoteGroupUseCase(
             groupRepository = groupRepository,
             groupRemoteRepository = groupRemoteRepository,
             postRepository = postRepository,
-            invitationRepository = invitationRepository
+            invitationRepository = invitationRepository,
+            groupMemberRepository = groupMemberRepository
         )
     }
 
