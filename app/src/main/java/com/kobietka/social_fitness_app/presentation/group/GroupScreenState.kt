@@ -7,6 +7,7 @@ data class GroupScreenState(
     val user: User = User(id = "", nickname = "", email = ""),
     val isUpdating: Boolean = false,
     val updateError: String = "",
+    val page: GroupPage = GroupPage.POSTS,
     val group: Group = Group(id = "", name = "", description = "", ownerId = ""),
     val posts: List<Post> = emptyList(),
     val events: List<Event> = emptyList(),

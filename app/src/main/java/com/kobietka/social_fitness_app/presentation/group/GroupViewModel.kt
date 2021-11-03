@@ -82,6 +82,14 @@ class GroupViewModel
         }
     }
 
+    fun onPostsClick(){
+        _state.value = _state.value.copy(page = GroupPage.POSTS)
+    }
+
+    fun onEventsClick(){
+        _state.value = _state.value.copy(page = GroupPage.EVENTS)
+    }
+
 }
 
 
