@@ -1,11 +1,10 @@
 package com.kobietka.social_fitness_app.di
 
+import com.kobietka.social_fitness_app.domain.repository.local.CommentRepository
+import com.kobietka.social_fitness_app.domain.repository.local.GroupMemberRepository
 import com.kobietka.social_fitness_app.domain.repository.local.PostRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.PostRemoteRepository
-import com.kobietka.social_fitness_app.domain.usecase.post.CreatePostUseCase
-import com.kobietka.social_fitness_app.domain.usecase.post.DeletePostUseCase
-import com.kobietka.social_fitness_app.domain.usecase.post.EditPostUseCase
-import com.kobietka.social_fitness_app.domain.usecase.post.GetRemotePostUseCase
+import com.kobietka.social_fitness_app.domain.usecase.post.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,6 +27,17 @@ class PostModule {
     }
 
     @Provides
+    fun provideGetPostUseCase(
+        postRepository: PostRepository,
+        groupMemberRepository: GroupMemberRepository
+    ): GetPostUseCase {
+        return GetPostUseCase(
+            postRepository = postRepository,
+            groupMemberRepository = groupMemberRepository
+        )
+    }
+
+    @Provides
     fun provideDeletePostUseCase(
         postRemoteRepository: PostRemoteRepository,
         postRepository: PostRepository
@@ -41,11 +51,13 @@ class PostModule {
     @Provides
     fun provideGetRemotePostUseCase(
         postRemoteRepository: PostRemoteRepository,
-        postRepository: PostRepository
+        postRepository: PostRepository,
+        commentRepository: CommentRepository
     ): GetRemotePostUseCase {
         return GetRemotePostUseCase(
             postRepository = postRepository,
-            postRemoteRepository = postRemoteRepository
+            postRemoteRepository = postRemoteRepository,
+            commentRepository = commentRepository
         )
     }
 
