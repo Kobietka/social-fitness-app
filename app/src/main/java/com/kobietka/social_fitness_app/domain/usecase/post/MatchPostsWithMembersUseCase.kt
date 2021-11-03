@@ -26,6 +26,6 @@ class MatchPostsWithMembersUseCase(private val groupMemberRepository: GroupMembe
                 )
             )
         }
-        return posts
+        return posts.reversed()
     }
 }

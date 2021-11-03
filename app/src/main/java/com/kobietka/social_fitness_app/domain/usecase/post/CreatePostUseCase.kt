@@ -33,7 +33,7 @@ class CreatePostUseCase(
                             id = postDto.id,
                             content = postDto.content,
                             groupId = groupId,
-                            userId = postDto.user.id,
+                            userId = postDto.createdBy.id,
                             createdAt = postDto.createdAt
                         )
                     )

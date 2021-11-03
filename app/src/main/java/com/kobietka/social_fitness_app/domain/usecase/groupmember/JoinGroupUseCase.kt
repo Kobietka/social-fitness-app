@@ -68,7 +68,7 @@ class JoinGroupUseCase(
                                                 id = postDto.id,
                                                 groupId = groupResponse.id,
                                                 content = postDto.content,
-                                                userId = postDto.user.id,
+                                                userId = postDto.createdBy.id,
                                                 createdAt = postDto.createdAt
                                             )
                                         )
