@@ -80,7 +80,7 @@ class JoinGroupUseCase(
                                                         content = commentDto.content,
                                                         createdAt = commentDto.createdAt,
                                                         postId = postDto.id,
-                                                        userId = commentDto.user.id
+                                                        userId = commentDto.createdBy.id
                                                     )
                                                 )
                                             }

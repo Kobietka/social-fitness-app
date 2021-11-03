@@ -36,7 +36,7 @@ class EditCommentUseCase(
                             content = commentDto.content,
                             postId = postId,
                             createdAt = commentDto.createdAt,
-                            userId = commentDto.user.id
+                            userId = commentDto.createdBy.id
                         )
                     )
                     emit(Progress.Finished)

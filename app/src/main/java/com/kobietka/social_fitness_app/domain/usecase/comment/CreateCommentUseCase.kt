@@ -33,7 +33,7 @@ class CreateCommentUseCase(
                             id = commentDto.id,
                             content = commentDto.content,
                             postId = postId,
-                            userId = commentDto.user.id,
+                            userId = commentDto.createdBy.id,
                             createdAt = commentDto.createdAt
                         )
                     )
