@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -58,6 +57,13 @@ class MainActivity : ComponentActivity() {
                         arguments = listOf(navArgument(name = "groupId"){ type = NavType.StringType })
                     ){
                         GroupScreen(navController = navController)
+                    }
+
+                    composable(
+                        route = Screen.Post.route,
+                        arguments = listOf(navArgument(name = "postId"){ type = NavType.StringType })
+                    ){
+
                     }
 
                     composable(
