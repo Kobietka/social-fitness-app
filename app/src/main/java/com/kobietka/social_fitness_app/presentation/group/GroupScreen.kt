@@ -58,7 +58,6 @@ fun GroupScreen(
                                 modifier = Modifier.padding(20.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                if(state.isUpdating) CircularProgressIndicator(modifier = Modifier.size(30.dp))
                                 if(state.group.ownerId == state.user.id) IconButton(
                                     onClick = { navController.navigate("/edit_group/${state.group.id}") }
                                 ) {
@@ -119,7 +118,7 @@ fun GroupScreen(
                 enter = fadeIn()
             ) {
                 FloatingActionButton(
-                    onClick = { /* navigate to create post */ },
+                    onClick = { navController.navigate("/create_post/${state.group.id}") },
                     backgroundColor = MaterialTheme.colors.primary
                 ) {
                     Icon(
@@ -150,16 +149,26 @@ fun GroupScreen(
                 )
             }
         }
-        if(state.page == GroupPage.POSTS) LazyColumn(
-            state = postListState
-        ) {
-            items(state.posts){ post ->
-                PostListItem(
-                    post = post,
-                    onPostClick = { postId ->
-                        navController.navigate("/post/$postId")
-                    }
-                )
+        if(state.isUpdating){
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator()
+            }
+        } else {
+            if(state.page == GroupPage.POSTS) LazyColumn(
+                state = postListState
+            ) {
+                items(state.posts){ post ->
+                    PostListItem(
+                        post = post,
+                        onPostClick = { postId ->
+                            navController.navigate("/post/$postId")
+                        }
+                    )
+                }
             }
         }
     }

@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.kobietka.social_fitness_app.presentation.create_post.CreatePostScreen
 import com.kobietka.social_fitness_app.presentation.edit_group.EditGroupScreen
 import com.kobietka.social_fitness_app.presentation.edit_user.EditUserScreen
 import com.kobietka.social_fitness_app.presentation.group.GroupScreen
@@ -63,7 +64,14 @@ class MainActivity : ComponentActivity() {
                         route = Screen.Post.route,
                         arguments = listOf(navArgument(name = "postId"){ type = NavType.StringType })
                     ){
+                        // Post details screen
+                    }
 
+                    composable(
+                        route = Screen.CreatePost.route,
+                        arguments = listOf(navArgument(name = "groupId"){ type = NavType.StringType })
+                    ){
+                        CreatePostScreen(onSuccessPostCreation = { onBackPressed() })
                     }
 
                     composable(
