@@ -9,4 +9,5 @@ sealed class Screen(val route: String){
     object EditGroup : Screen("/edit_group/{groupId}")
     object EditUser : Screen("/edit_user")
     object Loading : Screen("/loading")
+    object Post : Screen("/post/{postId}")
 }
