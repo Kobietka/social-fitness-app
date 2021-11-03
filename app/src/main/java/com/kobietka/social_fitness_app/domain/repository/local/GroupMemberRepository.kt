@@ -8,4 +8,5 @@ interface GroupMemberRepository {
     suspend fun insert(groupMemberEntity: GroupMemberEntity)
     fun getMembersByGroupId(groupId: String): Flow<List<GroupMemberEntity>>
     suspend fun deleteMembersByGroupId(groupId: String)
+    suspend fun getMemberByUserId(userId: String): GroupMemberEntity
 }
