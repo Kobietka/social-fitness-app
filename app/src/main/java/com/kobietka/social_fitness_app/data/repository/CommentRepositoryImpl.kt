@@ -11,7 +11,7 @@ class CommentRepositoryImpl(private val commentDao: CommentDao) : CommentReposit
         commentDao.insert(commentEntity = commentEntity)
     }
 
-    override suspend fun getCommentsForPost(postId: String): Flow<List<CommentEntity>> {
+    override fun getCommentsForPost(postId: String): Flow<List<CommentEntity>> {
         return commentDao.getCommentsForPost(postId = postId)
     }
 
