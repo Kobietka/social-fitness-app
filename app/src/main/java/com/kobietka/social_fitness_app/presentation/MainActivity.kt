@@ -17,6 +17,7 @@ import com.kobietka.social_fitness_app.presentation.group.GroupScreen
 import com.kobietka.social_fitness_app.presentation.loading.LoadingScreen
 import com.kobietka.social_fitness_app.presentation.login.LoginScreen
 import com.kobietka.social_fitness_app.presentation.main_screen.MainScreen
+import com.kobietka.social_fitness_app.presentation.post.PostScreen
 import com.kobietka.social_fitness_app.presentation.register.RegisterScreen
 import com.kobietka.social_fitness_app.presentation.theme.SocialfitnessappTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,9 +63,12 @@ class MainActivity : ComponentActivity() {
 
                     composable(
                         route = Screen.Post.route,
-                        arguments = listOf(navArgument(name = "postId"){ type = NavType.StringType })
+                        arguments = listOf(
+                            navArgument(name = "postId"){ type = NavType.StringType },
+                            navArgument(name = "groupId"){ type = NavType.StringType }
+                        )
                     ){
-                        // Post details screen
+                        PostScreen()
                     }
 
                     composable(

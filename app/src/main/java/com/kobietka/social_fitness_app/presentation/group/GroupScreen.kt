@@ -165,7 +165,7 @@ fun GroupScreen(
                     PostListItem(
                         post = post,
                         onPostClick = { postId ->
-                            navController.navigate("/post/$postId")
+                            navController.navigate("/group/${state.group.id}/post/$postId")
                         }
                     )
                 }
