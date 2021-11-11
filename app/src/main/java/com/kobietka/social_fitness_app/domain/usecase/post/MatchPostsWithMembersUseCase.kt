@@ -22,7 +22,7 @@ class MatchPostsWithMembersUseCase(private val groupMemberRepository: GroupMembe
                     id = postEntity.id,
                     content = postEntity.content,
                     createdAt = postEntity.createdAt,
-                    user = groupMemberEntity?.toGroupMember() ?: GroupMember(id = "", nickname = "User not found")
+                    user = groupMemberEntity?.toGroupMember() ?: GroupMember(id = "", userId = "", nickname = "User not found")
                 )
             )
         }
