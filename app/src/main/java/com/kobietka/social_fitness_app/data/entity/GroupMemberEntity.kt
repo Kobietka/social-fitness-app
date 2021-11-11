@@ -31,6 +31,7 @@ data class GroupMemberEntity(
 fun GroupMemberEntity.toGroupMember(): GroupMember{
     return GroupMember(
         id = this.id,
+        userId = this.userId,
         nickname = this.nickname
     )
 }
