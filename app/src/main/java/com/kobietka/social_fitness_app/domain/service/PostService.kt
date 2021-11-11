@@ -3,6 +3,7 @@ package com.kobietka.social_fitness_app.domain.service
 import com.kobietka.social_fitness_app.network.request.CreatePostRequest
 import com.kobietka.social_fitness_app.network.request.EditPostRequest
 import com.kobietka.social_fitness_app.network.response.PostDto
+import retrofit2.Response
 import retrofit2.http.*
 
 
@@ -21,6 +22,6 @@ interface PostService {
     ): PostDto
 
     @DELETE("/api/post/{id}")
-    suspend fun deletePost(@Path("id") id: String)
+    suspend fun deletePost(@Path("id") id: String): Response<Unit>
 
 }
