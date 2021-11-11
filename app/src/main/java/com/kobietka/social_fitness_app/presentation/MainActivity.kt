@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
                             navArgument(name = "groupId"){ type = NavType.StringType }
                         )
                     ){
-                        PostScreen()
+                        PostScreen(onPostDelete = { onBackPressed() })
                     }
 
                     composable(
