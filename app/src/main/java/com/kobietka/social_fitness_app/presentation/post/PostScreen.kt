@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Send
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kobietka.social_fitness_app.presentation.components.MultilineTextField
+import com.kobietka.social_fitness_app.presentation.components.StandardTextField
 import com.kobietka.social_fitness_app.presentation.post.components.CommentListItem
 
 
@@ -33,6 +35,7 @@ fun PostScreen(
 ) {
     val state = postViewModel.state.value
     val comment = postViewModel.comment.value
+    val postContent = postViewModel.postContent.value
 
     Column {
         Surface(
@@ -65,8 +68,17 @@ fun PostScreen(
                                     contentDescription = "delete post"
                                 )
                             }
-                            IconButton(
-                                onClick = { }
+                            if(state.isEditingPost) IconButton(
+                                onClick = postViewModel::onCancelEditPostClick
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Cancel,
+                                    modifier = Modifier.size(30.dp),
+                                    contentDescription = "cancel edit post"
+                                )
+                            }
+                            else IconButton(
+                                onClick = postViewModel::onEditPostClick
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Edit,
@@ -93,7 +105,26 @@ fun PostScreen(
                         color = Color.LightGray
                     )
                 }
-                Text(text = state.post.content)
+                if(state.isEditingPost) Column(
+                    horizontalAlignment = Alignment.End
+                ) {
+                    StandardTextField(
+                        text = postContent.text,
+                        error = postContent.error,
+                        label = postContent.label,
+                        onValueChange = postViewModel::onPostContentChanged
+                    )
+                    if(state.isEditingPostLoading) CircularProgressIndicator()
+                    else IconButton(
+                        onClick = postViewModel::onSendEditPostClick
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Send,
+                            modifier = Modifier.size(30.dp),
+                            contentDescription = "send edit post"
+                        )
+                    }
+                } else Text(text = state.post.content)
             }
         }
         AnimatedVisibility(

@@ -8,6 +8,7 @@ import com.kobietka.social_fitness_app.domain.model.Post
 data class PostScreenState(
     val isLoading: Boolean = false,
     val isEditingPost: Boolean = false,
+    val isEditingPostLoading: Boolean = false,
     val isDeletePostLoading: Boolean = false,
     val loadingError: String = "",
     val loggedUser: GroupMember = GroupMember(id = "", userId = "", nickname = ""),

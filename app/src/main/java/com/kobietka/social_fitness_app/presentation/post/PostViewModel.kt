@@ -12,6 +12,7 @@ import com.kobietka.social_fitness_app.domain.usecase.comment.CreateCommentUseCa
 import com.kobietka.social_fitness_app.domain.usecase.comment.GetCommentsForPostUseCase
 import com.kobietka.social_fitness_app.domain.usecase.main.GetUsersUseCase
 import com.kobietka.social_fitness_app.domain.usecase.post.DeletePostUseCase
+import com.kobietka.social_fitness_app.domain.usecase.post.EditPostUseCase
 import com.kobietka.social_fitness_app.domain.usecase.post.GetPostUseCase
 import com.kobietka.social_fitness_app.domain.usecase.post.GetRemotePostUseCase
 import com.kobietka.social_fitness_app.util.Progress
@@ -32,7 +33,8 @@ class PostViewModel
     private val logoutUser: LogoutUserUseCase,
     private val getRemotePost: GetRemotePostUseCase,
     private val getUsers: GetUsersUseCase,
-    private val deletePost: DeletePostUseCase
+    private val deletePost: DeletePostUseCase,
+    private val editPost: EditPostUseCase
 ) : ViewModel() {
 
     private val _state = mutableStateOf(PostScreenState())
@@ -41,11 +43,15 @@ class PostViewModel
     private val _comment = mutableStateOf(StandardTextFieldState(label = "Comment"))
     val comment: State<StandardTextFieldState> = _comment
 
+    private val _postContent = mutableStateOf(StandardTextFieldState(label = "Content"))
+    val postContent: State<StandardTextFieldState> = _postContent
+
     init {
         handle.get<String>("postId")?.let { postId ->
             getPost(postId = postId).onEach { post ->
                 post?.let {
                     _state.value = _state.value.copy(post = it)
+                    _postContent.value = _postContent.value.copy(text = it.content)
                 }
                 getUsers().onEach { users ->
                     try {
@@ -91,6 +97,44 @@ class PostViewModel
 
     fun onCommentChanged(value: String){
         _comment.value = _comment.value.copy(text = value)
+    }
+
+    fun onPostContentChanged(value: String){
+        _postContent.value = _postContent.value.copy(text = value)
+    }
+
+    fun onEditPostClick(){
+        _state.value = _state.value.copy(isEditingPost = true)
+    }
+
+    fun onCancelEditPostClick(){
+        _state.value = _state.value.copy(isEditingPost = false)
+    }
+
+    fun onSendEditPostClick(){
+        val content = _postContent.value.text.trim()
+
+        if(content.isBlank()){
+            _postContent.value = _postContent.value.copy(error = "This field cannot be empty")
+        } else {
+            editPost(
+                postId = _state.value.post.id,
+                content = content
+            ).onEach { progress ->
+                when(progress){
+                    is Progress.Loading -> _state.value = _state.value.copy(isEditingPostLoading = true)
+                    is Progress.Finished -> _state.value = _state.value.copy(
+                        isEditingPostLoading = false,
+                        isEditingPost = false
+                    )
+                    is Progress.Error -> _postContent.value = _postContent.value.copy(error = progress.message)
+                    is Progress.Unauthorized -> {
+                        _state.value = _state.value.copy(isEditingPostLoading = false)
+                        logoutUser()
+                    }
+                }
+            }.launchIn(viewModelScope)
+        }
     }
 
     fun onDeletePostClick(onFinish: () -> Unit){
