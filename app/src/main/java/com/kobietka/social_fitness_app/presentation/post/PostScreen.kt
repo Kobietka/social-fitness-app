@@ -183,7 +183,11 @@ fun PostScreen(
             CircularProgressIndicator()
         } else LazyColumn {
             items(state.comments){ comment ->
-                CommentListItem(comment = comment)
+                CommentListItem(
+                    comment = comment,
+                    isLoggedUserACommentOwner = comment.user.userId == state.loggedUser.userId,
+                    onDeleteCommentClick = postViewModel::onDeleteCommentClick
+                )
             }
         }
     }

@@ -9,6 +9,7 @@ import com.kobietka.social_fitness_app.domain.model.GroupMember
 import com.kobietka.social_fitness_app.domain.state.StandardTextFieldState
 import com.kobietka.social_fitness_app.domain.usecase.auth.LogoutUserUseCase
 import com.kobietka.social_fitness_app.domain.usecase.comment.CreateCommentUseCase
+import com.kobietka.social_fitness_app.domain.usecase.comment.DeleteCommentUseCase
 import com.kobietka.social_fitness_app.domain.usecase.comment.GetCommentsForPostUseCase
 import com.kobietka.social_fitness_app.domain.usecase.main.GetUsersUseCase
 import com.kobietka.social_fitness_app.domain.usecase.post.DeletePostUseCase
@@ -34,7 +35,8 @@ class PostViewModel
     private val getRemotePost: GetRemotePostUseCase,
     private val getUsers: GetUsersUseCase,
     private val deletePost: DeletePostUseCase,
-    private val editPost: EditPostUseCase
+    private val editPost: EditPostUseCase,
+    private val deleteComment: DeleteCommentUseCase
 ) : ViewModel() {
 
     private val _state = mutableStateOf(PostScreenState())
@@ -135,6 +137,15 @@ class PostViewModel
                 }
             }.launchIn(viewModelScope)
         }
+    }
+
+    fun onDeleteCommentClick(commentId: String){
+        deleteComment(commentId = commentId).onEach { progress ->
+            when(progress){
+                Progress.Unauthorized -> logoutUser()
+                else -> { }
+            }
+        }.launchIn(viewModelScope)
     }
 
     fun onDeletePostClick(onFinish: () -> Unit){
