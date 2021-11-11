@@ -10,6 +10,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,7 +28,8 @@ import com.kobietka.social_fitness_app.presentation.post.components.CommentListI
 @ExperimentalAnimationApi
 @Composable
 fun PostScreen(
-    postViewModel: PostViewModel = hiltViewModel()
+    postViewModel: PostViewModel = hiltViewModel(),
+    onPostDelete: () -> Unit
 ) {
     val state = postViewModel.state.value
     val comment = postViewModel.comment.value
@@ -41,6 +44,43 @@ fun PostScreen(
             Column(
                 modifier = Modifier.padding(20.dp)
             ) {
+                if(state.post.user.userId == state.loggedUser.userId){
+                    Column {
+                        Row(
+                            modifier = Modifier
+                                .padding(bottom = 10.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            if(state.isDeletePostLoading) CircularProgressIndicator()
+                            else IconButton(
+                                onClick = {
+                                    postViewModel.onDeletePostClick { onPostDelete() }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    modifier = Modifier.size(30.dp),
+                                    contentDescription = "delete post"
+                                )
+                            }
+                            IconButton(
+                                onClick = { }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    modifier = Modifier.size(30.dp),
+                                    contentDescription = "edit post"
+                                )
+                            }
+                        }
+                        Divider(
+                            color = Color.Gray,
+                            modifier = Modifier.padding(bottom = 20.dp)
+                        )
+                    }
+                }
                 Row {
                     Text(
                         text = state.post.user.nickname,

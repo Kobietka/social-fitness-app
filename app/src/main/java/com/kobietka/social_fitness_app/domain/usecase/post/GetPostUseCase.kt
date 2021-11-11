@@ -13,16 +13,18 @@ class GetPostUseCase(
     private val postRepository: PostRepository,
     private val groupMemberRepository: GroupMemberRepository
 ) {
-    operator fun invoke(postId: String): Flow<Post> {
+    operator fun invoke(postId: String): Flow<Post?> {
         return postRepository.getPostById(postId = postId).map { postEntity ->
-            val groupMembers = groupMemberRepository.getMembersByGroupId(postEntity.groupId).first()
-            val member = groupMembers.first { it.userId == postEntity.userId }.toGroupMember()
-            Post(
-                id = postEntity.id,
-                content = postEntity.content,
-                user = member,
-                createdAt = postEntity.createdAt
-            )
+            postEntity?.let {
+                val groupMembers = groupMemberRepository.getMembersByGroupId(postEntity.groupId).first()
+                val member = groupMembers.first { it.userId == postEntity.userId }.toGroupMember()
+                Post(
+                    id = postEntity.id,
+                    content = postEntity.content,
+                    user = member,
+                    createdAt = postEntity.createdAt
+                )
+            }
         }
     }
 }

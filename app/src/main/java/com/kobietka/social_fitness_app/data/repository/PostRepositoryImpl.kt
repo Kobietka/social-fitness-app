@@ -31,7 +31,7 @@ class PostRepositoryImpl(private val postDao: PostDao) : PostRepository {
         postDao.deletePostById(postId = postId)
     }
 
-    override fun getPostById(postId: String): Flow<PostEntity> {
+    override fun getPostById(postId: String): Flow<PostEntity?> {
         return postDao.getPostById(postId = postId)
     }
 }
