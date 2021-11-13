@@ -35,6 +35,7 @@ fun PostScreen(
 ) {
     val state = postViewModel.state.value
     val comment = postViewModel.comment.value
+    val comments = postViewModel.comments.value
     val postContent = postViewModel.postContent.value
 
     Column {
@@ -115,7 +116,7 @@ fun PostScreen(
                         onValueChange = postViewModel::onPostContentChanged
                     )
                     if(state.isEditingPostLoading) CircularProgressIndicator()
-                    else IconButton(
+                    else if(postContent.text.isNotBlank()) IconButton(
                         onClick = postViewModel::onSendEditPostClick
                     ) {
                         Icon(
@@ -167,7 +168,7 @@ fun PostScreen(
                 onValueChange = postViewModel::onCommentChanged
             )
             if(state.isCreatingComment) CircularProgressIndicator()
-            else IconButton(onClick = postViewModel::onSendCommentClick) {
+            else if(comment.text.isNotBlank()) IconButton(onClick = postViewModel::onSendCommentClick) {
                 Icon(imageVector = Icons.Default.Send, contentDescription = "send comment")
             }
         }
@@ -182,11 +183,16 @@ fun PostScreen(
         ) {
             CircularProgressIndicator()
         } else LazyColumn {
-            items(state.comments){ comment ->
+            items(comments){ commentState ->
                 CommentListItem(
-                    comment = comment,
-                    isLoggedUserACommentOwner = comment.user.userId == state.loggedUser.userId,
-                    onDeleteCommentClick = postViewModel::onDeleteCommentClick
+                    commentState = commentState,
+                    isLoggedUserACommentOwner = commentState.comment.user.userId == state.loggedUser.userId,
+                    onDeleteCommentClick = postViewModel::onDeleteCommentClick,
+                    onExpandCommentClick = postViewModel::onExpandCommentClick,
+                    onEditCommentClick = postViewModel::onEditCommentClick,
+                    onCommentContentChange = postViewModel::onCommentContentChange,
+                    onCancelCommentEdit = postViewModel::onCancelCommentEdit,
+                    onUpdateComment = postViewModel::onUpdateComment
                 )
             }
         }

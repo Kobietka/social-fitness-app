@@ -10,6 +10,7 @@ import com.kobietka.social_fitness_app.domain.state.StandardTextFieldState
 import com.kobietka.social_fitness_app.domain.usecase.auth.LogoutUserUseCase
 import com.kobietka.social_fitness_app.domain.usecase.comment.CreateCommentUseCase
 import com.kobietka.social_fitness_app.domain.usecase.comment.DeleteCommentUseCase
+import com.kobietka.social_fitness_app.domain.usecase.comment.EditCommentUseCase
 import com.kobietka.social_fitness_app.domain.usecase.comment.GetCommentsForPostUseCase
 import com.kobietka.social_fitness_app.domain.usecase.main.GetUsersUseCase
 import com.kobietka.social_fitness_app.domain.usecase.post.DeletePostUseCase
@@ -36,11 +37,15 @@ class PostViewModel
     private val getUsers: GetUsersUseCase,
     private val deletePost: DeletePostUseCase,
     private val editPost: EditPostUseCase,
-    private val deleteComment: DeleteCommentUseCase
+    private val deleteComment: DeleteCommentUseCase,
+    private val editComment: EditCommentUseCase
 ) : ViewModel() {
 
     private val _state = mutableStateOf(PostScreenState())
     val state: State<PostScreenState> = _state
+
+    private val _comments = mutableStateOf(mutableListOf<CommentState>())
+    val comments: State<MutableList<CommentState>> = _comments
 
     private val _comment = mutableStateOf(StandardTextFieldState(label = "Comment"))
     val comment: State<StandardTextFieldState> = _comment
@@ -69,7 +74,26 @@ class PostViewModel
                 }.launchIn(viewModelScope)
             }.launchIn(viewModelScope)
             getCommentsForPost(postId = postId).onEach { comments ->
-                _state.value = _state.value.copy(comments = comments)
+                val commentStates = _comments.value.toMutableList()
+                comments.forEach { comment ->
+                    val commentState = commentStates.firstOrNull { commentState ->
+                        commentState.comment.id == comment.id
+                    }
+                    if(commentState == null) commentStates.add(
+                        CommentState(
+                            comment = comment,
+                            commentEditValue = StandardTextFieldState(
+                                text = comment.content,
+                                label = "Content"
+                            )
+                        )
+                    )
+                    else {
+                        commentStates.remove(commentState)
+                        commentStates.add(commentState.copy(comment = comment))
+                    }
+                }
+                _comments.value = commentStates
             }.launchIn(viewModelScope)
             handle.get<String>("groupId")?.let { groupId ->
                 getRemotePost(
@@ -142,8 +166,104 @@ class PostViewModel
     fun onDeleteCommentClick(commentId: String){
         deleteComment(commentId = commentId).onEach { progress ->
             when(progress){
+                Progress.Finished -> {
+                    val comments = _comments.value
+                    _comments.value = comments.filter { it.comment.id != commentId }.toMutableList()
+                }
                 Progress.Unauthorized -> logoutUser()
                 else -> { }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    fun onExpandCommentClick(commentId: String){
+        val comments = _comments.value.toMutableList()
+        val commentState = comments.find { it.comment.id == commentId } ?: return
+        val index = comments.indexOf(commentState)
+        comments.remove(commentState)
+        comments.add(index, commentState.copy(isExpanded = !commentState.isExpanded))
+        _comments.value = comments
+    }
+
+    fun onEditCommentClick(commentId: String){
+        val comments = _comments.value.toMutableList()
+        val commentState = comments.find { it.comment.id == commentId } ?: return
+        val index = comments.indexOf(commentState)
+        comments.remove(commentState)
+        comments.add(index, commentState.copy(isEditing = true))
+        _comments.value = comments
+    }
+
+    fun onCancelCommentEdit(commentId: String){
+        val comments = _comments.value.toMutableList()
+        val commentState = comments.find { it.comment.id == commentId } ?: return
+        val index = comments.indexOf(commentState)
+        comments.remove(commentState)
+        comments.add(index, commentState.copy(isEditing = false))
+        _comments.value = comments
+    }
+
+    fun onCommentContentChange(commentId: String, value: String){
+        val comments = _comments.value.toMutableList()
+        val commentState = comments.find { it.comment.id == commentId } ?: return
+        val index = comments.indexOf(commentState)
+        comments.remove(commentState)
+        comments.add(index, commentState.copy(commentEditValue = commentState.commentEditValue.copy(text = value)))
+        _comments.value = comments
+    }
+
+    fun onUpdateComment(commentId: String){
+        val commentState = _comments.value.find { it.comment.id == commentId } ?: return
+        editComment(
+            commentId = commentId,
+            content = commentState.commentEditValue.text.trim(),
+            postId = _state.value.post.id
+        ).onEach { progress ->
+            when(progress){
+                is Progress.Loading -> {
+                    val comments = _comments.value.toMutableList()
+                    val state = comments.find { it.comment.id == commentId }
+                    if(state != null){
+                        val index = comments.indexOf(state)
+                        comments.remove(state)
+                        comments.add(index, state.copy(isLoading = true))
+                        _comments.value = comments
+                    }
+                }
+                is Progress.Finished -> {
+                    val comments = _comments.value.toMutableList()
+                    val state = comments.find { it.comment.id == commentId }
+                    if(state != null){
+                        val index = comments.indexOf(state)
+                        comments.remove(state)
+                        comments.add(
+                            index,
+                            state.copy(
+                                isLoading = false,
+                                isEditing = false,
+                                isExpanded = false
+                            )
+                        )
+                        _comments.value = comments
+                    }
+                }
+                is Progress.Unauthorized -> logoutUser()
+                is Progress.Error -> {
+                    val comments = _comments.value.toMutableList()
+                    val state = comments.find { it.comment.id == commentId }
+                    if(state != null){
+                        val index = comments.indexOf(state)
+                        comments.remove(state)
+                        comments.add(
+                            index,
+                            state.copy(
+                                isLoading = false,
+                                commentEditValue = state.commentEditValue.copy(error = progress.message)
+                            )
+                        )
+                        _comments.value = comments
+                    }
+                }
             }
         }.launchIn(viewModelScope)
     }
