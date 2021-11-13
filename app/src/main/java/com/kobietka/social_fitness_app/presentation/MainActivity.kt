@@ -4,12 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.kobietka.social_fitness_app.presentation.create_event.CreateEventScreen
 import com.kobietka.social_fitness_app.presentation.create_post.CreatePostScreen
 import com.kobietka.social_fitness_app.presentation.edit_group.EditGroupScreen
 import com.kobietka.social_fitness_app.presentation.edit_user.EditUserScreen
@@ -23,7 +26,7 @@ import com.kobietka.social_fitness_app.presentation.theme.SocialfitnessappTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
     @ExperimentalAnimationApi
@@ -84,10 +87,36 @@ class MainActivity : ComponentActivity() {
                     ){
                         EditGroupScreen()
                     }
+
+                    composable(
+                        route = Screen.CreateEvent.route,
+                        arguments = listOf(navArgument(name = "groupId"){ type = NavType.StringType })
+                    ){
+                        CreateEventScreen(
+                            onStartDateClick = { onFinish ->
+                                openDatePicker(
+                                    onSuccess = { onFinish(it) },
+                                    onDismiss = { onFinish(it) }
+                                )
+                            }
+                        )
+                    }
                 }
             }
         }
     }
+
+    private fun openDatePicker(onSuccess: (Long) -> Unit, onDismiss: (Long?) -> Unit) {
+        val picker = MaterialDatePicker.Builder.datePicker().build()
+        picker.show(this.supportFragmentManager, picker.toString())
+        picker.addOnPositiveButtonClickListener {
+            onSuccess(it)
+        }
+        picker.addOnDismissListener {
+            onDismiss(null)
+        }
+    }
+
 }
 
 
