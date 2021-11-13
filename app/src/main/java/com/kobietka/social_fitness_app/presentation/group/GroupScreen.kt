@@ -120,7 +120,12 @@ fun GroupScreen(
                 enter = fadeIn()
             ) {
                 FloatingActionButton(
-                    onClick = { navController.navigate("/create_post/${state.group.id}") },
+                    onClick = {
+                        when(state.page){
+                            GroupPage.POSTS -> navController.navigate("/create_post/${state.group.id}")
+                            GroupPage.EVENTS -> navController.navigate("/create_event/${state.group.id}")
+                        }
+                    },
                     backgroundColor = MaterialTheme.colors.primary
                 ) {
                     Icon(
