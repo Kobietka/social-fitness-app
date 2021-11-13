@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.kobietka.social_fitness_app.presentation.group.components.EventListItem
 import com.kobietka.social_fitness_app.presentation.group.components.PostListItem
 
 
@@ -31,6 +32,7 @@ fun GroupScreen(
 ) {
     val state = groupViewModel.state.value
     val postListState = rememberLazyListState()
+    val eventListState = rememberLazyListState()
 
     Scaffold(
         topBar = {
@@ -166,6 +168,18 @@ fun GroupScreen(
                         post = post,
                         onPostClick = { postId ->
                             navController.navigate("/group/${state.group.id}/post/$postId")
+                        }
+                    )
+                }
+            }
+            if(state.page == GroupPage.EVENTS) LazyColumn(
+                state = eventListState
+            ) {
+                items(state.events){ event ->
+                    EventListItem(
+                        event = event,
+                        onEventClick = { eventId ->
+
                         }
                     )
                 }
