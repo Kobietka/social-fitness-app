@@ -2,11 +2,16 @@ package com.kobietka.social_fitness_app.presentation.create_event
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kobietka.social_fitness_app.domain.state.DateState
 import com.kobietka.social_fitness_app.domain.state.EventTypeState
 import com.kobietka.social_fitness_app.domain.state.StandardTextFieldState
+import com.kobietka.social_fitness_app.domain.usecase.group.GetGroupUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
 import java.util.*
@@ -16,7 +21,18 @@ import kotlin.time.ExperimentalTime
 
 @HiltViewModel
 class CreateEventViewModel
-@Inject constructor() : ViewModel() {
+@Inject constructor(
+    handle: SavedStateHandle,
+    private val getGroup: GetGroupUseCase
+) : ViewModel() {
+
+    init {
+        handle.get<String>("groupId")?.let { groupId ->
+            getGroup(groupId = groupId).onEach { group ->
+                _state.value = _state.value.copy(group = group)
+            }.launchIn(viewModelScope)
+        }
+    }
 
     private val _state = mutableStateOf(CreateEventScreenState())
     val state: State<CreateEventScreenState> = _state

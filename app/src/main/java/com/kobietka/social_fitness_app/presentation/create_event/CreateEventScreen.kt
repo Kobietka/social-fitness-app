@@ -2,13 +2,18 @@ package com.kobietka.social_fitness_app.presentation.create_event
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kobietka.social_fitness_app.presentation.components.MultilineTextField
 import com.kobietka.social_fitness_app.presentation.components.StandardTextField
@@ -35,9 +40,27 @@ fun CreateEventScreen(
     val eventTypes = createEventViewModel.eventTypes.value
     val dropdownMenuExpanded = createEventViewModel.dropdownMenuExpanded.value
 
+    val scroll = rememberScrollState()
+
     Column(
-        modifier = Modifier.padding(20.dp)
+        modifier = Modifier
+            .padding(20.dp)
+            .verticalScroll(scroll)
     ) {
+        state.group?.let { group ->
+            Text(
+                fontStyle = FontStyle.Italic,
+                text = "Creating event for",
+                color = Color.Gray,
+                fontSize = 20.sp
+            )
+            Text(
+                text = group.name,
+                fontWeight = FontWeight.Medium,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(bottom = 10.dp)
+            )
+        }
         StandardTextField(
             text = eventName.text,
             error = eventName.error,
@@ -48,7 +71,7 @@ fun CreateEventScreen(
             text = eventDescription.text,
             error = eventDescription.error,
             label = eventDescription.label,
-            maxLines = 5,
+            maxLines = 4,
             onValueChange = createEventViewModel::onEventDescriptionChange
         )
         StandardTextField(
@@ -169,7 +192,7 @@ fun CreateEventScreen(
             },
             enabled = !state.isLoading
         ) {
-            if(!state.isLoading) Text("Create post")
+            if(!state.isLoading) Text("Create Event")
             else CircularProgressIndicator()
         }
     }
