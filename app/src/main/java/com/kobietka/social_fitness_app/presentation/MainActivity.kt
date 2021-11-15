@@ -105,7 +105,8 @@ class MainActivity : AppCompatActivity() {
                                     onSuccess = { onFinish(it) },
                                     onDismiss = { onFinish(it) }
                                 )
-                            }
+                            },
+                            onSuccessEventCreation = { onBackPressed() }
                         )
                     }
                 }
