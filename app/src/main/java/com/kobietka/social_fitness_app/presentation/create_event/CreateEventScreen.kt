@@ -6,16 +6,20 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kobietka.social_fitness_app.presentation.components.MultilineTextField
 import com.kobietka.social_fitness_app.presentation.components.StandardTextField
+import kotlin.time.ExperimentalTime
 
 
+@ExperimentalTime
 @Composable
 fun CreateEventScreen(
     createEventViewModel: CreateEventViewModel = hiltViewModel(),
-    onStartDateClick: ((Long?) -> Unit) -> Unit
+    onStartDateClick: ((Long?) -> Unit) -> Unit,
+    onEndDateClick: ((Long?) -> Unit) -> Unit
 ) {
     val eventName = createEventViewModel.eventName.value
     val eventDescription = createEventViewModel.eventDescription.value
@@ -65,16 +69,53 @@ fun CreateEventScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)
-                .clickable { onStartDateClick { time ->
-                    time?.let {
-                        createEventViewModel.onStartDateChange(time)
+                .clickable {
+                    onStartDateClick { time ->
+                        time?.let {
+                            createEventViewModel.onStartDateChange(time)
+                        }
                     }
-                } },
+                },
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if(startDate == null) Text(text = "Select start date")
-            else Text(text = startDate)
+            if(startDate.formatted == null) Text(text = "Select start date")
+            else Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "Start date")
+                Text(
+                    text = startDate.formatted,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .clickable {
+                    onEndDateClick { time ->
+                        time?.let {
+                            createEventViewModel.onEndDateChange(time)
+                        }
+                    }
+                },
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if(endDate.formatted == null) Text(text = "Select end date")
+            else Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "End date")
+                Text(
+                    text = endDate.formatted,
+                    fontWeight = FontWeight.Medium
+                )
+            }
         }
     }
 

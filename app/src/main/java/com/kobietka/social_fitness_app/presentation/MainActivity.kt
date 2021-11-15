@@ -1,7 +1,6 @@
 package com.kobietka.social_fitness_app.presentation
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -24,11 +23,13 @@ import com.kobietka.social_fitness_app.presentation.post.PostScreen
 import com.kobietka.social_fitness_app.presentation.register.RegisterScreen
 import com.kobietka.social_fitness_app.presentation.theme.SocialfitnessappTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.time.ExperimentalTime
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
+    @ExperimentalTime
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,6 +95,12 @@ class MainActivity : AppCompatActivity() {
                     ){
                         CreateEventScreen(
                             onStartDateClick = { onFinish ->
+                                openDatePicker(
+                                    onSuccess = { onFinish(it) },
+                                    onDismiss = { onFinish(it) }
+                                )
+                            },
+                            onEndDateClick = { onFinish ->
                                 openDatePicker(
                                     onSuccess = { onFinish(it) },
                                     onDismiss = { onFinish(it) }
