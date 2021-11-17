@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
@@ -108,7 +109,15 @@ fun CreateEventScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if(startDate.formatted == null) Text(text = "Select start date")
+            if(startDate.formatted == null) {
+                Text(text = "Select start date")
+                if(startDate.error.isNotBlank()){
+                    Text(
+                        text = startDate.error,
+                        color = MaterialTheme.colors.error
+                    )
+                }
+            }
             else Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -135,7 +144,15 @@ fun CreateEventScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if(endDate.formatted == null) Text(text = "Select end date")
+            if(endDate.formatted == null) {
+                Text(text = "Select end date")
+                if(endDate.error.isNotBlank()){
+                    Text(
+                        text = endDate.error,
+                        color = MaterialTheme.colors.error
+                    )
+                }
+            }
             else Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -156,7 +173,15 @@ fun CreateEventScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if(eventType == null) Text(text = "Select event type")
+            if(eventType.name == null) {
+                Text(text = "Select event type")
+                if(eventType.error.isNotBlank()){
+                    Text(
+                        text = eventType.error,
+                        color = MaterialTheme.colors.error
+                    )
+                }
+            }
             else Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -174,9 +199,9 @@ fun CreateEventScreen(
             ) {
                 eventTypes.forEach { eventType ->
                     DropdownMenuItem(onClick = {
-                        createEventViewModel.onEventTypeSelected(code = eventType.code)
+                        createEventViewModel.onEventTypeSelected(code = eventType.code!!)
                     }) {
-                        Text(text = eventType.name)
+                        Text(text = eventType.name!!)
                     }
                 }
             }
