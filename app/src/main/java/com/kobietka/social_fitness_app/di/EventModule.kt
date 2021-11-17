@@ -32,6 +32,11 @@ class EventModule {
     }
 
     @Provides
+    fun provideValidateCreateEventUseCase(): ValidateCreateEventUseCase {
+        return ValidateCreateEventUseCase()
+    }
+
+    @Provides
     fun provideDeleteEventUseCase(
         eventRemoteRepository: EventRemoteRepository,
         eventRepository: EventRepository
