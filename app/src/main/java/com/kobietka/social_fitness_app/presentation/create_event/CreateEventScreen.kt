@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kobietka.social_fitness_app.presentation.components.MultilineTextField
+import com.kobietka.social_fitness_app.presentation.components.NumberTextField
 import com.kobietka.social_fitness_app.presentation.components.StandardTextField
 import kotlin.time.ExperimentalTime
 
@@ -74,19 +75,19 @@ fun CreateEventScreen(
             maxLines = 4,
             onValueChange = createEventViewModel::onEventDescriptionChange
         )
-        StandardTextField(
+        NumberTextField(
             text = pointGoal.text,
             error = pointGoal.error,
             label = pointGoal.label,
             onValueChange = createEventViewModel::onPointGoalChange
         )
-        StandardTextField(
+        NumberTextField(
             text = pointPerMinute.text,
             error = pointPerMinute.error,
             label = pointPerMinute.label,
             onValueChange = createEventViewModel::onPointPerMinChange
         )
-        StandardTextField(
+        NumberTextField(
             text = pointPerRepetition.text,
             error = pointPerRepetition.error,
             label = pointPerRepetition.label,
