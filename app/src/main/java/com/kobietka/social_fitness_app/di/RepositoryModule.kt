@@ -49,6 +49,14 @@ class RepositoryModule {
 
     @Provides
     @Singleton
+    fun provideEventMemberRepository(
+        eventMemberDao: EventMemberDao
+    ): EventMemberRepository {
+        return EventMemberRepositoryImpl(eventMemberDao = eventMemberDao)
+    }
+
+    @Provides
+    @Singleton
     fun provideActivityRepository(
         activityDao: ActivityDao
     ): ActivityRepository {
