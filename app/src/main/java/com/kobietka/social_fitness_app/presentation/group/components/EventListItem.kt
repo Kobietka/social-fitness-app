@@ -38,11 +38,12 @@ fun EventListItem(
             )
             Row {
                 Text(
-                    modifier = Modifier.padding(start = 10.dp),
+                    modifier = Modifier.padding(end = 10.dp),
                     text = event.startDate,
                     fontStyle = FontStyle.Italic,
                     color = Color.LightGray
                 )
+                Text(text = ">")
                 Text(
                     modifier = Modifier.padding(start = 10.dp),
                     text = event.endDate,
