@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
+import com.kobietka.social_fitness_app.domain.model.EventMember
 
 
 @Entity(
@@ -25,3 +26,11 @@ data class EventMemberEntity(
     @ColumnInfo val nickname: String,
     @ColumnInfo val totalScore: Int
 )
+
+fun EventMemberEntity.toEventMember(): EventMember {
+    return EventMember(
+        userId = this.userId,
+        nickname = this.nickname,
+        totalScore = this.totalScore
+    )
+}
