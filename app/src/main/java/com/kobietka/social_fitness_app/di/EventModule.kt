@@ -1,6 +1,7 @@
 package com.kobietka.social_fitness_app.di
 
 import com.kobietka.social_fitness_app.domain.repository.local.ActivityRepository
+import com.kobietka.social_fitness_app.domain.repository.local.EventMemberRepository
 import com.kobietka.social_fitness_app.domain.repository.local.EventRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.EventRemoteRepository
 import com.kobietka.social_fitness_app.domain.usecase.event.*
@@ -46,6 +47,13 @@ class EventModule {
             eventRepository = eventRepository,
             eventRemoteRepository = eventRemoteRepository
         )
+    }
+
+    @Provides
+    fun provideGetEventMembersUseCase(
+        eventMemberRepository: EventMemberRepository
+    ): GetEventMembersUseCase {
+        return GetEventMembersUseCase(eventMemberRepository = eventMemberRepository)
     }
 
     @Provides
