@@ -6,8 +6,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kobietka.social_fitness_app.domain.usecase.auth.LogoutUserUseCase
+import com.kobietka.social_fitness_app.domain.usecase.event.GetEventMembersUseCase
 import com.kobietka.social_fitness_app.domain.usecase.event.GetEventUseCase
 import com.kobietka.social_fitness_app.domain.usecase.event.GetRemoteEventUseCase
+import com.kobietka.social_fitness_app.domain.usecase.event.MatchEventMembersWithActivitiesUseCase
 import com.kobietka.social_fitness_app.domain.usecase.group.GetGroupUseCase
 import com.kobietka.social_fitness_app.domain.usecase.main.GetUsersUseCase
 import com.kobietka.social_fitness_app.util.Progress
@@ -26,7 +28,9 @@ class EventViewModel
     private val getUsers: GetUsersUseCase,
     private val getRemoteEvent: GetRemoteEventUseCase,
     private val logoutUser: LogoutUserUseCase,
-    private val getGroup: GetGroupUseCase
+    private val getGroup: GetGroupUseCase,
+    private val getEventMembers: GetEventMembersUseCase,
+    private val matchEventMembersWithActivities: MatchEventMembersWithActivitiesUseCase
 ) : ViewModel() {
 
     private val _state = mutableStateOf(EventScreenState())
@@ -56,7 +60,32 @@ class EventViewModel
                     }
                 }.launchIn(viewModelScope)
             }
+            getEventMembers(eventId = eventId).onEach { eventMembers ->
+                _state.value = _state.value.copy(
+                    eventMembers = matchEventMembersWithActivities(
+                        eventId = eventId,
+                        eventMembers = eventMembers
+                    )
+                )
+            }.launchIn(viewModelScope)
         }
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
