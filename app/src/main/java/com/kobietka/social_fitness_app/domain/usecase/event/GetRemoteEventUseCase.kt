@@ -1,6 +1,8 @@
 package com.kobietka.social_fitness_app.domain.usecase.event
 
+import com.kobietka.social_fitness_app.data.entity.ActivityEntity
 import com.kobietka.social_fitness_app.data.entity.EventEntity
+import com.kobietka.social_fitness_app.domain.repository.local.ActivityRepository
 import com.kobietka.social_fitness_app.domain.repository.local.EventRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.EventRemoteRepository
 import com.kobietka.social_fitness_app.util.NetworkResult
@@ -11,7 +13,8 @@ import kotlinx.coroutines.flow.flow
 
 class GetRemoteEventUseCase(
     private val eventRemoteRepository: EventRemoteRepository,
-    private val eventRepository: EventRepository
+    private val eventRepository: EventRepository,
+    private val activityRepository: ActivityRepository
 ) {
     operator fun invoke(
         eventId: String,
@@ -35,6 +38,24 @@ class GetRemoteEventUseCase(
                             eventType = eventDto.eventType
                         )
                     )
+                    eventDto.eventMembers?.let { eventMembers ->
+                        eventMembers.forEach { eventMemberDto ->
+                            eventMemberDto.activities?.let { activities ->
+                                activities.forEach { activityDto ->
+                                    activityRepository.insert(
+                                        ActivityEntity(
+                                            id = activityDto.id,
+                                            userId = eventMemberDto.user.id,
+                                            eventId = eventDto.id,
+                                            name = activityDto.name,
+                                            value = activityDto.value,
+                                            createdAt = activityDto.createdAt
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
                     emit(Progress.Finished)
                 }
             }
@@ -43,3 +64,21 @@ class GetRemoteEventUseCase(
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
