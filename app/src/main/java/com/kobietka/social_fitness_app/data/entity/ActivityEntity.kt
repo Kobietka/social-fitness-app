@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
+import com.kobietka.social_fitness_app.domain.model.Activity
 
 
 @Entity(
@@ -27,3 +28,13 @@ data class ActivityEntity(
     @ColumnInfo val value: Int,
     @ColumnInfo val createdAt: String
 )
+
+fun ActivityEntity.toActivity(): Activity {
+    return Activity(
+        id = this.id,
+        userId = this.userId,
+        name = this.name,
+        value = this.value,
+        createdAt = this.createdAt
+    )
+}
