@@ -9,4 +9,5 @@ interface ActivityRepository {
     fun getActivitiesForEvent(eventId: String): Flow<List<ActivityEntity>>
     fun getActivitiesForUser(userId: String): Flow<List<ActivityEntity>>
     suspend fun deleteActivity(id: String)
+    suspend fun getActivitiesForUserAndEvent(userId: String, eventId: String): List<ActivityEntity>
 }

@@ -20,6 +20,9 @@ interface ActivityDao {
     @Query("select * from activity where userId = :userId")
     fun getActivitiesForUser(userId: String): Flow<List<ActivityEntity>>
 
+    @Query("select * from activity where userId = :userId and eventId = :eventId")
+    suspend fun getActivitiesForUserAndEvent(userId: String, eventId: String): List<ActivityEntity>
+
     @Query("delete from activity where id = :id")
     suspend fun deleteActivity(id: String)
 

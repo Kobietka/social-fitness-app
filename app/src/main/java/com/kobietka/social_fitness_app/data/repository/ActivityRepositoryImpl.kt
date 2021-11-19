@@ -22,4 +22,14 @@ class ActivityRepositoryImpl(private val activityDao: ActivityDao) : ActivityRep
     override suspend fun deleteActivity(id: String) {
         activityDao.deleteActivity(id = id)
     }
+
+    override suspend fun getActivitiesForUserAndEvent(
+        userId: String,
+        eventId: String
+    ): List<ActivityEntity> {
+        return activityDao.getActivitiesForUserAndEvent(
+            userId = userId,
+            eventId = eventId
+        )
+    }
 }
