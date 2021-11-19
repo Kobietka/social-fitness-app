@@ -12,4 +12,5 @@ sealed class Screen(val route: String){
     object Post : Screen("/group/{groupId}/post/{postId}")
     object CreatePost : Screen("/create_post/{groupId}")
     object CreateEvent : Screen("/create_event/{groupId}")
+    object Event : Screen("/group/{groupId}/event/{eventId}")
 }

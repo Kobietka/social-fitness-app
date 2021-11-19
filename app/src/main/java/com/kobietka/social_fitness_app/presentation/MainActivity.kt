@@ -15,6 +15,7 @@ import com.kobietka.social_fitness_app.presentation.create_event.CreateEventScre
 import com.kobietka.social_fitness_app.presentation.create_post.CreatePostScreen
 import com.kobietka.social_fitness_app.presentation.edit_group.EditGroupScreen
 import com.kobietka.social_fitness_app.presentation.edit_user.EditUserScreen
+import com.kobietka.social_fitness_app.presentation.event.EventScreen
 import com.kobietka.social_fitness_app.presentation.group.GroupScreen
 import com.kobietka.social_fitness_app.presentation.loading.LoadingScreen
 import com.kobietka.social_fitness_app.presentation.login.LoginScreen
@@ -108,6 +109,16 @@ class MainActivity : AppCompatActivity() {
                             },
                             onSuccessEventCreation = { onBackPressed() }
                         )
+                    }
+
+                    composable(
+                        route = Screen.Event.route,
+                        arguments = listOf(
+                            navArgument(name = "eventId"){ type = NavType.StringType },
+                            navArgument(name = "groupId"){ type = NavType.StringType }
+                        )
+                    ){
+                        EventScreen()
                     }
                 }
             }

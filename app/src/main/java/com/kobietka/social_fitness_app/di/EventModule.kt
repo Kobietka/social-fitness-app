@@ -49,6 +49,13 @@ class EventModule {
     }
 
     @Provides
+    fun provideGetEventUseCase(
+        eventRepository: EventRepository
+    ): GetEventUseCase {
+        return GetEventUseCase(eventRepository = eventRepository)
+    }
+
+    @Provides
     fun provideGetRemoteEventUseCase(
         eventRemoteRepository: EventRemoteRepository,
         eventRepository: EventRepository,

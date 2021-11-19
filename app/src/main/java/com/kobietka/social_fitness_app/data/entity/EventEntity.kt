@@ -37,6 +37,7 @@ data class EventEntity(
 fun EventEntity.toEvent(): Event {
     return Event(
         id = this.id,
+        groupId = this.groupId,
         name = this.name,
         description = this.description,
         pointGoal = this.pointGoal,
