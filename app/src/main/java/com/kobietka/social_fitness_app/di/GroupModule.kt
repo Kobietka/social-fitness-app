@@ -1,9 +1,6 @@
 package com.kobietka.social_fitness_app.di
 
-import com.kobietka.social_fitness_app.domain.repository.local.GroupMemberRepository
-import com.kobietka.social_fitness_app.domain.repository.local.GroupRepository
-import com.kobietka.social_fitness_app.domain.repository.local.InvitationRepository
-import com.kobietka.social_fitness_app.domain.repository.local.PostRepository
+import com.kobietka.social_fitness_app.domain.repository.local.*
 import com.kobietka.social_fitness_app.domain.repository.remote.GroupRemoteRepository
 import com.kobietka.social_fitness_app.domain.usecase.group.*
 import com.kobietka.social_fitness_app.domain.usecase.post.GetPostsForGroupUseCase
@@ -73,14 +70,16 @@ class GroupModule {
         postRepository: PostRepository,
         groupRepository: GroupRepository,
         invitationRepository: InvitationRepository,
-        groupMemberRepository: GroupMemberRepository
+        groupMemberRepository: GroupMemberRepository,
+        eventRepository: EventRepository
     ): GetRemoteGroupUseCase {
         return GetRemoteGroupUseCase(
             groupRepository = groupRepository,
             groupRemoteRepository = groupRemoteRepository,
             postRepository = postRepository,
             invitationRepository = invitationRepository,
-            groupMemberRepository = groupMemberRepository
+            groupMemberRepository = groupMemberRepository,
+            eventRepository = eventRepository
         )
     }
 

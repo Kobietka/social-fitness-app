@@ -1,13 +1,7 @@
 package com.kobietka.social_fitness_app.domain.usecase.group
 
-import com.kobietka.social_fitness_app.data.entity.GroupEntity
-import com.kobietka.social_fitness_app.data.entity.GroupMemberEntity
-import com.kobietka.social_fitness_app.data.entity.InvitationEntity
-import com.kobietka.social_fitness_app.data.entity.PostEntity
-import com.kobietka.social_fitness_app.domain.repository.local.GroupMemberRepository
-import com.kobietka.social_fitness_app.domain.repository.local.GroupRepository
-import com.kobietka.social_fitness_app.domain.repository.local.InvitationRepository
-import com.kobietka.social_fitness_app.domain.repository.local.PostRepository
+import com.kobietka.social_fitness_app.data.entity.*
+import com.kobietka.social_fitness_app.domain.repository.local.*
 import com.kobietka.social_fitness_app.domain.repository.remote.GroupRemoteRepository
 import com.kobietka.social_fitness_app.util.NetworkResult
 import com.kobietka.social_fitness_app.util.Progress
@@ -20,7 +14,8 @@ class GetRemoteGroupUseCase(
     private val groupRepository: GroupRepository,
     private val postRepository: PostRepository,
     private val groupMemberRepository: GroupMemberRepository,
-    private val invitationRepository: InvitationRepository
+    private val invitationRepository: InvitationRepository,
+    private val eventRepository: EventRepository
 ) {
     operator fun invoke(groupId: String): Flow<Progress> = flow {
         emit(Progress.Loading)
@@ -65,6 +60,24 @@ class GetRemoteGroupUseCase(
                                     createdAt = postDto.createdAt,
                                     userId = postDto.createdBy.id,
                                     groupId = groupId
+                                )
+                            )
+                        }
+                    }
+                    groupResponse.events?.let { events ->
+                        events.forEach { eventDto ->
+                            eventRepository.insert(
+                                EventEntity(
+                                    id = eventDto.id,
+                                    groupId = groupId,
+                                    name = eventDto.name,
+                                    description = eventDto.description,
+                                    pointGoal = eventDto.pointGoal,
+                                    pointPerRep = eventDto.pointPerRep,
+                                    pointPerMinute = eventDto.pointPerMinute,
+                                    startDate = eventDto.startDate,
+                                    endDate = eventDto.endDate,
+                                    eventType = eventDto.eventType
                                 )
                             )
                         }

@@ -10,5 +10,6 @@ data class GetGroupResponse(
     val owner: User,
     val invitation: Invitation?,
     val groupMembers: List<MemberDto>,
-    val posts: List<PostDto>?
+    val posts: List<PostDto>?,
+    val events: List<EventDto>?
 )
