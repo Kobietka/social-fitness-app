@@ -50,6 +50,13 @@ class EventModule {
     }
 
     @Provides
+    fun provideMatchEventMembersWithActivitiesUseCase(
+        activityRepository: ActivityRepository
+    ): MatchEventMembersWithActivitiesUseCase {
+        return MatchEventMembersWithActivitiesUseCase(activityRepository = activityRepository)
+    }
+
+    @Provides
     fun provideGetEventMembersUseCase(
         eventMemberRepository: EventMemberRepository
     ): GetEventMembersUseCase {
