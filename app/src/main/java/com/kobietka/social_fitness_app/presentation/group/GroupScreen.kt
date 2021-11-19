@@ -184,7 +184,7 @@ fun GroupScreen(
                     EventListItem(
                         event = event,
                         onEventClick = { eventId ->
-
+                            navController.navigate("/group/${state.group.id}/event/$eventId")
                         }
                     )
                 }
