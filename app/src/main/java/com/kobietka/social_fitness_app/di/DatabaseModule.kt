@@ -40,6 +40,12 @@ class DatabaseModule {
 
     @Provides
     @Singleton
+    fun provideEventMemberDao(appDatabase: AppDatabase): EventMemberDao {
+        return appDatabase.eventMemberDao()
+    }
+
+    @Provides
+    @Singleton
     fun provideEventDao(appDatabase: AppDatabase): EventDao {
         return appDatabase.eventDao()
     }
