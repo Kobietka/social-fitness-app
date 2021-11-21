@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
@@ -19,6 +20,7 @@ import com.kobietka.social_fitness_app.presentation.ui.theme.gray
 fun DateSelector(
     dateText: String,
     dateType: String,
+    error: String,
     onIconClick: () -> Unit
 ) {
     Column(
@@ -35,15 +37,22 @@ fun DateSelector(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
-                if(dateText.isBlank()){
-                    Text(text = "Select ${dateType.lowercase()} date")
+                if(error.isNotBlank()){
+                    Text(
+                        text = error,
+                        color = MaterialTheme.colors.error
+                    )
                 } else {
-                    Column {
-                        Text(text = "$dateType date")
-                        Text(
-                            text = dateText,
-                            fontWeight = FontWeight.Medium
-                        )
+                    if(dateText.isBlank()){
+                        Text(text = "Select ${dateType.lowercase()} date")
+                    } else {
+                        Column {
+                            Text(text = "$dateType date")
+                            Text(
+                                text = dateText,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
                     }
                 }
             }

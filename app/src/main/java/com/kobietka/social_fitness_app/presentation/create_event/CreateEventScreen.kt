@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
@@ -47,23 +46,25 @@ fun CreateEventScreen(
 
     Column(
         modifier = Modifier
-            .padding(20.dp)
+            .padding(start = 20.dp, end = 20.dp)
             .verticalScroll(scroll),
         verticalArrangement = Arrangement.Center
     ) {
         state.group?.let { group ->
-            Text(
-                fontStyle = FontStyle.Italic,
-                text = "Creating event for",
-                color = Color.Gray,
-                fontSize = 20.sp
-            )
-            Text(
-                text = group.name,
-                fontWeight = FontWeight.Medium,
-                fontSize = 20.sp,
-                modifier = Modifier.padding(bottom = 10.dp)
-            )
+            Column(modifier = Modifier.padding(top = 20.dp)) {
+                Text(
+                    fontStyle = FontStyle.Italic,
+                    text = "Creating event for",
+                    color = Color.Gray,
+                    fontSize = 20.sp
+                )
+                Text(
+                    text = group.name,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(bottom = 10.dp)
+                )
+            }
         }
         StandardTextField(
             text = eventName.text,
@@ -96,14 +97,22 @@ fun CreateEventScreen(
             label = pointPerRepetition.label,
             onValueChange = createEventViewModel::onPointPerRepChange
         )
-        DateSelector(dateText = startDate.formatted ?: "", dateType = "Start") {
+        DateSelector(
+            dateText = startDate.formatted ?: "",
+            dateType = "Start",
+            error = startDate.error
+        ) {
             onStartDateClick { time ->
                 time?.let {
                     createEventViewModel.onStartDateChange(time)
                 }
             }
         }
-        DateSelector(dateText = endDate.formatted ?: "", dateType = "End") {
+        DateSelector(
+            dateText = endDate.formatted ?: "",
+            dateType = "End",
+            error = endDate.error
+        ) {
             onEndDateClick { time ->
                 time?.let {
                     createEventViewModel.onEndDateChange(time)
@@ -156,7 +165,7 @@ fun CreateEventScreen(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 13.dp)
+                .padding(top = 13.dp, bottom = 13.dp)
                 .height(50.dp),
             onClick = {
                 createEventViewModel.onCreateEventClick {
