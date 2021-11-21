@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.kobietka.social_fitness_app.presentation.components.DateSelector
 import com.kobietka.social_fitness_app.presentation.components.MultilineTextField
 import com.kobietka.social_fitness_app.presentation.components.NumberTextField
 import com.kobietka.social_fitness_app.presentation.components.StandardTextField
@@ -47,7 +48,8 @@ fun CreateEventScreen(
     Column(
         modifier = Modifier
             .padding(20.dp)
-            .verticalScroll(scroll)
+            .verticalScroll(scroll),
+        verticalArrangement = Arrangement.Center
     ) {
         state.group?.let { group ->
             Text(
@@ -94,76 +96,21 @@ fun CreateEventScreen(
             label = pointPerRepetition.label,
             onValueChange = createEventViewModel::onPointPerRepChange
         )
-        Column(
-            modifier = Modifier
-                .padding(top = 10.dp)
-                .fillMaxWidth()
-                .height(50.dp)
-                .clickable {
-                    onStartDateClick { time ->
-                        time?.let {
-                            createEventViewModel.onStartDateChange(time)
-                        }
-                    }
-                },
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            if(startDate.formatted == null) {
-                Text(text = "Select start date")
-                if(startDate.error.isNotBlank()){
-                    Text(
-                        text = startDate.error,
-                        color = MaterialTheme.colors.error
-                    )
+        DateSelector(dateText = startDate.formatted ?: "", dateType = "Start") {
+            onStartDateClick { time ->
+                time?.let {
+                    createEventViewModel.onStartDateChange(time)
                 }
             }
-            else Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = "Start date")
-                Text(
-                    text = startDate.formatted,
-                    fontWeight = FontWeight.Medium
-                )
-            }
         }
-        Column(
-            modifier = Modifier
-                .padding(top = 10.dp)
-                .fillMaxWidth()
-                .height(50.dp)
-                .clickable {
-                    onEndDateClick { time ->
-                        time?.let {
-                            createEventViewModel.onEndDateChange(time)
-                        }
-                    }
-                },
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            if(endDate.formatted == null) {
-                Text(text = "Select end date")
-                if(endDate.error.isNotBlank()){
-                    Text(
-                        text = endDate.error,
-                        color = MaterialTheme.colors.error
-                    )
+        DateSelector(dateText = endDate.formatted ?: "", dateType = "End") {
+            onEndDateClick { time ->
+                time?.let {
+                    createEventViewModel.onEndDateChange(time)
                 }
             }
-            else Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = "End date")
-                Text(
-                    text = endDate.formatted,
-                    fontWeight = FontWeight.Medium
-                )
-            }
         }
+
         Column(
             modifier = Modifier
                 .padding(top = 10.dp)
