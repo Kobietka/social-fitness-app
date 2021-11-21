@@ -19,6 +19,7 @@ import com.kobietka.social_fitness_app.presentation.components.DateSelector
 import com.kobietka.social_fitness_app.presentation.components.MultilineTextField
 import com.kobietka.social_fitness_app.presentation.components.NumberTextField
 import com.kobietka.social_fitness_app.presentation.components.StandardTextField
+import com.kobietka.social_fitness_app.presentation.create_event.components.EventTypeSelector
 import kotlin.time.ExperimentalTime
 
 
@@ -79,24 +80,6 @@ fun CreateEventScreen(
             maxLines = 4,
             onValueChange = createEventViewModel::onEventDescriptionChange
         )
-        NumberTextField(
-            text = pointGoal.text,
-            error = pointGoal.error,
-            label = pointGoal.label,
-            onValueChange = createEventViewModel::onPointGoalChange
-        )
-        NumberTextField(
-            text = pointPerMinute.text,
-            error = pointPerMinute.error,
-            label = pointPerMinute.label,
-            onValueChange = createEventViewModel::onPointPerMinChange
-        )
-        NumberTextField(
-            text = pointPerRepetition.text,
-            error = pointPerRepetition.error,
-            label = pointPerRepetition.label,
-            onValueChange = createEventViewModel::onPointPerRepChange
-        )
         DateSelector(
             dateText = startDate.formatted ?: "",
             dateType = "Start",
@@ -119,47 +102,46 @@ fun CreateEventScreen(
                 }
             }
         }
-
-        Column(
-            modifier = Modifier
-                .padding(top = 10.dp)
-                .fillMaxWidth()
-                .height(50.dp)
-                .clickable { createEventViewModel.onEventTypeClick() },
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            if(eventType.name == null) {
-                Text(text = "Select event type")
-                if(eventType.error.isNotBlank()){
-                    Text(
-                        text = eventType.error,
-                        color = MaterialTheme.colors.error
+        EventTypeSelector(
+            types = eventTypes,
+            selectedType = eventType,
+            onIconClick = createEventViewModel::onEventTypeClick,
+            onTypeClick = createEventViewModel::onEventTypeSelected,
+            onDismiss = createEventViewModel::onMenuDismiss,
+            isExpanded = dropdownMenuExpanded,
+            error = eventType.error
+        )
+        eventType.code?.let { eventCode ->
+            when(eventCode){
+                "TIME" -> {
+                    NumberTextField(
+                        text = pointGoal.text,
+                        error = pointGoal.error,
+                        label = pointGoal.label,
+                        onValueChange = createEventViewModel::onPointGoalChange
+                    )
+                    NumberTextField(
+                        text = pointPerMinute.text,
+                        error = pointPerMinute.error,
+                        label = pointPerMinute.label,
+                        onValueChange = createEventViewModel::onPointPerMinChange
                     )
                 }
-            }
-            else Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = "Event type")
-                Text(
-                    text = eventType.name,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-            DropdownMenu(
-                expanded = dropdownMenuExpanded,
-                onDismissRequest = createEventViewModel::onMenuDismiss,
-                offset = DpOffset(x = 120.dp, y = 0.dp)
-            ) {
-                eventTypes.forEach { eventType ->
-                    DropdownMenuItem(onClick = {
-                        createEventViewModel.onEventTypeSelected(code = eventType.code!!)
-                    }) {
-                        Text(text = eventType.name!!)
-                    }
+                "REP" -> {
+                    NumberTextField(
+                        text = pointGoal.text,
+                        error = pointGoal.error,
+                        label = pointGoal.label,
+                        onValueChange = createEventViewModel::onPointGoalChange
+                    )
+                    NumberTextField(
+                        text = pointPerRepetition.text,
+                        error = pointPerRepetition.error,
+                        label = pointPerRepetition.label,
+                        onValueChange = createEventViewModel::onPointPerRepChange
+                    )
                 }
+                else -> { }
             }
         }
         Button(

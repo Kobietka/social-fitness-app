@@ -128,12 +128,22 @@ class CreateEventViewModel
 
         val name = _eventName.value.text.trim()
         val description = _eventDescription.value.text.trim()
-        val pointGoal = _pointGoal.value.text.trim()
-        val pointsPerMinute = _pointPerMin.value.text.trim()
-        val pointsPerRepetition = _pointPerRep.value.text.trim()
+        val eventType = _eventType.value
+        val pointGoal = when (eventType.code) {
+            "TIME" -> _pointGoal.value.text.trim()
+            "REP" -> _pointGoal.value.text.trim()
+            else -> "0"
+        }
+        val pointsPerMinute = when (eventType.code) {
+            "TIME" -> _pointPerMin.value.text.trim()
+            else -> "0"
+        }
+        val pointsPerRepetition = when (eventType.code) {
+            "REP" -> _pointPerRep.value.text.trim()
+            else -> "0"
+        }
         val startDate = _startDate.value.formatted
         val endDate = _endDate.value.formatted
-        val eventType = _eventType.value
 
         val validationResults = validateCreateEvent(
             name = name,
