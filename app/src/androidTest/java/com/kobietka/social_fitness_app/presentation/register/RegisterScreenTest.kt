@@ -11,7 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.kobietka.social_fitness_app.di.DatabaseModule
 import com.kobietka.social_fitness_app.presentation.MainActivity
 import com.kobietka.social_fitness_app.presentation.Screen
-import com.kobietka.social_fitness_app.presentation.theme.SocialfitnessappTheme
+import com.kobietka.social_fitness_app.presentation.ui.theme.SocialfitnessappTheme
 import com.kobietka.social_fitness_app.util.TestTag
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

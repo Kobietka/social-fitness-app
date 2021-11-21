@@ -1,10 +1,12 @@
-package com.kobietka.social_fitness_app.presentation.theme
+package com.kobietka.social_fitness_app.presentation.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import com.kobietka.social_fitness_app.presentation.theme.Shapes
+import com.kobietka.social_fitness_app.presentation.theme.Typography
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,

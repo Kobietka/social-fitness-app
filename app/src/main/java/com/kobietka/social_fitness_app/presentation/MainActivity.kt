@@ -22,7 +22,7 @@ import com.kobietka.social_fitness_app.presentation.login.LoginScreen
 import com.kobietka.social_fitness_app.presentation.main_screen.MainScreen
 import com.kobietka.social_fitness_app.presentation.post.PostScreen
 import com.kobietka.social_fitness_app.presentation.register.RegisterScreen
-import com.kobietka.social_fitness_app.presentation.theme.SocialfitnessappTheme
+import com.kobietka.social_fitness_app.presentation.ui.theme.SocialfitnessappTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.time.ExperimentalTime
 
