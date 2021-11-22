@@ -13,6 +13,7 @@ import androidx.navigation.navArgument
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.kobietka.social_fitness_app.presentation.create_event.CreateEventScreen
 import com.kobietka.social_fitness_app.presentation.create_post.CreatePostScreen
+import com.kobietka.social_fitness_app.presentation.edit_event.EditEventScreen
 import com.kobietka.social_fitness_app.presentation.edit_group.EditGroupScreen
 import com.kobietka.social_fitness_app.presentation.edit_user.EditUserScreen
 import com.kobietka.social_fitness_app.presentation.event.EventScreen
@@ -118,7 +119,17 @@ class MainActivity : AppCompatActivity() {
                             navArgument(name = "groupId"){ type = NavType.StringType }
                         )
                     ){
-                        EventScreen()
+                        EventScreen(navController = navController)
+                    }
+
+                    composable(
+                        route = Screen.EditEvent.route,
+                        arguments = listOf(
+                            navArgument(name = "eventId"){ type = NavType.StringType },
+                            navArgument(name = "groupId"){ type = NavType.StringType }
+                        )
+                    ){
+                        EditEventScreen()
                     }
                 }
             }
