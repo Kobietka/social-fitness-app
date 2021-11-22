@@ -51,6 +51,7 @@ class EventViewModel
                             )
                             _state.value.loggedUser?.let { loggedUser ->
                                 val group = getGroup(groupId = groupId).first()
+                                _state.value = _state.value.copy(group = group)
                                 if(group.ownerId == loggedUser.id)
                                     _state.value = _state.value.copy(isUserAGroupOwner = true)
                             }

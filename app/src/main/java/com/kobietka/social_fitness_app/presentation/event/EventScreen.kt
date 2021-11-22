@@ -12,11 +12,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 
 
 @Composable
 fun EventScreen(
-    eventViewModel: EventViewModel = hiltViewModel()
+    eventViewModel: EventViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val state = eventViewModel.state.value
 
@@ -41,7 +43,13 @@ fun EventScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             if(state.isUserAGroupOwner) IconButton(
-                                onClick = { /* navigate to edit event */ }
+                                onClick = {
+                                    state.group?.let { group ->
+                                        navController.navigate(
+                                            route = "/group/${group.id}/edit_event/${event.id}"
+                                        )
+                                    }
+                                }
                             ) {
                                 Icon(
                                     modifier = Modifier
