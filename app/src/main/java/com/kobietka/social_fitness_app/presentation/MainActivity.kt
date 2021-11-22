@@ -129,7 +129,7 @@ class MainActivity : AppCompatActivity() {
                             navArgument(name = "groupId"){ type = NavType.StringType }
                         )
                     ){
-                        EditEventScreen()
+                        EditEventScreen(onSuccessfulEventEdit = { onBackPressed() })
                     }
                 }
             }

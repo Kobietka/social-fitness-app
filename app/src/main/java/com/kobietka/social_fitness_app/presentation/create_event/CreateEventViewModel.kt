@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kobietka.social_fitness_app.domain.model.CreateEventValidationResult
+import com.kobietka.social_fitness_app.domain.model.EventValidationResult
 import com.kobietka.social_fitness_app.domain.state.DateState
 import com.kobietka.social_fitness_app.domain.state.EventTypeState
 import com.kobietka.social_fitness_app.domain.state.StandardTextFieldState
@@ -191,37 +191,37 @@ class CreateEventViewModel
         } else {
             validationResults.forEach { result ->
                 when(result){
-                    is CreateEventValidationResult.NameBlank -> {
+                    is EventValidationResult.NameBlank -> {
                         _eventName.value = _eventName.value.copy(error = "This field cannot be blank")
                     }
-                    is CreateEventValidationResult.DescriptionBlank -> {
+                    is EventValidationResult.DescriptionBlank -> {
                         _eventDescription.value = _eventDescription.value.copy(error = "This field cannot be blank")
                     }
-                    is CreateEventValidationResult.PointGoalBlank -> {
+                    is EventValidationResult.PointGoalBlank -> {
                         _pointGoal.value = _pointGoal.value.copy(error = "This field cannot be blank")
                     }
-                    is CreateEventValidationResult.PointsPerMinuteBlank -> {
+                    is EventValidationResult.PointsPerMinuteBlank -> {
                         _pointPerMin.value = _pointPerMin.value.copy(error = "This field cannot be blank")
                     }
-                    is CreateEventValidationResult.PointsPerRepetitionBlank -> {
+                    is EventValidationResult.PointsPerRepetitionBlank -> {
                         _pointPerRep.value = _pointPerRep.value.copy(error = "This field cannot be blank")
                     }
-                    is CreateEventValidationResult.PointGoalNegative -> {
+                    is EventValidationResult.PointGoalNegative -> {
                         _pointGoal.value = _pointGoal.value.copy(error = "This number cannot be negative")
                     }
-                    is CreateEventValidationResult.PointsPerMinuteNegative -> {
+                    is EventValidationResult.PointsPerMinuteNegative -> {
                         _pointPerMin.value = _pointPerMin.value.copy(error = "This number cannot be negative")
                     }
-                    is CreateEventValidationResult.PointsPerRepetitionNegative -> {
+                    is EventValidationResult.PointsPerRepetitionNegative -> {
                         _pointPerRep.value = _pointPerRep.value.copy(error = "This number cannot be negative")
                     }
-                    is CreateEventValidationResult.StartDateNotSelected -> {
+                    is EventValidationResult.StartDateNotSelected -> {
                         _startDate.value = _startDate.value.copy(error = "Please select start date")
                     }
-                    is CreateEventValidationResult.EndDateNotSelected -> {
+                    is EventValidationResult.EndDateNotSelected -> {
                         _endDate.value = _endDate.value.copy(error = "Please select end date")
                     }
-                    is CreateEventValidationResult.EventTypeNotSelected -> {
+                    is EventValidationResult.EventTypeNotSelected -> {
                         _eventType.value = _eventType.value.copy(error = "Please select event type")
                     }
                 }
