@@ -4,7 +4,7 @@ import com.kobietka.social_fitness_app.domain.model.EventValidationResult
 import com.kobietka.social_fitness_app.domain.state.EventTypeState
 
 
-class ValidateCreateEventUseCase {
+class ValidateEventUseCase {
     operator fun invoke(
         name: String,
         description: String,

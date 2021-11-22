@@ -34,8 +34,8 @@ class EventModule {
     }
 
     @Provides
-    fun provideValidateCreateEventUseCase(): ValidateCreateEventUseCase {
-        return ValidateCreateEventUseCase()
+    fun provideValidateCreateEventUseCase(): ValidateEventUseCase {
+        return ValidateEventUseCase()
     }
 
     @Provides

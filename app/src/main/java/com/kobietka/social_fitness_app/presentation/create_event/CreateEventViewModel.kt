@@ -11,7 +11,7 @@ import com.kobietka.social_fitness_app.domain.state.EventTypeState
 import com.kobietka.social_fitness_app.domain.state.StandardTextFieldState
 import com.kobietka.social_fitness_app.domain.usecase.auth.LogoutUserUseCase
 import com.kobietka.social_fitness_app.domain.usecase.event.CreateEventUseCase
-import com.kobietka.social_fitness_app.domain.usecase.event.ValidateCreateEventUseCase
+import com.kobietka.social_fitness_app.domain.usecase.event.ValidateEventUseCase
 import com.kobietka.social_fitness_app.domain.usecase.group.GetGroupUseCase
 import com.kobietka.social_fitness_app.util.Progress
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +28,7 @@ class CreateEventViewModel
 @Inject constructor(
     handle: SavedStateHandle,
     private val getGroup: GetGroupUseCase,
-    private val validateCreateEvent: ValidateCreateEventUseCase,
+    private val validateEvent: ValidateEventUseCase,
     private val createEvent: CreateEventUseCase,
     private val logoutUser: LogoutUserUseCase
 ) : ViewModel() {
@@ -145,7 +145,7 @@ class CreateEventViewModel
         val startDate = _startDate.value.formatted
         val endDate = _endDate.value.formatted
 
-        val validationResults = validateCreateEvent(
+        val validationResults = validateEvent(
             name = name,
             description = description,
             pointGoal = pointGoal,
