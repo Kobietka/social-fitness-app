@@ -45,10 +45,10 @@ class EventViewModel
                 ).onEach { progress ->
                     when(progress){
                         is Progress.Finished -> {
-                            _state.value = _state.value.copy(
-                                event = getEvent(eventId = eventId),
-                                loggedUser = getUsers().first().first()
-                            )
+                            _state.value = _state.value.copy(loggedUser = getUsers().first().first())
+                            getEvent(eventId = eventId).onEach { event ->
+                                _state.value = _state.value.copy(event = event)
+                            }.launchIn(viewModelScope)
                             _state.value.loggedUser?.let { loggedUser ->
                                 val group = getGroup(groupId = groupId).first()
                                 _state.value = _state.value.copy(group = group)
