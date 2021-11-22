@@ -21,10 +21,7 @@ class EditEventUseCase(
         description: String,
         pointGoal: Int,
         pointPerRep: Int,
-        pointPerMinute: Int,
-        startDate: String,
-        endDate: String,
-        eventType: String
+        pointPerMinute: Int
     ): Flow<Progress> = flow {
         emit(Progress.Loading)
         val result = eventRemoteRepository.editEvent(
@@ -35,10 +32,7 @@ class EditEventUseCase(
                 description = description,
                 pointGoal = pointGoal,
                 pointPerRep = pointPerRep,
-                pointPerMinute = pointPerMinute,
-                startDate = startDate,
-                endDate = endDate,
-                eventType = eventType
+                pointPerMinute = pointPerMinute
             )
         )
         when(result){

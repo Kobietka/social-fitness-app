@@ -8,8 +8,5 @@ data class EditEventRequest(
     val description: String,
     val pointGoal: Int,
     val pointPerRep: Int,
-    val pointPerMinute: Int,
-    val startDate: String,
-    val endDate: String,
-    val eventType: String
+    val pointPerMinute: Int
 )
