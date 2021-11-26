@@ -2,7 +2,9 @@ package com.kobietka.social_fitness_app.domain.usecase.event
 
 import com.kobietka.social_fitness_app.data.entity.ActivityEntity
 import com.kobietka.social_fitness_app.data.entity.EventEntity
+import com.kobietka.social_fitness_app.data.entity.EventMemberEntity
 import com.kobietka.social_fitness_app.domain.repository.local.ActivityRepository
+import com.kobietka.social_fitness_app.domain.repository.local.EventMemberRepository
 import com.kobietka.social_fitness_app.domain.repository.local.EventRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.EventRemoteRepository
 import com.kobietka.social_fitness_app.util.NetworkResult
@@ -14,7 +16,8 @@ import kotlinx.coroutines.flow.flow
 class GetRemoteEventUseCase(
     private val eventRemoteRepository: EventRemoteRepository,
     private val eventRepository: EventRepository,
-    private val activityRepository: ActivityRepository
+    private val activityRepository: ActivityRepository,
+    private val eventMemberRepository: EventMemberRepository
 ) {
     operator fun invoke(
         eventId: String,
@@ -40,6 +43,14 @@ class GetRemoteEventUseCase(
                     )
                     eventDto.eventMembers?.let { eventMembers ->
                         eventMembers.forEach { eventMemberDto ->
+                            eventMemberRepository.insert(
+                                EventMemberEntity(
+                                    userId = eventMemberDto.user.id,
+                                    eventId = eventId,
+                                    nickname = eventMemberDto.user.nickname,
+                                    totalScore = eventMemberDto.totalScore
+                                )
+                            )
                             eventMemberDto.activities?.let { activities ->
                                 activities.forEach { activityDto ->
                                     activityRepository.insert(

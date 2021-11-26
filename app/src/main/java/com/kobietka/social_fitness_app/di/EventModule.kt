@@ -74,12 +74,14 @@ class EventModule {
     fun provideGetRemoteEventUseCase(
         eventRemoteRepository: EventRemoteRepository,
         eventRepository: EventRepository,
-        activityRepository: ActivityRepository
+        activityRepository: ActivityRepository,
+        eventMemberRepository: EventMemberRepository
     ): GetRemoteEventUseCase {
         return GetRemoteEventUseCase(
             eventRepository = eventRepository,
             eventRemoteRepository = eventRemoteRepository,
-            activityRepository = activityRepository
+            activityRepository = activityRepository,
+            eventMemberRepository = eventMemberRepository
         )
     }
 
