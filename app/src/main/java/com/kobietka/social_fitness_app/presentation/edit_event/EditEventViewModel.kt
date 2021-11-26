@@ -181,6 +181,15 @@ class EditEventViewModel
                         is EventValidationResult.PointsPerRepetitionNegative -> {
                             _pointsPerRepetition.value = _pointsPerRepetition.value.copy(error = "This number cannot be negative")
                         }
+                        is EventValidationResult.PointGoalNotANumber -> {
+                            _pointGoal.value = _pointGoal.value.copy(error = "Please enter a number")
+                        }
+                        is EventValidationResult.PointsPerMinuteNotANumber -> {
+                            _pointsPerMinute.value = _pointsPerMinute.value.copy(error = "Please enter a number")
+                        }
+                        is EventValidationResult.PointsPerRepetitionNotANumber -> {
+                            _pointsPerRepetition.value = _pointsPerRepetition.value.copy(error = "Please enter a number")
+                        }
                         else -> { }
                     }
                 }

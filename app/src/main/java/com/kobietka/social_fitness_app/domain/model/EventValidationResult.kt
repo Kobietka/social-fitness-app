@@ -14,4 +14,7 @@ sealed class EventValidationResult {
     object StartDateNotSelected : EventValidationResult()
     object EndDateNotSelected : EventValidationResult()
     object EventTypeNotSelected : EventValidationResult()
+    object PointGoalNotANumber : EventValidationResult()
+    object PointsPerMinuteNotANumber : EventValidationResult()
+    object PointsPerRepetitionNotANumber : EventValidationResult()
 }

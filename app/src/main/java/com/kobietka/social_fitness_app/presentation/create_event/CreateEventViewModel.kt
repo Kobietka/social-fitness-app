@@ -224,6 +224,15 @@ class CreateEventViewModel
                     is EventValidationResult.EventTypeNotSelected -> {
                         _eventType.value = _eventType.value.copy(error = "Please select event type")
                     }
+                    is EventValidationResult.PointGoalNotANumber -> {
+                        _pointGoal.value = _pointGoal.value.copy(error = "Please enter a number")
+                    }
+                    is EventValidationResult.PointsPerMinuteNotANumber -> {
+                        _pointPerMin.value = _pointPerMin.value.copy(error = "Please enter a number")
+                    }
+                    is EventValidationResult.PointsPerRepetitionNotANumber -> {
+                        _pointPerRep.value = _pointPerRep.value.copy(error = "Please enter a number")
+                    }
                 }
             }
         }

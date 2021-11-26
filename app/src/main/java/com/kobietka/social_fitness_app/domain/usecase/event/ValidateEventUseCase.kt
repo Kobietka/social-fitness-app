@@ -24,18 +24,37 @@ class ValidateEventUseCase {
 
         if(pointGoal.isBlank())
             results.add(EventValidationResult.PointGoalBlank)
-        else if(pointGoal.toInt() < 0)
-            results.add(EventValidationResult.PointGoalNegative)
+        else {
+            try {
+                val pointGoalInt = pointGoal.toInt()
+                if(pointGoalInt < 0)
+                    results.add(EventValidationResult.PointGoalNegative)
+            } catch (exception: NumberFormatException){
+                results.add(EventValidationResult.PointGoalNotANumber)
+            }
+        }
 
         if(pointsPerMinute.isBlank())
             results.add(EventValidationResult.PointsPerMinuteBlank)
-        else if(pointsPerMinute.toInt() < 0)
-            results.add(EventValidationResult.PointsPerMinuteNegative)
+        else {
+            try {
+                if(pointsPerMinute.toInt() < 0)
+                    results.add(EventValidationResult.PointsPerMinuteNegative)
+            } catch (exception: NumberFormatException){
+                results.add(EventValidationResult.PointsPerMinuteNotANumber)
+            }
+        }
 
         if(pointsPerRepetition.isBlank())
             results.add(EventValidationResult.PointsPerRepetitionBlank)
-        else if(pointsPerRepetition.toInt() < 0)
-            results.add(EventValidationResult.PointsPerRepetitionNegative)
+        else {
+            try {
+                if(pointsPerRepetition.toInt() < 0)
+                    results.add(EventValidationResult.PointsPerRepetitionNegative)
+            } catch (exception: NumberFormatException){
+                results.add(EventValidationResult.PointsPerRepetitionNotANumber)
+            }
+        }
 
         if(startDate == null)
             results.add(EventValidationResult.StartDateNotSelected)
