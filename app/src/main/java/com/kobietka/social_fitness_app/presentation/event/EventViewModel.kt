@@ -55,20 +55,20 @@ class EventViewModel
                                 if(group.ownerId == loggedUser.id)
                                     _state.value = _state.value.copy(isUserAGroupOwner = true)
                             }
+                            getEventMembers(eventId = eventId).onEach { eventMembers ->
+                                _state.value = _state.value.copy(
+                                    eventMembers = matchEventMembersWithActivities(
+                                        eventId = eventId,
+                                        eventMembers = eventMembers
+                                    ).sortedBy { it.totalScore }.asReversed()
+                                )
+                            }.launchIn(viewModelScope)
                         }
                         is Progress.Unauthorized -> logoutUser()
                         else -> { }
                     }
                 }.launchIn(viewModelScope)
             }
-            getEventMembers(eventId = eventId).onEach { eventMembers ->
-                _state.value = _state.value.copy(
-                    eventMembers = matchEventMembersWithActivities(
-                        eventId = eventId,
-                        eventMembers = eventMembers
-                    )
-                )
-            }.launchIn(viewModelScope)
         }
     }
 

@@ -1,10 +1,13 @@
 package com.kobietka.social_fitness_app.presentation.event
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,8 +20,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.kobietka.social_fitness_app.domain.model.EventType
 import com.kobietka.social_fitness_app.presentation.event.components.DividedProperty
+import com.kobietka.social_fitness_app.presentation.event.components.EventMemberListItem
 
 
+@ExperimentalAnimationApi
 @Composable
 fun EventScreen(
     eventViewModel: EventViewModel = hiltViewModel(),
@@ -87,6 +92,9 @@ fun EventScreen(
                 modifier = Modifier.padding(start = 20.dp, end = 20.dp)
             ) {
                 item {
+                    DividedProperty(name = "Event description", value = event.description)
+                }
+                item {
                     when(event.eventType){
                         EventType.LESS_TIME -> {
                             DividedProperty(
@@ -116,6 +124,53 @@ fun EventScreen(
                         )
                     }
                     else -> {}
+                }
+                item {
+                    Text(
+                        modifier = Modifier.padding(top = 10.dp),
+                        fontSize = 20.sp,
+                        text = "Event Ranking",
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                if(state.eventMembers.isEmpty()) item {
+                    Text(text = "No participants.\nAdd activity to get started.")
+                } else {
+                    items(state.eventMembers.filter { it.totalScore >= event.pointGoal }){ eventMember ->
+                        EventMemberListItem(
+                            eventMember = eventMember,
+                            eventType = event.eventType
+                        )
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Divider(
+                                thickness = 2.dp,
+                                modifier = Modifier.fillMaxWidth(0.40f),
+                                color = Color.Green
+                            )
+                            Icon(
+                                imageVector = Icons.Default.Done,
+                                contentDescription = "winners",
+                                tint = Color.Green
+                            )
+                            Divider(
+                                thickness = 2.dp,
+                                modifier = Modifier.fillMaxWidth(0.75f),
+                                color = Color.Green
+                            )
+                        }
+                    }
+                    items(state.eventMembers.filter { it.totalScore < event.pointGoal }){ eventMember ->
+                        EventMemberListItem(
+                            eventMember = eventMember,
+                            eventType = event.eventType
+                        )
+                    }
                 }
             }
         }
