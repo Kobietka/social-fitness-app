@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -166,9 +167,19 @@ fun GroupScreen(
             }
         } else {
             if(state.page == GroupPage.POSTS) LazyColumn(
-                state = postListState
+                state = postListState,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                items(state.posts){ post ->
+                if(state.posts.isEmpty()) item {
+                    Text(
+                        textAlign = TextAlign.Center,
+                        text = "No posts",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 20.dp)
+                    )
+                }
+                else items(state.posts){ post ->
                     PostListItem(
                         post = post,
                         onPostClick = { postId ->
@@ -178,9 +189,19 @@ fun GroupScreen(
                 }
             }
             if(state.page == GroupPage.EVENTS) LazyColumn(
-                state = eventListState
+                state = eventListState,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                items(state.events){ event ->
+                if(state.events.isEmpty()) item {
+                    Text(
+                        textAlign = TextAlign.Center,
+                        text = "No events",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 20.dp)
+                    )
+                }
+                else items(state.events){ event ->
                     EventListItem(
                         event = event,
                         onEventClick = { eventId ->

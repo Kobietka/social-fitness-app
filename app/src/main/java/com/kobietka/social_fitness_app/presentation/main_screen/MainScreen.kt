@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -195,7 +196,16 @@ fun MainScreen(
                     }
                 }
             }
-            items(state.groups.size){
+            if(state.groups.isEmpty()) item {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 20.dp),
+                    text = "No groups",
+                    textAlign = TextAlign.Center
+                )
+            }
+            else items(state.groups.size){
                 GroupItem(
                     group = state.groups[it],
                     onGroupClick = { groupId ->
