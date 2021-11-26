@@ -24,4 +24,8 @@ class GroupMemberRepositoryImpl(
     override suspend fun getMemberByUserId(userId: String): GroupMemberEntity {
         return groupMemberDao.getMemberByUserId(userId = userId)
     }
+
+    override suspend fun deleteGroupMemberById(memberId: String) {
+        groupMemberDao.deleteGroupMemberById(memberId = memberId)
+    }
 }
