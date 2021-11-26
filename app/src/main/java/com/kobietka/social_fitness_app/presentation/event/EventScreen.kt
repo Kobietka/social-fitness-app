@@ -3,6 +3,7 @@ package com.kobietka.social_fitness_app.presentation.event
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,6 +24,19 @@ fun EventScreen(
     val state = eventViewModel.state.value
 
     Scaffold(
+        floatingActionButton = {
+            state.event?.let { event ->
+                FloatingActionButton(
+                    onClick = { navController.navigate("/event/${event.id}/create_activity") },
+                    backgroundColor = MaterialTheme.colors.primary
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "create activity"
+                    )
+                }
+            }
+        },
         topBar = {
             Surface(elevation = 8.dp) {
                 Row(
