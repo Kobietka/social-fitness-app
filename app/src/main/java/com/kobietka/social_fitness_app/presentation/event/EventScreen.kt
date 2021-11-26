@@ -1,6 +1,7 @@
 package com.kobietka.social_fitness_app.presentation.event
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -14,6 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.kobietka.social_fitness_app.domain.model.EventType
+import com.kobietka.social_fitness_app.presentation.event.components.DividedProperty
 
 
 @Composable
@@ -79,6 +82,56 @@ fun EventScreen(
             }
         }
     ) {
-
+        state.event?.let { event ->
+            LazyColumn(
+                modifier = Modifier.padding(start = 20.dp, end = 20.dp)
+            ) {
+                item {
+                    when(event.eventType){
+                        EventType.LESS_TIME -> {
+                            DividedProperty(
+                                name = "Goal",
+                                value = "The faster you go, the better."
+                            )
+                        }
+                        else -> {
+                            DividedProperty(
+                                name = "Goal",
+                                value = "You have to earn ${event.pointGoal} points to complete this event."
+                            )
+                        }
+                    }
+                }
+                when(event.eventType){
+                    EventType.REPETITION -> item {
+                        DividedProperty(
+                            name = "Points per repetition",
+                            value = "You will get ${event.pointPerRep} ${if(event.pointPerRep == 1) "point" else "points"} per every repetition."
+                        )
+                    }
+                    EventType.TIME -> item {
+                        DividedProperty(
+                            name = "Points per minute",
+                            value = "You will get ${event.pointPerMinute} ${if(event.pointPerMinute == 1) "point" else "points"} per every minute you train."
+                        )
+                    }
+                    else -> {}
+                }
+            }
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
