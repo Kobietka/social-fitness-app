@@ -24,6 +24,7 @@ import com.kobietka.social_fitness_app.domain.model.EventType
 data class EventEntity(
     @PrimaryKey val id: String,
     @ColumnInfo val groupId: String,
+    @ColumnInfo val isActive: Boolean,
     @ColumnInfo val name: String,
     @ColumnInfo val description: String,
     @ColumnInfo val pointGoal: Int,
@@ -38,6 +39,7 @@ fun EventEntity.toEvent(): Event {
     return Event(
         id = this.id,
         groupId = this.groupId,
+        isActive = this.isActive,
         name = this.name,
         description = this.description,
         pointGoal = this.pointGoal,
