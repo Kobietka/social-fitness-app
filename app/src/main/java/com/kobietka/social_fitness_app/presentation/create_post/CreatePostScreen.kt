@@ -4,9 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,42 +24,53 @@ fun CreatePostScreen(
     val state = createPostViewModel.state.value
     val postContent = createPostViewModel.postContent.value
 
-    Column(
-        modifier = Modifier.padding(20.dp)
-    ) {
-        Text(
-            fontStyle = FontStyle.Italic,
-            text = "Creating post for",
-            color = Color.Gray,
-            fontSize = 20.sp
-        )
-        Text(
-            text = state.group.name,
-            fontWeight = FontWeight.Medium,
-            fontSize = 20.sp,
-            modifier = Modifier.padding(bottom = 10.dp)
-        )
-        MultilineTextField(
-            text = postContent.text,
-            error = postContent.error,
-            label = postContent.label,
-            maxLines = 10,
-            onValueChange = createPostViewModel::onPostContentChange
-        )
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 13.dp)
-                .height(50.dp),
-            onClick = {
-                createPostViewModel.onCreatePostClick {
-                    onSuccessPostCreation()
+    Scaffold(
+        topBar = {
+            Surface(elevation = 8.dp) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp)
+                ) {
+                    Text(
+                        fontStyle = FontStyle.Italic,
+                        text = "Creating post for",
+                        color = Color.Gray,
+                        fontSize = 20.sp
+                    )
+                    Text(
+                        text = state.group.name,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    )
                 }
-            },
-            enabled = !state.isCreatingPost
-        ) {
-            if(!state.isCreatingPost) Text("Create post")
-            else CircularProgressIndicator()
+            }
+        }
+    ) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            MultilineTextField(
+                text = postContent.text,
+                error = postContent.error,
+                label = postContent.label,
+                maxLines = 10,
+                onValueChange = createPostViewModel::onPostContentChange
+            )
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 13.dp)
+                    .height(50.dp),
+                onClick = {
+                    createPostViewModel.onCreatePostClick {
+                        onSuccessPostCreation()
+                    }
+                },
+                enabled = !state.isCreatingPost
+            ) {
+                if(!state.isCreatingPost) Text("Create post")
+                else CircularProgressIndicator()
+            }
         }
     }
 }
