@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.kobietka.social_fitness_app.presentation.create_activity.CreateActivityScreen
 import com.kobietka.social_fitness_app.presentation.create_event.CreateEventScreen
 import com.kobietka.social_fitness_app.presentation.create_post.CreatePostScreen
 import com.kobietka.social_fitness_app.presentation.edit_event.EditEventScreen
@@ -130,6 +131,15 @@ class MainActivity : AppCompatActivity() {
                         )
                     ){
                         EditEventScreen(onSuccessfulEventEdit = { onBackPressed() })
+                    }
+
+                    composable(
+                        route = Screen.CreateActivity.route,
+                        arguments = listOf(
+                            navArgument(name = "eventId"){ type = NavType.StringType }
+                        )
+                    ){
+                        CreateActivityScreen(onSuccess = { onBackPressed() })
                     }
                 }
             }
