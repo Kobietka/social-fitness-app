@@ -1,6 +1,7 @@
 package com.kobietka.social_fitness_app.presentation.edit_group
 
 import com.kobietka.social_fitness_app.domain.model.Group
+import com.kobietka.social_fitness_app.domain.model.GroupMember
 import com.kobietka.social_fitness_app.domain.model.Invitation
 
 
@@ -11,5 +12,6 @@ data class EditGroupState(
     val updateMessage: String = "",
     val updatingGroupError: String = "",
     val group: Group = Group(id = "", name = "", description = "", ownerId = ""),
-    val invitation: Invitation? = null
+    val invitation: Invitation? = null,
+    val groupMembers: List<GroupMember> = emptyList()
 )

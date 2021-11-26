@@ -9,8 +9,10 @@ import com.kobietka.social_fitness_app.domain.model.GroupValidationResult
 import com.kobietka.social_fitness_app.domain.state.StandardTextFieldState
 import com.kobietka.social_fitness_app.domain.usecase.auth.LogoutUserUseCase
 import com.kobietka.social_fitness_app.domain.usecase.group.EditGroupUseCase
+import com.kobietka.social_fitness_app.domain.usecase.group.GetGroupMembersUseCase
 import com.kobietka.social_fitness_app.domain.usecase.group.GetGroupUseCase
 import com.kobietka.social_fitness_app.domain.usecase.group.ValidateGroup
+import com.kobietka.social_fitness_app.domain.usecase.groupmember.KickGroupMemberUseCase
 import com.kobietka.social_fitness_app.domain.usecase.invitation.CreateInvitationUseCase
 import com.kobietka.social_fitness_app.domain.usecase.invitation.DeleteInvitationUseCase
 import com.kobietka.social_fitness_app.domain.usecase.invitation.GetInvitationUseCase
@@ -31,7 +33,9 @@ class EditGroupViewModel
     private val logoutUser: LogoutUserUseCase,
     private val getInvitation: GetInvitationUseCase,
     private val createInvitation: CreateInvitationUseCase,
-    private val deleteInvitation: DeleteInvitationUseCase
+    private val deleteInvitation: DeleteInvitationUseCase,
+    private val getGroupMembers: GetGroupMembersUseCase,
+    private val kickGroupMember: KickGroupMemberUseCase
 ) : ViewModel() {
 
     private val _state = mutableStateOf(EditGroupState())
@@ -53,7 +57,21 @@ class EditGroupViewModel
             getInvitation(groupId = groupId).onEach { invitation ->
                 _state.value = _state.value.copy(invitation = invitation)
             }.launchIn(viewModelScope)
+            getGroupMembers(groupId = groupId).onEach { groupMembers ->
+                _state.value = _state.value.copy(
+                    groupMembers = groupMembers.filter { it.userId != state.value.group.ownerId }
+                )
+            }.launchIn(viewModelScope)
         }
+    }
+
+    fun onKickGroupMemberClick(memberId: String){
+        kickGroupMember(memberId = memberId).onEach { progress ->
+            when(progress){
+                is Progress.Unauthorized -> logoutUser()
+                else -> { }
+            }
+        }.launchIn(viewModelScope)
     }
 
     fun onEditGroupClick(){
