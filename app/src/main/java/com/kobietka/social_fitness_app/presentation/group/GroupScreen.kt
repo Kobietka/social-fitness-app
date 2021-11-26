@@ -9,6 +9,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Archive
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.runtime.Composable
@@ -201,13 +203,45 @@ fun GroupScreen(
                             .padding(top = 20.dp)
                     )
                 }
-                else items(state.events){ event ->
-                    EventListItem(
-                        event = event,
-                        onEventClick = { eventId ->
-                            navController.navigate("/group/${state.group.id}/event/$eventId")
+                else {
+                    items(state.events.filter { it.isActive }){ event ->
+                        EventListItem(
+                            event = event,
+                            onEventClick = { eventId ->
+                                navController.navigate("/group/${state.group.id}/event/$eventId")
+                            }
+                        )
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp, bottom = 10.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Divider(
+                                thickness = 2.dp,
+                                modifier = Modifier.fillMaxWidth(0.40f)
+                            )
+                            Icon(
+                                imageVector = Icons.Default.Archive,
+                                contentDescription = "archived events"
+                            )
+                            Divider(
+                                thickness = 2.dp,
+                                modifier = Modifier.fillMaxWidth(0.75f)
+                            )
                         }
-                    )
+                    }
+                    items(state.events.filter { !it.isActive }) { event ->
+                        EventListItem(
+                            event = event,
+                            onEventClick = { eventId ->
+                                navController.navigate("/group/${state.group.id}/event/$eventId")
+                            }
+                        )
+                    }
                 }
             }
         }

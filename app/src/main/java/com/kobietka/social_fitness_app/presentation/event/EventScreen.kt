@@ -34,7 +34,7 @@ fun EventScreen(
     Scaffold(
         floatingActionButton = {
             state.event?.let { event ->
-                FloatingActionButton(
+                if(event.isActive) FloatingActionButton(
                     onClick = { navController.navigate("/event/${event.id}/create_activity") },
                     backgroundColor = MaterialTheme.colors.primary
                 ) {
@@ -64,7 +64,7 @@ fun EventScreen(
                             modifier = Modifier.padding(20.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            if(state.isUserAGroupOwner) IconButton(
+                            if(state.isUserAGroupOwner && event.isActive) IconButton(
                                 onClick = {
                                     state.group?.let { group ->
                                         navController.navigate(
