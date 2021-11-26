@@ -5,6 +5,7 @@ import com.kobietka.social_fitness_app.domain.repository.remote.GroupRemoteRepos
 import com.kobietka.social_fitness_app.domain.usecase.group.*
 import com.kobietka.social_fitness_app.domain.usecase.post.GetPostsForGroupUseCase
 import com.kobietka.social_fitness_app.domain.usecase.post.MatchPostsWithMembersUseCase
+import com.kobietka.social_fitness_app.util.DateUtil
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -71,7 +72,8 @@ class GroupModule {
         groupRepository: GroupRepository,
         invitationRepository: InvitationRepository,
         groupMemberRepository: GroupMemberRepository,
-        eventRepository: EventRepository
+        eventRepository: EventRepository,
+        dateUtil: DateUtil
     ): GetRemoteGroupUseCase {
         return GetRemoteGroupUseCase(
             groupRepository = groupRepository,
@@ -79,7 +81,8 @@ class GroupModule {
             postRepository = postRepository,
             invitationRepository = invitationRepository,
             groupMemberRepository = groupMemberRepository,
-            eventRepository = eventRepository
+            eventRepository = eventRepository,
+            dateUtil = dateUtil
         )
     }
 

@@ -5,6 +5,7 @@ import com.kobietka.social_fitness_app.domain.repository.local.EventMemberReposi
 import com.kobietka.social_fitness_app.domain.repository.local.EventRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.EventRemoteRepository
 import com.kobietka.social_fitness_app.domain.usecase.event.*
+import com.kobietka.social_fitness_app.util.DateUtil
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,11 +19,13 @@ class EventModule {
     @Provides
     fun provideCreateEventUseCase(
         eventRemoteRepository: EventRemoteRepository,
-        eventRepository: EventRepository
+        eventRepository: EventRepository,
+        dateUtil: DateUtil
     ): CreateEventUseCase {
         return CreateEventUseCase(
             eventRemoteRepository = eventRemoteRepository,
-            eventRepository = eventRepository
+            eventRepository = eventRepository,
+            dateUtil = dateUtil
         )
     }
 
@@ -75,24 +78,28 @@ class EventModule {
         eventRemoteRepository: EventRemoteRepository,
         eventRepository: EventRepository,
         activityRepository: ActivityRepository,
-        eventMemberRepository: EventMemberRepository
+        eventMemberRepository: EventMemberRepository,
+        dateUtil: DateUtil
     ): GetRemoteEventUseCase {
         return GetRemoteEventUseCase(
             eventRepository = eventRepository,
             eventRemoteRepository = eventRemoteRepository,
             activityRepository = activityRepository,
-            eventMemberRepository = eventMemberRepository
+            eventMemberRepository = eventMemberRepository,
+            dateUtil = dateUtil
         )
     }
 
     @Provides
     fun provideEditEventUseCase(
         eventRemoteRepository: EventRemoteRepository,
-        eventRepository: EventRepository
+        eventRepository: EventRepository,
+        dateUtil: DateUtil
     ): EditEventUseCase {
         return EditEventUseCase(
             eventRemoteRepository = eventRemoteRepository,
-            eventRepository = eventRepository
+            eventRepository = eventRepository,
+            dateUtil = dateUtil
         )
     }
 

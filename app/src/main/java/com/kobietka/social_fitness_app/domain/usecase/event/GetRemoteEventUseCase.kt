@@ -7,17 +7,20 @@ import com.kobietka.social_fitness_app.domain.repository.local.ActivityRepositor
 import com.kobietka.social_fitness_app.domain.repository.local.EventMemberRepository
 import com.kobietka.social_fitness_app.domain.repository.local.EventRepository
 import com.kobietka.social_fitness_app.domain.repository.remote.EventRemoteRepository
+import com.kobietka.social_fitness_app.util.DateUtil
 import com.kobietka.social_fitness_app.util.NetworkResult
 import com.kobietka.social_fitness_app.util.Progress
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.datetime.*
 
 
 class GetRemoteEventUseCase(
     private val eventRemoteRepository: EventRemoteRepository,
     private val eventRepository: EventRepository,
     private val activityRepository: ActivityRepository,
-    private val eventMemberRepository: EventMemberRepository
+    private val eventMemberRepository: EventMemberRepository,
+    private val dateUtil: DateUtil
 ) {
     operator fun invoke(
         eventId: String,
@@ -27,6 +30,9 @@ class GetRemoteEventUseCase(
         when(val result = eventRemoteRepository.getEvent(eventId = eventId)){
             is NetworkResult.Success -> {
                 result.data.let { eventDto ->
+                    val startDate = dateUtil.localDateFrom(eventDto.startDate)
+                    val endDate = dateUtil.localDateFrom(eventDto.endDate)
+
                     eventRepository.insert(
                         EventEntity(
                             id = eventDto.id,
@@ -38,7 +44,8 @@ class GetRemoteEventUseCase(
                             pointPerMinute = eventDto.pointPerMinute,
                             startDate = eventDto.startDate,
                             endDate = eventDto.endDate,
-                            eventType = eventDto.eventType
+                            eventType = eventDto.eventType,
+                            isActive = dateUtil.isNowBetweenDates(startDate, endDate)
                         )
                     )
                     eventDto.eventMembers?.let { eventMembers ->

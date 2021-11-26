@@ -3,6 +3,7 @@ package com.kobietka.social_fitness_app.domain.usecase.group
 import com.kobietka.social_fitness_app.data.entity.*
 import com.kobietka.social_fitness_app.domain.repository.local.*
 import com.kobietka.social_fitness_app.domain.repository.remote.GroupRemoteRepository
+import com.kobietka.social_fitness_app.util.DateUtil
 import com.kobietka.social_fitness_app.util.NetworkResult
 import com.kobietka.social_fitness_app.util.Progress
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +16,8 @@ class GetRemoteGroupUseCase(
     private val postRepository: PostRepository,
     private val groupMemberRepository: GroupMemberRepository,
     private val invitationRepository: InvitationRepository,
-    private val eventRepository: EventRepository
+    private val eventRepository: EventRepository,
+    private val dateUtil: DateUtil
 ) {
     operator fun invoke(groupId: String): Flow<Progress> = flow {
         emit(Progress.Loading)
@@ -65,7 +67,11 @@ class GetRemoteGroupUseCase(
                         }
                     }
                     groupResponse.events?.let { events ->
+
                         events.forEach { eventDto ->
+                            val startDate = dateUtil.localDateFrom(eventDto.startDate)
+                            val endDate = dateUtil.localDateFrom(eventDto.endDate)
+
                             eventRepository.insert(
                                 EventEntity(
                                     id = eventDto.id,
@@ -77,7 +83,8 @@ class GetRemoteGroupUseCase(
                                     pointPerMinute = eventDto.pointPerMinute,
                                     startDate = eventDto.startDate,
                                     endDate = eventDto.endDate,
-                                    eventType = eventDto.eventType
+                                    eventType = eventDto.eventType,
+                                    isActive = dateUtil.isNowBetweenDates(startDate, endDate)
                                 )
                             )
                         }
