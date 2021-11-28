@@ -10,6 +10,7 @@ data class GroupScreenState(
     val page: GroupPage = GroupPage.POSTS,
     val group: Group = Group(id = "", name = "", description = "", ownerId = ""),
     val posts: List<Post> = emptyList(),
-    val events: List<Event> = emptyList(),
+    val activeEvents: List<Event> = emptyList(),
+    val archivedEvents: List<Event> = emptyList(),
     val members: List<GroupMember> = emptyList()
 )

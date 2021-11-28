@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Archive
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.runtime.Composable
@@ -194,7 +193,7 @@ fun GroupScreen(
                 state = eventListState,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if(state.events.isEmpty()) item {
+                if(state.activeEvents.isEmpty()) item {
                     Text(
                         textAlign = TextAlign.Center,
                         text = "No events",
@@ -204,7 +203,7 @@ fun GroupScreen(
                     )
                 }
                 else {
-                    items(state.events.filter { it.isActive }){ event ->
+                    items(state.activeEvents){ event ->
                         EventListItem(
                             event = event,
                             onEventClick = { eventId ->
@@ -213,7 +212,7 @@ fun GroupScreen(
                         )
                     }
                     item {
-                        Row(
+                        if(state.archivedEvents.isNotEmpty()) Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 10.dp, bottom = 10.dp),
@@ -234,7 +233,7 @@ fun GroupScreen(
                             )
                         }
                     }
-                    items(state.events.filter { !it.isActive }) { event ->
+                    items(state.archivedEvents) { event ->
                         EventListItem(
                             event = event,
                             onEventClick = { eventId ->

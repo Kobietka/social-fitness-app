@@ -69,7 +69,10 @@ class GroupViewModel
                 }
             }.launchIn(viewModelScope)
             getEventsForGroup(groupId = groupId).onEach { events ->
-                _state.value = _state.value.copy(events = events)
+                _state.value = _state.value.copy(
+                    activeEvents = events.filter { it.isActive },
+                    archivedEvents = events.filter { !it.isActive }
+                )
             }.launchIn(viewModelScope)
             getGroupMembers(groupId = groupId).onEach { members ->
                 _state.value = _state.value.copy(members = members)
