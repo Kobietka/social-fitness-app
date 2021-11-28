@@ -42,7 +42,17 @@ fun EventMemberListItem(
                 fontWeight = FontWeight.Medium,
                 fontSize = 18.sp
             )
-            Text(text = eventMember.totalScore.toString() + " points")
+            when(eventType){
+                EventType.LESS_TIME -> {
+                    val fastestActivity = eventMember.activities.minByOrNull { it.value }
+                    fastestActivity?.let {
+                        val minutes = fastestActivity.value / 60
+                        val seconds = fastestActivity.value - minutes * 60
+                        Text(text = "$minutes ${if(minutes == 1) "minute" else "minutes"} $seconds ${if(seconds == 1) "second" else "seconds"}")
+                    }
+                }
+                else -> Text(text = eventMember.totalScore.toString() + " points")
+            }
         }
         AnimatedVisibility(visible = expanded.value) {
             Column {

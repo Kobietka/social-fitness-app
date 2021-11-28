@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kobietka.social_fitness_app.domain.model.EventType
 import com.kobietka.social_fitness_app.domain.usecase.auth.LogoutUserUseCase
 import com.kobietka.social_fitness_app.domain.usecase.event.GetEventMembersUseCase
 import com.kobietka.social_fitness_app.domain.usecase.event.GetEventUseCase
@@ -48,6 +49,29 @@ class EventViewModel
                             _state.value = _state.value.copy(loggedUser = getUsers().first().first())
                             getEvent(eventId = eventId).onEach { event ->
                                 _state.value = _state.value.copy(event = event)
+                                getEventMembers(eventId = eventId).onEach { eventMembers ->
+                                    when(event.eventType){
+                                        EventType.LESS_TIME -> {
+                                            _state.value = _state.value.copy(
+                                                eventMembers = matchEventMembersWithActivities(
+                                                    eventId = eventId,
+                                                    eventMembers = eventMembers
+                                                ).sortedBy {
+                                                    val fastest = it.activities.minByOrNull { activity -> activity.value }
+                                                    fastest?.value ?: it.totalScore
+                                                }
+                                            )
+                                        }
+                                        else -> {
+                                            _state.value = _state.value.copy(
+                                                eventMembers = matchEventMembersWithActivities(
+                                                    eventId = eventId,
+                                                    eventMembers = eventMembers
+                                                ).sortedBy { it.totalScore }.asReversed()
+                                            )
+                                        }
+                                    }
+                                }.launchIn(viewModelScope)
                             }.launchIn(viewModelScope)
                             _state.value.loggedUser?.let { loggedUser ->
                                 val group = getGroup(groupId = groupId).first()
@@ -55,14 +79,6 @@ class EventViewModel
                                 if(group.ownerId == loggedUser.id)
                                     _state.value = _state.value.copy(isUserAGroupOwner = true)
                             }
-                            getEventMembers(eventId = eventId).onEach { eventMembers ->
-                                _state.value = _state.value.copy(
-                                    eventMembers = matchEventMembersWithActivities(
-                                        eventId = eventId,
-                                        eventMembers = eventMembers
-                                    ).sortedBy { it.totalScore }.asReversed()
-                                )
-                            }.launchIn(viewModelScope)
                         }
                         is Progress.Unauthorized -> logoutUser()
                         else -> { }

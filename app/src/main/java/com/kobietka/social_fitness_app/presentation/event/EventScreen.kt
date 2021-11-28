@@ -143,7 +143,7 @@ fun EventScreen(
                         )
                     }
                     item {
-                        Row(
+                        if(event.eventType != EventType.LESS_TIME) Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
@@ -165,11 +165,13 @@ fun EventScreen(
                             )
                         }
                     }
-                    items(state.eventMembers.filter { it.totalScore < event.pointGoal }){ eventMember ->
-                        EventMemberListItem(
-                            eventMember = eventMember,
-                            eventType = event.eventType
-                        )
+                    if(event.eventType != EventType.LESS_TIME) {
+                        items(state.eventMembers.filter { it.totalScore < event.pointGoal }){ eventMember ->
+                            EventMemberListItem(
+                                eventMember = eventMember,
+                                eventType = event.eventType
+                            )
+                        }
                     }
                 }
             }
