@@ -109,10 +109,11 @@ fun PostScreen(
                 if(state.isEditingPost) Column(
                     horizontalAlignment = Alignment.End
                 ) {
-                    StandardTextField(
+                    MultilineTextField(
                         text = postContent.text,
                         error = postContent.error,
                         label = postContent.label,
+                        maxLines = 5,
                         onValueChange = postViewModel::onPostContentChanged
                     )
                     if(state.isEditingPostLoading) CircularProgressIndicator()
