@@ -17,7 +17,7 @@ class GroupRepositoryImpl(
         return groupDao.getAllGroups()
     }
 
-    override fun getGroupById(groupId: String): Flow<GroupEntity> {
+    override fun getGroupById(groupId: String): Flow<GroupEntity?> {
         return groupDao.getGroupById(groupId = groupId)
     }
 

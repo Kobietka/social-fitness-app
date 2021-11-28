@@ -8,14 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.kobietka.social_fitness_app.domain.model.GroupValidationResult
 import com.kobietka.social_fitness_app.domain.state.StandardTextFieldState
 import com.kobietka.social_fitness_app.domain.usecase.auth.LogoutUserUseCase
-import com.kobietka.social_fitness_app.domain.usecase.group.EditGroupUseCase
-import com.kobietka.social_fitness_app.domain.usecase.group.GetGroupMembersUseCase
-import com.kobietka.social_fitness_app.domain.usecase.group.GetGroupUseCase
-import com.kobietka.social_fitness_app.domain.usecase.group.ValidateGroup
+import com.kobietka.social_fitness_app.domain.usecase.group.*
 import com.kobietka.social_fitness_app.domain.usecase.groupmember.KickGroupMemberUseCase
 import com.kobietka.social_fitness_app.domain.usecase.invitation.CreateInvitationUseCase
 import com.kobietka.social_fitness_app.domain.usecase.invitation.DeleteInvitationUseCase
 import com.kobietka.social_fitness_app.domain.usecase.invitation.GetInvitationUseCase
+import com.kobietka.social_fitness_app.domain.usecase.main.GetUsersUseCase
 import com.kobietka.social_fitness_app.util.Progress
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -35,7 +33,9 @@ class EditGroupViewModel
     private val createInvitation: CreateInvitationUseCase,
     private val deleteInvitation: DeleteInvitationUseCase,
     private val getGroupMembers: GetGroupMembersUseCase,
-    private val kickGroupMember: KickGroupMemberUseCase
+    private val kickGroupMember: KickGroupMemberUseCase,
+    private val getUsers: GetUsersUseCase,
+    private val deleteGroup: DeleteGroupUseCase
 ) : ViewModel() {
 
     private val _state = mutableStateOf(EditGroupState())
@@ -47,12 +47,24 @@ class EditGroupViewModel
     private val _groupDescription = mutableStateOf(StandardTextFieldState(label = "Group description"))
     val groupDescription: State<StandardTextFieldState> = _groupDescription
 
+    private val _deleteGroupName = mutableStateOf(StandardTextFieldState(label = "Group name"))
+    val deleteGroupName: State<StandardTextFieldState> = _deleteGroupName
+
     init {
         handle.get<String>("groupId")?.let { groupId ->
             getGroup(groupId = groupId).onEach { group ->
-                _state.value = _state.value.copy(group = group)
-                _groupName.value = _groupName.value.copy(text = group.name)
-                _groupDescription.value = _groupDescription.value.copy(text = group.description)
+                group?.let {
+                    _state.value = _state.value.copy(group = group)
+                    _groupName.value = _groupName.value.copy(text = group.name)
+                    _groupDescription.value = _groupDescription.value.copy(text = group.description)
+                    getUsers().onEach { users->
+                        try {
+                            _state.value = _state.value.copy(
+                                isUserAGroupOwner = group.ownerId == users.first().id
+                            )
+                        } catch (exception: Exception){ }
+                    }.launchIn(viewModelScope)
+                }
             }.launchIn(viewModelScope)
             getInvitation(groupId = groupId).onEach { invitation ->
                 _state.value = _state.value.copy(invitation = invitation)
@@ -62,6 +74,28 @@ class EditGroupViewModel
                     groupMembers = groupMembers.filter { it.userId != state.value.group.ownerId }
                 )
             }.launchIn(viewModelScope)
+        }
+    }
+
+    fun onDeleteGroupClick(onSuccess: () -> Unit){
+        val deleteGroupName = deleteGroupName.value.text.trim()
+        if(deleteGroupName == state.value.group.name){
+            deleteGroup(groupId = state.value.group.id).onEach { progress ->
+                when(progress){
+                    is Progress.Loading -> _state.value = _state.value.copy(isDeletingGroup = true)
+                    is Progress.Finished -> {
+                        _state.value = _state.value.copy(isDeletingGroup = false)
+                        onSuccess()
+                    }
+                    is Progress.Unauthorized -> {
+                        _state.value = _state.value.copy(isDeletingGroup = false)
+                        logoutUser()
+                    }
+                    else -> { }
+                }
+            }.launchIn(viewModelScope)
+        } else {
+            _deleteGroupName.value = _deleteGroupName.value.copy(error = "Please enter a correct group name")
         }
     }
 
@@ -127,6 +161,10 @@ class EditGroupViewModel
                     _groupDescription.value.copy(error = "This field cannot be blank")
             }
         }
+    }
+
+    fun onDeleteNameChange(value: String){
+        _deleteGroupName.value = _deleteGroupName.value.copy(text = value)
     }
 
     fun onCreateCodeClick(){

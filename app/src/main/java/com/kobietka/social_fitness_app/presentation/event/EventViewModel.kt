@@ -75,9 +75,11 @@ class EventViewModel
                             }.launchIn(viewModelScope)
                             _state.value.loggedUser?.let { loggedUser ->
                                 val group = getGroup(groupId = groupId).first()
-                                _state.value = _state.value.copy(group = group)
-                                if(group.ownerId == loggedUser.id)
-                                    _state.value = _state.value.copy(isUserAGroupOwner = true)
+                                group?.let {
+                                    _state.value = _state.value.copy(group = group)
+                                    if(group.ownerId == loggedUser.id)
+                                        _state.value = _state.value.copy(isUserAGroupOwner = true)
+                                }
                             }
                         }
                         is Progress.Unauthorized -> logoutUser()

@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.map
 
 
 class GetGroupUseCase(private val groupRepository: GroupRepository) {
-    operator fun invoke(groupId: String): Flow<Group> {
-        return groupRepository.getGroupById(groupId = groupId).map { it.toGroup() }
+    operator fun invoke(groupId: String): Flow<Group?> {
+        return groupRepository.getGroupById(groupId = groupId).map { groupEntity ->
+            groupEntity?.toGroup()
+        }
     }
 }

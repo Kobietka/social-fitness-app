@@ -41,14 +41,19 @@ class GroupViewModel
     val state: State<GroupScreenState> = _state
 
     init {
-        getUsers().onEach { users->
-            try {
-                _state.value = _state.value.copy(user = users.first())
-            } catch (exception: Exception){ }
-        }.launchIn(viewModelScope)
         handle.get<String>("groupId")?.let { groupId ->
             getGroup(groupId = groupId).onEach { group ->
-                _state.value = _state.value.copy(group = group)
+                group?.let {
+                    _state.value = _state.value.copy(group = group)
+                    getUsers().onEach { users->
+                        try {
+                            _state.value = _state.value.copy(
+                                user = users.first(),
+                                isUserAGroupOwner = group.ownerId == users.first().id
+                            )
+                        } catch (exception: Exception){ }
+                    }.launchIn(viewModelScope)
+                }
             }.launchIn(viewModelScope)
             getRemoteGroup(groupId = groupId).onEach { progress ->
                 when(progress){

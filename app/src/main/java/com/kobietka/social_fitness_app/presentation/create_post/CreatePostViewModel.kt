@@ -34,7 +34,9 @@ class CreatePostViewModel
     init {
         handle.get<String>("groupId")?.let { groupId ->
             getGroup(groupId = groupId).onEach { group ->
-                _state.value = _state.value.copy(group = group)
+                group?.let {
+                    _state.value = _state.value.copy(group = group)
+                }
             }.launchIn(viewModelScope)
         }
     }

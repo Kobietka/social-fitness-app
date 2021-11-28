@@ -18,7 +18,7 @@ interface GroupDao {
     fun getAllGroups(): Flow<List<GroupEntity>>
 
     @Query("select * from `group` where id = :groupId")
-    fun getGroupById(groupId: String): Flow<GroupEntity>
+    fun getGroupById(groupId: String): Flow<GroupEntity?>
 
     @Query("update `group` set name = :name, description = :description, ownerId = :ownerId where id = :id")
     suspend fun updateGroup(
