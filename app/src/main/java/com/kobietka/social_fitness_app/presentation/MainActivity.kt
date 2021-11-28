@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
                         route = Screen.EditGroup.route,
                         arguments = listOf(navArgument(name = "groupId"){ type = NavType.StringType })
                     ){
-                        EditGroupScreen()
+                        EditGroupScreen(navController = navController)
                     }
 
                     composable(

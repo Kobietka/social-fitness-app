@@ -11,7 +11,9 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Details
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,7 +64,7 @@ fun GroupScreen(
                                 modifier = Modifier.padding(20.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                if(state.group.ownerId == state.user.id) IconButton(
+                                if(state.isUserAGroupOwner) IconButton(
                                     onClick = { navController.navigate("/edit_group/${state.group.id}") }
                                 ) {
                                     Icon(
@@ -70,8 +72,20 @@ fun GroupScreen(
                                             .size(30.dp),
                                         tint = Color.Black,
                                         imageVector = Icons.Outlined.Edit,
-                                        contentDescription = "edit account"
+                                        contentDescription = "edit group"
                                     )
+                                } else {
+                                    IconButton(
+                                        onClick = { navController.navigate("/edit_group/${state.group.id}") }
+                                    ) {
+                                        Icon(
+                                            modifier = Modifier
+                                                .size(30.dp),
+                                            tint = Color.Black,
+                                            imageVector = Icons.Outlined.Info,
+                                            contentDescription = "group details"
+                                        )
+                                    }
                                 }
                             }
                         }

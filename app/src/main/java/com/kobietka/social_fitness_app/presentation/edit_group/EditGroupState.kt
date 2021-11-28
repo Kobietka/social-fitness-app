@@ -9,6 +9,8 @@ data class EditGroupState(
     val isUpdatingGroup: Boolean = false,
     val isCreatingCode: Boolean = false,
     val isDeletingCode: Boolean = false,
+    val isUserAGroupOwner: Boolean = false,
+    val isDeletingGroup: Boolean = false,
     val updateMessage: String = "",
     val updatingGroupError: String = "",
     val group: Group = Group(id = "", name = "", description = "", ownerId = ""),

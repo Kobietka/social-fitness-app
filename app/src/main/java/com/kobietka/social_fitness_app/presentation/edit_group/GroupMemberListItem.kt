@@ -14,7 +14,8 @@ import com.kobietka.social_fitness_app.domain.model.GroupMember
 @Composable
 fun GroupMemberListItem(
     groupMember: GroupMember,
-    onKickClick: (String) -> Unit
+    onKickClick: (String) -> Unit,
+    canLoggedUserKick: Boolean
 ) {
     Column {
         Row(
@@ -28,7 +29,7 @@ fun GroupMemberListItem(
                 text = groupMember.nickname,
                 fontWeight = FontWeight.Medium
             )
-            Button(
+            if(canLoggedUserKick) Button(
                 modifier = Modifier
                     .padding(top = 13.dp)
                     .height(40.dp),

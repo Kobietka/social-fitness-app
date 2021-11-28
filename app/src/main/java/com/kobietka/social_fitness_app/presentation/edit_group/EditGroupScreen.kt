@@ -3,8 +3,6 @@ package com.kobietka.social_fitness_app.presentation.edit_group
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,17 +13,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.kobietka.social_fitness_app.presentation.components.MultilineTextField
 import com.kobietka.social_fitness_app.presentation.components.StandardTextField
+import com.kobietka.social_fitness_app.presentation.event.components.DividedProperty
 
 
 @Composable
 fun EditGroupScreen(
-    editGroupViewModel: EditGroupViewModel = hiltViewModel()
+    editGroupViewModel: EditGroupViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val state = editGroupViewModel.state.value
     val groupName = editGroupViewModel.groupName.value
     val groupDescription = editGroupViewModel.groupDescription.value
+    val deleteGroupName = editGroupViewModel.deleteGroupName.value
 
     Scaffold(
         topBar = {
@@ -48,13 +50,13 @@ fun EditGroupScreen(
     ) {
         LazyColumn(
             modifier = Modifier
-                .padding(20.dp)
+                .padding(start = 20.dp, end = 20.dp)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            item {
+            if(state.isUserAGroupOwner) item {
                 Text(
-                    modifier = Modifier.padding(bottom = 30.dp),
+                    modifier = Modifier.padding(bottom = 20.dp, top = 20.dp),
                     text = "Edit group",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
@@ -94,21 +96,14 @@ fun EditGroupScreen(
                     if (!state.isUpdatingGroup) Text("Update")
                     else CircularProgressIndicator()
                 }
+            } else item {
+                DividedProperty(name = "Group name", value = state.group.name)
+                DividedProperty(name = "Group description", value = state.group.description)
             }
             item {
-                Text(
-                    modifier = Modifier.padding(bottom = 20.dp, top = 30.dp),
-                    text = "Invitation code",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold
-                )
                 if(state.invitation != null){
-                    Text(
-                        text = state.invitation.code,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 16.sp
-                    )
-                    Button(
+                    DividedProperty(name = "Invitation code", value = state.invitation.code)
+                    if(state.isUserAGroupOwner) Button(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 20.dp)
@@ -119,18 +114,54 @@ fun EditGroupScreen(
                         ),
                         enabled = !state.isDeletingCode
                     ) {
-                        if(!state.isDeletingCode) Text(text = "Delete code")
+                        if(!state.isDeletingCode) Text(text = "Delete code", color = Color.White)
                         else CircularProgressIndicator()
                     }
-                } else Button(
+                } else if(state.isUserAGroupOwner) {
+                    DividedProperty(
+                        name = "Invitation code",
+                        value = "Create invitation code for your group to invite your friends."
+                    )
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 13.dp)
+                            .height(50.dp),
+                        onClick = editGroupViewModel::onCreateCodeClick,
+                        enabled = !state.isCreatingCode
+                    ) {
+                        if(!state.isCreatingCode) Text(text = "Create code")
+                        else CircularProgressIndicator()
+                    }
+                }
+            }
+            if(state.isUserAGroupOwner) item {
+                Text(
+                    modifier = Modifier.padding(top = 20.dp, bottom = 20.dp),
+                    text = "Delete group",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                StandardTextField(
+                    text = deleteGroupName.text,
+                    error = deleteGroupName.error,
+                    label = deleteGroupName.label,
+                    onValueChange = editGroupViewModel::onDeleteNameChange
+                )
+                Button(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 13.dp)
                         .height(50.dp),
-                    onClick = editGroupViewModel::onCreateCodeClick,
-                    enabled = !state.isCreatingCode
+                    onClick = {
+                        editGroupViewModel.onDeleteGroupClick {
+                            navController.popBackStack()
+                            navController.popBackStack()
+                        }
+                    },
+                    enabled = !state.isDeletingGroup
                 ) {
-                    if(!state.isCreatingCode) Text(text = "Create code")
+                    if(!state.isDeletingGroup) Text(text = "Delete group")
                     else CircularProgressIndicator()
                 }
             }
@@ -154,7 +185,8 @@ fun EditGroupScreen(
             } else items(state.groupMembers){ groupMember ->
                 GroupMemberListItem(
                     groupMember = groupMember,
-                    onKickClick = editGroupViewModel::onKickGroupMemberClick
+                    onKickClick = editGroupViewModel::onKickGroupMemberClick,
+                    canLoggedUserKick = state.isUserAGroupOwner
                 )
             }
         }
