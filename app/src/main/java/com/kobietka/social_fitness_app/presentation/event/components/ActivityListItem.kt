@@ -35,7 +35,7 @@ fun ActivityListItem(
             )
             Text(
                 text = when(eventType){
-                    EventType.REPETITION -> activity.value.toString() + "repetitions"
+                    EventType.REPETITION -> activity.value.toString() + " repetitions"
                     EventType.TIME -> {
                         val minutes = activity.value / 60
                         val seconds = activity.value - minutes * 60
